@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:fyp_project/pages/login_form.dart';
 import 'package:get/get.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SignUpForm extends StatelessWidget {
 
   final String userType;
+
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
 
   SignUpForm({super.key, required this.userType});
 
@@ -126,6 +132,7 @@ class SignUpForm extends StatelessWidget {
                 contentPadding: EdgeInsets.symmetric(horizontal: 10),
               ),
               keyboardType: TextInputType.emailAddress,
+              controller: emailController,
             ),
             SizedBox(height: 20,),
             TextField(
@@ -136,7 +143,8 @@ class SignUpForm extends StatelessWidget {
                 ),
                 contentPadding: EdgeInsets.symmetric(horizontal: 10),
               ),
-              keyboardType: TextInputType.visiblePassword,
+              obscureText: true,
+              controller: passwordController,
             ),
             SizedBox(height: 20,),
             TextField(
@@ -147,12 +155,19 @@ class SignUpForm extends StatelessWidget {
                 ),
                 contentPadding: EdgeInsets.symmetric(horizontal: 10),
               ),
-              keyboardType: TextInputType.visiblePassword,
+              obscureText: true,
+              controller: confirmPasswordController,
             ),
             SizedBox(height: 20,),
             TextButton(
-              onPressed: () {
-                Get.back();
+              onPressed: () async {
+                if (confirmPasswordController.text == passwordController.text) {
+                  final AuthResponse res = await supabase.auth.signUp(
+                    email: emailController.text,
+                    password: passwordController.text,
+                  );
+                  Get.back();
+                }
               },
               style: TextButton.styleFrom(
                 backgroundColor: Colors.black,

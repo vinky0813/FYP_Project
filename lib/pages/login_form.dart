@@ -3,10 +3,15 @@ import 'package:fyp_project/pages/forgot_password_email.dart';
 import 'package:fyp_project/pages/home.dart';
 import 'package:fyp_project/pages/sign_up_form.dart';
 import 'package:get/get.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+final supabase = Supabase.instance.client;
 
 class LoginForm extends StatelessWidget {
 
   final String userType;
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
 
   LoginForm({super.key, required this.userType});
 
@@ -53,6 +58,7 @@ class LoginForm extends StatelessWidget {
                           ),
                         ),
                         keyboardType: TextInputType.emailAddress,
+                        controller: emailController,
                       ),
                       SizedBox(height: 20),
                       TextField(
@@ -63,14 +69,26 @@ class LoginForm extends StatelessWidget {
                           ),
                         ),
                         keyboardType: TextInputType.visiblePassword,
+                        obscureText: true,
+                        controller: passwordController,
                       ),
                       SizedBox(height: 20,),
                       TextButton(
-                        onPressed: () {
+                        onPressed: () async {
                           if (userType == "renter") {
-                            Get.to(() => HomePage(),
-                            transition: Transition.circularReveal,
-                            duration: const Duration(seconds: 1));
+
+                            final authResponse = await supabase.auth.signInWithPassword(
+                              password: passwordController.text,
+                              email: emailController.text);
+
+                            if (authResponse.session == null){
+                              print("Login Failed");
+                            } else {
+                              GetPage(
+                                name: '/homepage',
+                                page: () => HomePage(),
+                                transition: Transition.circularReveal,);
+                            }
                           }
                         },
                         style: TextButton.styleFrom(
