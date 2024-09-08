@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:fyp_project/widgets/AppDrawer.dart';
 
 import '../models/search_filters.dart';
 
@@ -17,7 +18,7 @@ class SavedSearches extends StatelessWidget {
     _getSavedSearches();
     return Scaffold(
       appBar: appBar(),
-      drawer: drawer(),
+      drawer: AppDrawer(),
       body: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(
@@ -63,140 +64,81 @@ class SavedSearches extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10),
                   color: Color(0xffE5E4E2),
                 ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        padding: EdgeInsets.all(8),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              savedSearches[index].title,
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.all(8),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                savedSearches[index].title,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                textAlign: TextAlign.left,
                               ),
-                              textAlign: TextAlign.left,
-                            ),
-                            SizedBox(height: 10,),
-                            Text(
-                              "Room Type: ${savedSearches[index].roomType}",
-                              style: TextStyle(
-                                fontSize: 12,
+                              SizedBox(height: 10,),
+                              Text(
+                                "Room Type: ${savedSearches[index].roomType}",
+                                style: TextStyle(
+                                  fontSize: 12,
+                                ),
+                                textAlign: TextAlign.left,
                               ),
-                              textAlign: TextAlign.left,
-                            ),
-                            Text(
-                              "Price Range: ${savedSearches[index].priceMin.toString()} - ${savedSearches[index].priceMax.toString()}",
-                              style: TextStyle(
-                                fontSize: 12,
+                              Text(
+                                "Price Range: ${savedSearches[index].priceMin.toString()} - ${savedSearches[index].priceMax.toString()}",
+                                style: TextStyle(
+                                  fontSize: 12,
+                                ),
+                                textAlign: TextAlign.left,
                               ),
-                              textAlign: TextAlign.left,
-                            ),
-                            Text(
-                              "Amenities: ${savedSearches[index].amenities[0]}, ${savedSearches[index].amenities[1]}",
-                              style: TextStyle(
-                                fontSize: 12,
+                              Text(
+                                "Amenities: ${savedSearches[index].amenities[0]}, ${savedSearches[index].amenities[1]}",
+                                style: TextStyle(
+                                  fontSize: 12,
+                                ),
+                                textAlign: TextAlign.left,
                               ),
-                              textAlign: TextAlign.left,
-                            ),
-                            Spacer(),
-                            Align(
-                              alignment: Alignment.bottomRight,
-                              child: IconButton(
-                                  onPressed: () {
-                                    showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return AlertDialog(
-                                            title: Text("Remove Item"),
-                                            content: Text("Are you sure you want to remove this saved search?"),
-                                            actions: [
-                                              TextButton(
-                                                  onPressed: () => {},
-                                                  child: Text("Cancel")),
-                                              TextButton(
-                                                  onPressed: () => {},
-                                                  child: Text("Remove"))
-                                            ],
-                                          );
-                                        });
-                                  },
-                                  icon: Icon(Icons.remove_circle_outline)),
-                            )
-                          ],
+                              Spacer(),
+                              Align(
+                                alignment: Alignment.bottomRight,
+                                child: IconButton(
+                                    onPressed: () {
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title: Text("Remove Item"),
+                                              content: Text("Are you sure you want to remove this saved search?"),
+                                              actions: [
+                                                TextButton(
+                                                    onPressed: () => {},
+                                                    child: Text("Cancel")),
+                                                TextButton(
+                                                    onPressed: () => {},
+                                                    child: Text("Remove"))
+                                              ],
+                                            );
+                                          });
+                                    },
+                                    icon: Icon(Icons.remove_circle_outline)),
+                              )
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               );
             },
               childCount: savedSearches.length,
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Drawer drawer() {
-    return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          SizedBox(
-            height: 150,
-            child: DrawerHeader(child:
-            Row(
-              children: [
-                Container(
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.red,
-                    // place profile pic here, use image: imagedecoration)
-                  ),
-                ),
-                SizedBox(width: 20),
-                const Text("Account Name here",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 16,
-                  ),),
-              ],
-            ),
-                decoration: const BoxDecoration(
-                  color: Colors.grey,
-                )
-            ),
-          ),
-          ListTile(
-            title: Text("Homepage"),
-            // placeholder, code here to update the page
-            onTap: () => {},
-          ),
-          ListTile(
-            title: Text("Saved Searches"),
-            // placeholder, code here to update the page
-            onTap: () => {},
-          ),
-          ListTile(
-            title: Text("Shortlist"),
-            // placeholder, code here to update the page
-            onTap: () => {},
-          ),
-          ListTile(
-            title: Text("Chat"),
-            // placeholder, code here to update the page
-            onTap: () => {},
-          ),
-          ListTile(
-            title: Text("My Room"),
-            // placeholder, code here to update the page
-            onTap: () => {},
           ),
         ],
       ),

@@ -1,5 +1,6 @@
 import 'package:fyp_project/models/owner.dart';
 import 'package:fyp_project/models/review.dart';
+import 'package:fyp_project/models/user.dart';
 
 class PropertyListing {
   String property_title;
@@ -14,6 +15,7 @@ class PropertyListing {
   List<String> amenities;
   Owner owner;
   List<Review> reviews;
+  List<User> tenants;
 
   PropertyListing({
     required this.property_title,
@@ -28,6 +30,7 @@ class PropertyListing {
     required this.amenities,
     required this.owner,
     required this.reviews,
+    required this.tenants,
   });
 
   static List<PropertyListing> getTopRatedListing() {
@@ -47,7 +50,8 @@ class PropertyListing {
         amenities: ["placeholder","placeholder","placeholder"],
         owner: Owner(
             name: "OWNER NAME",
-            contact_no: "PHONE NUMBER"
+            contact_no: "PHONE NUMBER",
+            profile_pic: "https://via.placeholder.com/150"
         ),
         reviews: [
           Review(
@@ -62,6 +66,22 @@ class PropertyListing {
             rating: 3,
             comment: "comment placeholder comment placeholder comment placeholder",
           ),
+        ],
+        tenants: [
+          User(
+              username: "username",
+              profilePic: "profilePic",
+              contactDetails: "contactDetails",
+              sex: "sex",
+              nationality: "nationality",
+              isAccommodating: false,),
+          User(
+              username: "username",
+              profilePic: "profilePic",
+              contactDetails: "contactDetails",
+              sex: "sex",
+              nationality: "nationality",
+              isAccommodating: false,),
         ],
       )
     );
@@ -79,7 +99,8 @@ class PropertyListing {
           amenities: ["placeholder","placeholder","placeholder"],
           owner: Owner(
               name: "OWNER NAME",
-              contact_no: "PHONE NUMBER"
+              contact_no: "PHONE NUMBER",
+              profile_pic: "https://via.placeholder.com/150"
           ),
           reviews: [
             Review(
@@ -94,6 +115,22 @@ class PropertyListing {
               rating: 3,
               comment: "comment placeholder comment placeholder comment placeholder",
             ),
+          ],
+          tenants: [
+            User(
+                username: "username",
+                profilePic: "profilePic",
+                contactDetails: "contactDetails",
+                sex: "sex",
+                nationality: "nationality",
+                isAccommodating: false,),
+            User(
+                username: "username",
+                profilePic: "profilePic",
+                contactDetails: "contactDetails",
+                sex: "sex",
+                nationality: "nationality",
+                isAccommodating: false,),
           ],
         )
     );
@@ -111,7 +148,8 @@ class PropertyListing {
           amenities: ["placeholder","placeholder","placeholder"],
           owner: Owner(
               name: "OWNER NAME",
-              contact_no: "PHONE NUMBER"
+              contact_no: "PHONE NUMBER",
+              profile_pic: "https://via.placeholder.com/150"
           ),
           reviews: [
             Review(
@@ -126,6 +164,22 @@ class PropertyListing {
               rating: 3,
               comment: "comment placeholder comment placeholder comment placeholder",
             ),
+          ],
+          tenants: [
+            User(
+                username: "username",
+                profilePic: "profilePic",
+                contactDetails: "contactDetails",
+                sex: "sex",
+                nationality: "nationality",
+                isAccommodating: false,),
+            User(
+                username: "username",
+                profilePic: "profilePic",
+                contactDetails: "contactDetails",
+                sex: "sex",
+                nationality: "nationality",
+                isAccommodating: false,),
           ],
         )
     );
@@ -143,7 +197,8 @@ class PropertyListing {
           amenities: ["placeholder","placeholder","placeholder"],
           owner: Owner(
               name: "OWNER NAME",
-              contact_no: "PHONE NUMBER"
+              contact_no: "PHONE NUMBER",
+              profile_pic: "https://via.placeholder.com/150"
           ),
           reviews: [
             Review(
@@ -158,6 +213,22 @@ class PropertyListing {
               rating: 3,
               comment: "comment placeholder comment placeholder comment placeholder",
             ),
+          ],
+          tenants: [
+            User(
+                username: "username",
+                profilePic: "profilePic",
+                contactDetails: "contactDetails",
+                sex: "sex",
+                nationality: "nationality",
+                isAccommodating: false,),
+            User(
+                username: "username",
+                profilePic: "profilePic",
+                contactDetails: "contactDetails",
+                sex: "sex",
+                nationality: "nationality",
+                isAccommodating: false,),
           ],
         )
     );
@@ -175,7 +246,8 @@ class PropertyListing {
           amenities: ["placeholder","placeholder","placeholder"],
           owner: Owner(
               name: "OWNER NAME",
-              contact_no: "PHONE NUMBER"
+              contact_no: "PHONE NUMBER",
+              profile_pic: "https://via.placeholder.com/150"
           ),
           reviews: [
             Review(
@@ -190,6 +262,22 @@ class PropertyListing {
               rating: 3,
               comment: "comment placeholder comment placeholder comment placeholder",
             ),
+          ],
+          tenants: [
+            User(
+                username: "username",
+                profilePic: "profilePic",
+                contactDetails: "contactDetails",
+                sex: "sex",
+                nationality: "nationality",
+                isAccommodating: false,),
+            User(
+                username: "username",
+                profilePic: "profilePic",
+                contactDetails: "contactDetails",
+                sex: "sex",
+                nationality: "nationality",
+                isAccommodating: false,),
           ],
         )
     );
@@ -213,7 +301,8 @@ class PropertyListing {
           amenities: ["placeholder","placeholder","placeholder"],
           owner: Owner(
               name: "OWNER NAME",
-              contact_no: "PHONE NUMBER"
+              contact_no: "PHONE NUMBER",
+              profile_pic: "https://via.placeholder.com/150"
           ),
           reviews: [
             Review(
@@ -228,6 +317,22 @@ class PropertyListing {
               rating: 3,
               comment: "comment placeholder comment placeholder comment placeholder",
             ),
+          ],
+          tenants: [
+            User(
+                username: "username",
+                profilePic: "profilePic",
+                contactDetails: "contactDetails",
+                sex: "sex",
+                nationality: "nationality",
+                isAccommodating: false,),
+            User(
+                username: "username",
+                profilePic: "profilePic",
+                contactDetails: "contactDetails",
+                sex: "sex",
+                nationality: "nationality",
+                isAccommodating: false,),
           ],
         )
     );
@@ -245,7 +350,8 @@ class PropertyListing {
           amenities: ["placeholder","placeholder","placeholder"],
           owner: Owner(
               name: "OWNER NAME",
-              contact_no: "PHONE NUMBER"
+              contact_no: "PHONE NUMBER",
+              profile_pic: "https://via.placeholder.com/150"
           ),
           reviews: [
             Review(
@@ -260,6 +366,22 @@ class PropertyListing {
               rating: 3,
               comment: "comment placeholder comment placeholder comment placeholder",
             ),
+          ],
+          tenants: [
+            User(
+                username: "username",
+                profilePic: "profilePic",
+                contactDetails: "contactDetails",
+                sex: "sex",
+                nationality: "nationality",
+                isAccommodating: false),
+            User(
+                username: "username",
+                profilePic: "profilePic",
+                contactDetails: "contactDetails",
+                sex: "sex",
+                nationality: "nationality",
+                isAccommodating: false),
           ],
         )
     );
@@ -277,7 +399,8 @@ class PropertyListing {
           amenities: ["placeholder","placeholder","placeholder"],
           owner: Owner(
               name: "OWNER NAME",
-              contact_no: "PHONE NUMBER"
+              contact_no: "PHONE NUMBER",
+              profile_pic: "https://via.placeholder.com/150"
           ),
           reviews: [
             Review(
@@ -292,6 +415,22 @@ class PropertyListing {
               rating: 3,
               comment: "comment placeholder comment placeholder comment placeholder",
             ),
+          ],
+          tenants: [
+            User(
+                username: "username",
+                profilePic: "profilePic",
+                contactDetails: "contactDetails",
+                sex: "sex",
+                nationality: "nationality",
+                isAccommodating: false,),
+            User(
+                username: "username",
+                profilePic: "profilePic",
+                contactDetails: "contactDetails",
+                sex: "sex",
+                nationality: "nationality",
+                isAccommodating: false),
           ],
         )
     );
@@ -309,7 +448,8 @@ class PropertyListing {
           amenities: ["placeholder","placeholder","placeholder"],
           owner: Owner(
               name: "OWNER NAME",
-              contact_no: "PHONE NUMBER"
+              contact_no: "PHONE NUMBER",
+              profile_pic: "https://via.placeholder.com/150"
           ),
           reviews: [
             Review(
@@ -324,6 +464,22 @@ class PropertyListing {
               rating: 3,
               comment: "comment placeholder comment placeholder comment placeholder",
             ),
+          ],
+          tenants: [
+            User(
+                username: "username",
+                profilePic: "profilePic",
+                contactDetails: "contactDetails",
+                sex: "sex",
+                nationality: "nationality",
+                isAccommodating: false),
+            User(
+                username: "username",
+                profilePic: "profilePic",
+                contactDetails: "contactDetails",
+                sex: "sex",
+                nationality: "nationality",
+                isAccommodating: false),
           ],
         )
     );
@@ -341,7 +497,8 @@ class PropertyListing {
           amenities: ["placeholder","placeholder","placeholder"],
           owner: Owner(
               name: "OWNER NAME",
-              contact_no: "PHONE NUMBER"
+              contact_no: "PHONE NUMBER",
+              profile_pic: "https://via.placeholder.com/150"
           ),
           reviews: [
             Review(
@@ -356,6 +513,22 @@ class PropertyListing {
               rating: 3,
               comment: "comment placeholder comment placeholder comment placeholder",
             ),
+          ],
+          tenants: [
+            User(
+                username: "username",
+                profilePic: "profilePic",
+                contactDetails: "contactDetails",
+                sex: "sex",
+                nationality: "nationality",
+                isAccommodating: false),
+            User(
+                username: "username",
+                profilePic: "profilePic",
+                contactDetails: "contactDetails",
+                sex: "sex",
+                nationality: "nationality",
+                isAccommodating: false),
           ],
         )
     );
@@ -379,7 +552,8 @@ class PropertyListing {
           amenities: ["placeholder","placeholder","placeholder"],
           owner: Owner(
               name: "OWNER NAME",
-              contact_no: "PHONE NUMBER"
+              contact_no: "PHONE NUMBER",
+              profile_pic: "https://via.placeholder.com/150"
           ),
           reviews: [
             Review(
@@ -394,6 +568,22 @@ class PropertyListing {
               rating: 3,
               comment: "comment placeholder comment placeholder comment placeholder",
             ),
+          ],
+          tenants: [
+            User(
+                username: "username",
+                profilePic: "profilePic",
+                contactDetails: "contactDetails",
+                sex: "sex",
+                nationality: "nationality",
+                isAccommodating: false),
+            User(
+                username: "username",
+                profilePic: "profilePic",
+                contactDetails: "contactDetails",
+                sex: "sex",
+                nationality: "nationality",
+                isAccommodating: false),
           ],
         )
     );
@@ -411,7 +601,8 @@ class PropertyListing {
           amenities: ["placeholder","placeholder","placeholder"],
           owner: Owner(
               name: "OWNER NAME",
-              contact_no: "PHONE NUMBER"
+              contact_no: "PHONE NUMBER",
+              profile_pic: "https://via.placeholder.com/150"
           ),
           reviews: [
             Review(
@@ -426,6 +617,22 @@ class PropertyListing {
               rating: 3,
               comment: "comment placeholder comment placeholder comment placeholder",
             ),
+          ],
+          tenants: [
+            User(
+                username: "username",
+                profilePic: "profilePic",
+                contactDetails: "contactDetails",
+                sex: "sex",
+                nationality: "nationality",
+                isAccommodating: false),
+            User(
+                username: "username",
+                profilePic: "profilePic",
+                contactDetails: "contactDetails",
+                sex: "sex",
+                nationality: "nationality",
+                isAccommodating: false),
           ],
         )
     );
@@ -443,7 +650,8 @@ class PropertyListing {
           amenities: ["placeholder","placeholder","placeholder"],
           owner: Owner(
               name: "OWNER NAME",
-              contact_no: "PHONE NUMBER"
+              contact_no: "PHONE NUMBER",
+              profile_pic: "https://via.placeholder.com/150"
           ),
           reviews: [
             Review(
@@ -458,6 +666,22 @@ class PropertyListing {
               rating: 3,
               comment: "comment placeholder comment placeholder comment placeholder",
             ),
+          ],
+          tenants: [
+            User(
+                username: "username",
+                profilePic: "profilePic",
+                contactDetails: "contactDetails",
+                sex: "sex",
+                nationality: "nationality",
+                isAccommodating: false),
+            User(
+                username: "username",
+                profilePic: "profilePic",
+                contactDetails: "contactDetails",
+                sex: "sex",
+                nationality: "nationality",
+                isAccommodating: false),
           ],
         )
     );
@@ -475,7 +699,8 @@ class PropertyListing {
           amenities: ["placeholder","placeholder","placeholder"],
           owner: Owner(
               name: "OWNER NAME",
-              contact_no: "PHONE NUMBER"
+              contact_no: "PHONE NUMBER",
+              profile_pic: "https://via.placeholder.com/150"
           ),
           reviews: [
             Review(
@@ -490,6 +715,22 @@ class PropertyListing {
               rating: 3,
               comment: "comment placeholder comment placeholder comment placeholder",
             ),
+          ],
+          tenants: [
+            User(
+                username: "username",
+                profilePic: "profilePic",
+                contactDetails: "contactDetails",
+                sex: "sex",
+                nationality: "nationality",
+                isAccommodating: false),
+            User(
+                username: "username",
+                profilePic: "profilePic",
+                contactDetails: "contactDetails",
+                sex: "sex",
+                nationality: "nationality",
+                isAccommodating: false),
           ],
         )
     );
@@ -507,7 +748,8 @@ class PropertyListing {
           amenities: ["placeholder","placeholder","placeholder"],
           owner: Owner(
               name: "OWNER NAME",
-              contact_no: "PHONE NUMBER"
+              contact_no: "PHONE NUMBER",
+              profile_pic: "https://via.placeholder.com/150"
           ),
           reviews: [
             Review(
@@ -522,6 +764,22 @@ class PropertyListing {
               rating: 3,
               comment: "comment placeholder comment placeholder comment placeholder",
             ),
+          ],
+          tenants: [
+            User(
+                username: "username",
+                profilePic: "profilePic",
+                contactDetails: "contactDetails",
+                sex: "sex",
+                nationality: "nationality",
+                isAccommodating: false),
+            User(
+                username: "username",
+                profilePic: "profilePic",
+                contactDetails: "contactDetails",
+                sex: "sex",
+                nationality: "nationality",
+                isAccommodating: false),
           ],
         )
     );
@@ -545,7 +803,8 @@ class PropertyListing {
           amenities: ["placeholder","placeholder","placeholder"],
           owner: Owner(
               name: "OWNER NAME",
-              contact_no: "PHONE NUMBER"
+              contact_no: "PHONE NUMBER",
+              profile_pic: "https://via.placeholder.com/150"
           ),
           reviews: [
             Review(
@@ -560,6 +819,22 @@ class PropertyListing {
               rating: 3,
               comment: "comment placeholder comment placeholder comment placeholder",
             ),
+          ],
+          tenants: [
+            User(
+                username: "username",
+                profilePic: "profilePic",
+                contactDetails: "contactDetails",
+                sex: "sex",
+                nationality: "nationality",
+                isAccommodating: false),
+            User(
+                username: "username",
+                profilePic: "profilePic",
+                contactDetails: "contactDetails",
+                sex: "sex",
+                nationality: "nationality",
+                isAccommodating: false),
           ],
         )
     );
@@ -577,7 +852,8 @@ class PropertyListing {
           amenities: ["placeholder","placeholder","placeholder"],
           owner: Owner(
               name: "OWNER NAME",
-              contact_no: "PHONE NUMBER"
+              contact_no: "PHONE NUMBER",
+              profile_pic: "https://via.placeholder.com/150"
           ),
           reviews: [
             Review(
@@ -592,6 +868,22 @@ class PropertyListing {
               rating: 3,
               comment: "comment placeholder comment placeholder comment placeholder",
             ),
+          ],
+          tenants: [
+            User(
+                username: "username",
+                profilePic: "profilePic",
+                contactDetails: "contactDetails",
+                sex: "sex",
+                nationality: "nationality",
+                isAccommodating: false),
+            User(
+                username: "username",
+                profilePic: "profilePic",
+                contactDetails: "contactDetails",
+                sex: "sex",
+                nationality: "nationality",
+                isAccommodating: false),
           ],
         )
     );
@@ -609,7 +901,8 @@ class PropertyListing {
           amenities: ["placeholder","placeholder","placeholder"],
           owner: Owner(
               name: "OWNER NAME",
-              contact_no: "PHONE NUMBER"
+              contact_no: "PHONE NUMBER",
+              profile_pic: "https://via.placeholder.com/150"
           ),
           reviews: [
             Review(
@@ -624,6 +917,22 @@ class PropertyListing {
               rating: 3,
               comment: "comment placeholder comment placeholder comment placeholder",
             ),
+          ],
+          tenants: [
+            User(
+                username: "username",
+                profilePic: "profilePic",
+                contactDetails: "contactDetails",
+                sex: "sex",
+                nationality: "nationality",
+                isAccommodating: false),
+            User(
+                username: "username",
+                profilePic: "profilePic",
+                contactDetails: "contactDetails",
+                sex: "sex",
+                nationality: "nationality",
+                isAccommodating: false),
           ],
         )
     );
@@ -641,7 +950,8 @@ class PropertyListing {
           amenities: ["placeholder","placeholder","placeholder"],
           owner: Owner(
               name: "OWNER NAME",
-              contact_no: "PHONE NUMBER"
+              contact_no: "PHONE NUMBER",
+              profile_pic: "https://via.placeholder.com/150"
           ),
           reviews: [
             Review(
@@ -656,6 +966,22 @@ class PropertyListing {
               rating: 3,
               comment: "comment placeholder comment placeholder comment placeholder",
             ),
+          ],
+          tenants: [
+            User(
+                username: "username",
+                profilePic: "profilePic",
+                contactDetails: "contactDetails",
+                sex: "sex",
+                nationality: "nationality",
+                isAccommodating: false),
+            User(
+                username: "username",
+                profilePic: "profilePic",
+                contactDetails: "contactDetails",
+                sex: "sex",
+                nationality: "nationality",
+                isAccommodating: false),
           ],
         )
     );
@@ -673,7 +999,8 @@ class PropertyListing {
           amenities: ["placeholder","placeholder","placeholder"],
           owner: Owner(
               name: "OWNER NAME",
-              contact_no: "PHONE NUMBER"
+              contact_no: "PHONE NUMBER",
+              profile_pic: "https://via.placeholder.com/150"
           ),
           reviews: [
             Review(
@@ -689,8 +1016,79 @@ class PropertyListing {
               comment: "comment placeholder comment placeholder comment placeholder",
             ),
           ],
+          tenants: [
+            User(
+                username: "username",
+                profilePic: "profilePic",
+                contactDetails: "contactDetails",
+                sex: "sex",
+                nationality: "nationality",
+                isAccommodating: false),
+            User(
+                username: "username",
+                profilePic: "profilePic",
+                contactDetails: "contactDetails",
+                sex: "sex",
+                nationality: "nationality",
+                isAccommodating: false),
+          ],
         )
     );
     return shortlist;
+  }
+
+  static List<PropertyListing> getInvitation() {
+    List<PropertyListing> invitations = [];
+
+    invitations.add(
+        PropertyListing(
+          property_title: "property6",
+          rating: 5.0,
+          image_url: ["image_url"],
+          price: 1000,
+          deposit: 100,
+          description: "placeholder description placeholder description placeholder description placeholder description ",
+          address: "placeholder address placeholder address placeholder address placeholder address ",
+          sex_preference: "all",
+          nationality_preference: "malaysian",
+          amenities: ["placeholder", "placeholder", "placeholder"],
+          owner: Owner(
+              name: "OWNER NAME",
+              contact_no: "PHONE NUMBER",
+              profile_pic: "https://via.placeholder.com/150"
+          ),
+          reviews: [
+            Review(
+              rating: 5,
+              comment: "comment placeholder comment placeholder comment placeholder",
+            ),
+            Review(
+              rating: 4,
+              comment: "comment placeholder comment placeholder comment placeholder",
+            ),
+            Review(
+              rating: 3,
+              comment: "comment placeholder comment placeholder comment placeholder",
+            ),
+          ],
+          tenants: [
+            User(
+                username: "username",
+                profilePic: "profilePic",
+                contactDetails: "contactDetails",
+                sex: "sex",
+                nationality: "nationality",
+                isAccommodating: false),
+            User(
+                username: "username",
+                profilePic: "profilePic",
+                contactDetails: "contactDetails",
+                sex: "sex",
+                nationality: "nationality",
+                isAccommodating: false),
+          ],
+        )
+    );
+    return invitations;
   }
 }

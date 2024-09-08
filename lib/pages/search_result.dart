@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:fyp_project/pages/listing_details.dart';
 import 'package:fyp_project/pages/search_result_filter.dart';
+import 'package:fyp_project/widgets/AppDrawer.dart';
 import 'package:get/get.dart';
 
 import '../models/property_listing.dart';
@@ -19,7 +21,7 @@ class SearchResult extends StatelessWidget {
     _getSearchResult();
     return Scaffold(
       appBar: appBar(),
-      drawer: drawer(),
+      drawer: AppDrawer(),
       body: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(
@@ -30,7 +32,7 @@ class SearchResult extends StatelessWidget {
           ),
           SliverList(
             delegate: SliverChildBuilderDelegate((context, index) {
-                return Container(
+                return GestureDetector(child: Container(
                   height: 140,
                   margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
                   decoration: BoxDecoration(
@@ -39,23 +41,20 @@ class SearchResult extends StatelessWidget {
                   ),
                   child: Row(
                     children: [
-                      AspectRatio(
+                      ClipRRect(child: AspectRatio(
                         aspectRatio: 1.0,
                         child: Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
                             color: Colors.green,
                           ),
-                          child: Center(
-                            child: Text(
-                              "Picture Here",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 15,
-                              ),
-                            ),
+                          child: Image.network(
+                            "https://via.placeholder.com/150",
+                            fit: BoxFit.cover,
                           ),
                         ),
+                      ),
+                        borderRadius: BorderRadius.circular(10),
                       ),
                       SizedBox(width: 10),
                       Expanded(
@@ -65,6 +64,7 @@ class SearchResult extends StatelessWidget {
                             searchResult[index].property_title,
                             style: TextStyle(
                               fontSize: 12,
+                              fontWeight: FontWeight.bold,
                             ),
                             textAlign: TextAlign.left,
                           ),
@@ -72,73 +72,15 @@ class SearchResult extends StatelessWidget {
                       ),
                     ],
                   ),
-                );
+                ),
+                onTap: () {
+                  Get.to(() => Listingdetails(propertyListing: searchResult[index]),
+                  transition: Transition.circularReveal,
+                  duration: const Duration(seconds: 1));
+                },);
               },
               childCount: searchResult.length,
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-
-  Drawer drawer() {
-    return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          SizedBox(
-            height: 150,
-            child: DrawerHeader(child:
-            Row(
-              children: [
-                Container(
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.red,
-                    // place profile pic here, use image: imagedecoration)
-                  ),
-                ),
-                SizedBox(width: 20),
-                const Text("Account Name here",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 16,
-                  ),),
-              ],
-            ),
-                decoration: const BoxDecoration(
-                  color: Colors.grey,
-                )
-            ),
-          ),
-          ListTile(
-            title: Text("Homepage"),
-            // placeholder, code here to update the page
-            onTap: () => {},
-          ),
-          ListTile(
-            title: Text("Saved Searches"),
-            // placeholder, code here to update the page
-            onTap: () => {},
-          ),
-          ListTile(
-            title: Text("Shortlist"),
-            // placeholder, code here to update the page
-            onTap: () => {},
-          ),
-          ListTile(
-            title: Text("Chat"),
-            // placeholder, code here to update the page
-            onTap: () => {},
-          ),
-          ListTile(
-            title: Text("My Room"),
-            // placeholder, code here to update the page
-            onTap: () => {},
           ),
         ],
       ),

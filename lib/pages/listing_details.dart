@@ -16,9 +16,7 @@ class Listingdetails extends StatefulWidget {
 
   class ListingdetailsState extends State<Listingdetails> {
   int _currentIndex = 0;
-  List<Widget> body = [
-
-  ];
+  List<Widget> body = [];
 
   @override
   Widget build(BuildContext context) {
@@ -43,60 +41,105 @@ class Listingdetails extends StatefulWidget {
           padding: EdgeInsets.all(16),
           children: [
             ImageCarousel(),
-            SizedBox(height:10),
+            SizedBox(height:16),
             Text(widget.propertyListing.property_title,
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+            SizedBox(height:16),
             Row(
               children: [
-                Icon(Icons.star, color: Colors.yellow,),
-                Text("${widget.propertyListing.rating}/5"),
+                Icon(
+                  Icons.star,
+                  color: Colors.yellow,
+                  size: 30,
+                ),
+                SizedBox(width: 8,),
+                Text(
+                  "${widget.propertyListing.rating}/5",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ],
             ),
-            SizedBox(height: 10,),
+            SizedBox(height: 16,),
             Row(
               children: [Text("Price: RM${widget.propertyListing.price}"),
-              Text("Deposit: RM${widget.propertyListing.deposit}"),],
+                SizedBox(width: 16,),
+                Text("Deposit: RM${widget.propertyListing.deposit}"),],
             ),
             SizedBox(height: 16,),
             Text(
               "Description",
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16),
             ),
+            SizedBox(height: 8,),
             Text('${widget.propertyListing.description}\n\n${widget.propertyListing.address}'),
             SizedBox(height: 16),
             Text(
               "Preference",
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
+            SizedBox(height: 8,),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text("Sex: ${widget.propertyListing.sex_preference}"),
+                SizedBox(width: 16,),
                 Text("Nationality: ${widget.propertyListing.nationality_preference}"),
               ],
             ),
+            SizedBox(height: 16,),
             Text(
               "Ammenities",
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
+            SizedBox(height: 8,),
             Wrap(
-              spacing: 8.0,
-              runSpacing: 4.0,
-              children: widget.propertyListing.amenities.map((amenity) {
-                return Chip(
-                  label: Text(amenity),
-                  backgroundColor: Colors.grey[200],
-              );
-              }).toList()),
+                spacing: 8.0,
+                runSpacing: 4.0,
+                children: widget.propertyListing.amenities.map((amenity) {
+                  return Chip(
+                    label: Text(amenity),
+                    backgroundColor: Colors.grey[200],
+                  );
+                }).toList()),
             SizedBox(height: 16),
-            Text(
-              "Owner Details",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            Text(widget.propertyListing.owner.name),
-            Text("Contact Details: ${widget.propertyListing.owner.contact_no}"),
-            ],
-          );
+            Row(
+              children: [
+                CircleAvatar(
+                  radius: 40,
+                  backgroundImage: NetworkImage(widget.propertyListing.owner.profile_pic), // Load the image
+                ),
+                SizedBox(width: 16),
+                Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Owner Details",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 4),
+                        Text(
+                          "Owner Name: ${widget.propertyListing.owner.name}",
+                          style: TextStyle(fontSize: 14),
+                        ),
+                        SizedBox(height: 4),
+                        Text(
+                          "Contact Details: ${widget.propertyListing.owner.contact_no}",
+                          style: TextStyle(fontSize: 14),
+                        ),
+                      ],
+                    ))
+              ],
+            )
+          ],
+        );
       case 1:
         return Column(
           children: [

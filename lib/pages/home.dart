@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:fyp_project/pages/ListingDetails.dart';
+import 'package:fyp_project/models/user.dart';
+import 'package:fyp_project/pages/account_page.dart';
+import 'package:fyp_project/pages/listing_details.dart';
+import 'package:fyp_project/pages/my_room.dart';
+import 'package:fyp_project/pages/my_room_invitation.dart';
 import 'package:fyp_project/pages/saved_searches.dart';
 import 'package:fyp_project/pages/search_result.dart';
 import 'package:fyp_project/pages/search_result_filter.dart';
 import 'package:fyp_project/pages/shortlist.dart';
+import 'package:fyp_project/widgets/AppDrawer.dart';
 import 'package:get/get.dart';
 
 import '../models/owner.dart';
@@ -13,6 +18,8 @@ import '../models/review.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
+
+  User? user = null;
 
   List<PropertyListing> topRatedPropertyListing = [];
   List<PropertyListing> mostViewedPropertyListing = [];
@@ -23,6 +30,13 @@ class HomePage extends StatelessWidget {
 
   void _getMostViewedPropertyListing() {
     mostViewedPropertyListing = PropertyListing.getMostViewedListing();
+  }
+
+  void _getUser() {
+    user = User.getUser();
+  }
+  PropertyListing _getCurrentProperty() {
+    return User.getCurrentProperty();
   }
 
   final PropertyListing propertyListing = PropertyListing(
@@ -38,7 +52,8 @@ class HomePage extends StatelessWidget {
       amenities: ["placeholder","placeholder","placeholder"],
       owner: Owner(
           name: "OWNER NAME",
-          contact_no: "PHONE NUMBER"
+          contact_no: "PHONE NUMBER",
+          profile_pic: "https://via.placeholder.com/150"
       ),
     reviews: [
       Review(
@@ -53,15 +68,32 @@ class HomePage extends StatelessWidget {
         rating: 3,
         comment: "comment placeholder comment placeholder comment placeholder",
       ),
+    ],
+    tenants: [
+      User(
+          username: "username",
+          profilePic: "profilePic",
+          contactDetails: "contactDetails",
+          sex: "sex",
+          nationality: "nationality",
+          isAccommodating: false),
+      User(
+          username: "username",
+          profilePic: "profilePic",
+          contactDetails: "contactDetails",
+          sex: "sex",
+          nationality: "nationality",
+          isAccommodating: false),
     ],);
 
   @override
   Widget build(BuildContext context) {
+    _getUser();
     _getTopRatedListing();
     _getMostViewedPropertyListing();
     return Scaffold(
       appBar: appBar(),
-      drawer: drawer(),
+      drawer: AppDrawer(),
       body: ListView(
         children: [
           searchBar(),
@@ -69,76 +101,6 @@ class HomePage extends StatelessWidget {
           topRatedListView(),
           mostViewedListView(),
           SizedBox(height: 40),
-        ],
-      ),
-    );
-  }
-
-  Drawer drawer() {
-    return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          SizedBox(
-            height: 150,
-            child: DrawerHeader(child:
-            Row(
-              children: [
-                Container(
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.red,
-                    // place profile pic here, use image: imagedecoration)
-                  ),
-                ),
-                SizedBox(width: 20),
-                const Text("Account Name here",
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 16,
-                  ),),
-              ],
-            ),
-            decoration: const BoxDecoration(
-              color: Colors.grey,
-            )
-            ),
-          ),
-          ListTile(
-            title: Text("Homepage"),
-            // placeholder, code here to update the page
-            onTap: () => {},
-          ),
-          ListTile(
-            title: Text("Saved Searches"),
-            // placeholder, code here to update the page
-            onTap: () => {
-              Get.to(() => SavedSearches(),
-              transition: Transition.circularReveal,
-              duration: const Duration(seconds: 1))
-            },
-          ),
-          ListTile(
-            title: Text("Shortlist"),
-            // placeholder, code here to update the page
-            onTap: () => {
-              Get.to(() => Shortlist(),
-              transition: Transition.circularReveal,
-              duration: const Duration(seconds: 1))
-            },
-          ),
-          ListTile(
-            title: Text("Chat"),
-            // placeholder, code here to update the page
-            onTap: () => {},
-          ),
-          ListTile(
-            title: Text("My Room"),
-            // placeholder, code here to update the page
-            onTap: () => {},
-          ),
         ],
       ),
     );
@@ -171,60 +133,47 @@ class HomePage extends StatelessWidget {
                   },
                   itemBuilder: (context, index) {
                     // https://stackoverflow.com/questions/62112115/how-to-hide-a-container-on-scroll-flutter
-                    return Container(
+                    return GestureDetector(child: Container(
                       width: 156,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         color: Color(0xffE5E4E2),
                       ),
-                      child: GestureDetector(
-                        onTap: () {
-                          Get.to(() => Listingdetails(propertyListing: propertyListing),
-                          transition: Transition.circularReveal,
-                          duration: const Duration(seconds: 1));
-                        },
-                        child: Column(
-                          children: [
-                            // take as much space as possible
-                            Expanded(
-                              child: Stack(
-                                alignment: FractionalOffset.bottomCenter,
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(10),
-                                      topRight: Radius.circular(10),
-                                    ),
-                                    child: Container(
-                                      color: Colors.green,
-                                      child: Center(
-                                        child: Text(
-                                          "PICTURE HERE",
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 15,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                      child: Column(
+                        children: [
+                          // take as much space as possible
+                          Expanded(
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(10),
+                                topRight: Radius.circular(10),
+                              ),
+                              child: Image.network(
+                                "https://via.placeholder.com/150",
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                                height: double.infinity,
                               ),
                             ),
-                            Container(
-                              padding: EdgeInsets.all(8),
-                              child: Text(
-                                mostViewedPropertyListing[index].property_title,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                ),
-                                textAlign: TextAlign.left,
+                          ),
+                          Container(
+                            padding: EdgeInsets.all(8),
+                            child: Text(
+                              mostViewedPropertyListing[index].property_title,
+                              style: TextStyle(
+                                fontSize: 12,
                               ),
+                              textAlign: TextAlign.left,
                             ),
-                          ],
-                        ),
-                      )
-                    );
+                          ),
+                        ],
+                      ),
+                    ),
+                    onTap: () {
+                      Get.to(() => Listingdetails(propertyListing: mostViewedPropertyListing[index]),
+                      transition: Transition.circularReveal,
+                      duration: const Duration(seconds: 1));
+                    },);
                   },
                 ),
               )
@@ -259,7 +208,7 @@ class HomePage extends StatelessWidget {
                   },
                   itemBuilder: (context, index) {
                     // https://stackoverflow.com/questions/62112115/how-to-hide-a-container-on-scroll-flutter
-                    return Container(
+                    return GestureDetector(child: Container(
                       width: 156,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
@@ -269,28 +218,17 @@ class HomePage extends StatelessWidget {
                         children: [
                           // take as much space as possible
                           Expanded(
-                            child: Stack(
-                              alignment: FractionalOffset.bottomCenter,
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(10),
-                                    topRight: Radius.circular(10),
-                                  ),
-                                  child: Container(
-                                    color: Colors.green,
-                                    child: Center(
-                                      child: Text(
-                                        "PICTURE HERE",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 15,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(10),
+                                topRight: Radius.circular(10),
+                              ),
+                              child: Image.network(
+                                "https://via.placeholder.com/150",
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                                height: double.infinity,
+                              ),
                             ),
                           ),
                           Container(
@@ -305,7 +243,13 @@ class HomePage extends StatelessWidget {
                           ),
                         ],
                       ),
-                    );
+                    ),
+                      onTap: () {
+                        Get.to(() => Listingdetails(propertyListing: topRatedPropertyListing[index]),
+                        transition: Transition.circularReveal,
+                        duration: const Duration(seconds: 1));
+                      },
+                      );
                   },
                 ),
               )
@@ -335,28 +279,33 @@ class HomePage extends StatelessWidget {
                 children: [
                 Padding(
                   padding: const EdgeInsets.all(10),
-                  child: Container(
+                  child: GestureDetector(child: Container(
                     alignment: Alignment.center,
                     width: 125,
                     height: 90,
                     decoration: BoxDecoration(
-                      color: Colors.black,
-                      borderRadius:BorderRadius.circular(10)
+                        color: Colors.black,
+                        borderRadius:BorderRadius.circular(10)
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text("Saved Searches",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16
-                      )),
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16
+                          )),
                     ),
                   ),
+                  onTap: () {
+                    Get.to(() => SavedSearches(),
+                    transition: Transition.circularReveal,
+                    duration: const Duration(seconds: 1));
+                  },)
                   ),
                   Padding(
                     padding: const EdgeInsets.all(10),
-                    child: Container(
+                    child: GestureDetector(child: Container(
                       alignment: Alignment.center,
                       width: 125,
                       height: 90,
@@ -374,10 +323,15 @@ class HomePage extends StatelessWidget {
                             )),
                       ),
                     ),
+                    onTap: () {
+                        Get.to(() => Shortlist(),
+                        transition: Transition.circularReveal,
+                        duration: const Duration(seconds: 1));
+                    })
                   ),
                   Padding(
                     padding: const EdgeInsets.all(10),
-                    child: Container(
+                    child: GestureDetector(child: Container(
                       alignment: Alignment.center,
                       width: 125,
                       height: 90,
@@ -395,6 +349,43 @@ class HomePage extends StatelessWidget {
                             )),
                       ),
                     ),
+                    onTap: () {
+                      print("PUT NAVIGATE TO CHAT HERE");
+                    }
+                    ,)
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: GestureDetector(child: Container(
+                      alignment: Alignment.center,
+                      width: 125,
+                      height: 90,
+                      decoration: BoxDecoration(
+                          color: Colors.black,
+                          borderRadius:BorderRadius.circular(10)
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text("My Room",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16
+                            )),
+                      ),
+                    ),
+                    onTap: () {
+                      if (user!.isAccommodating) {
+                        Get.to(() => MyRoom(
+                            propertyListing: _getCurrentProperty()),
+                            transition: Transition.circularReveal,
+                            duration: const Duration(seconds: 1));
+                      } else {
+                        Get.to(() => MyRoomInvitation(),
+                            transition: Transition.circularReveal,
+                            duration: const Duration(seconds: 1));
+                      }
+                    },)
                   ),
                 ],
               ),
@@ -421,7 +412,11 @@ class HomePage extends StatelessWidget {
         // placeholder icon fix later
         icon: const Icon(Icons.account_tree_outlined),
         // same thing here
-        onPressed: () => {},
+        onPressed: () => {
+          Get.to(() => AccountPage(),
+          transition: Transition.circularReveal,
+          duration: const Duration(seconds: 1))
+        },
       )],
     );
   } // end of appBar method
