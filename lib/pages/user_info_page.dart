@@ -17,7 +17,6 @@ class UserInfoPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Profile Picture
               CircleAvatar(
                 radius: 40,
                 backgroundImage: NetworkImage(user.profilePic),

@@ -1,6 +1,9 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:fyp_project/models/owner.dart';
+import 'package:fyp_project/models/property.dart';
+import 'package:fyp_project/models/user.dart';
 import 'package:fyp_project/pages/user_info_page.dart';
 import 'package:get/get.dart';
 
@@ -15,9 +18,25 @@ class MyRoom extends StatefulWidget {
   MyroomState createState() => MyroomState();
 }
 
+final Property property = Property(
+    property_id: "1",
+    property_title: "PLACEHOLDER",
+    owner: Owner(
+        name: "name",
+        contact_no: "contact_no",
+        profile_pic: "profile_pic",
+        id: "1"),
+    address: "ADDRESS ADDRESS ADDRESS ADDRESS ADDRESS ADDRESS",
+    imageUrl: "https://via.placeholder.com/150");
+
+_getTenants() {
+  return User.getTenants();
+}
+
 class MyroomState extends State<MyRoom> {
   int _currentIndex = 0;
   List<Widget> body = [];
+  List<User> tenantList = _getTenants();
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +62,7 @@ class MyroomState extends State<MyRoom> {
           children: [
             ImageCarousel(),
             SizedBox(height:16),
-            Text(widget.propertyListing.property_title,
+            Text(widget.propertyListing.listing_title,
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
             SizedBox(height:16),
             Row(
@@ -77,7 +96,7 @@ class MyroomState extends State<MyRoom> {
                 fontSize: 16),
             ),
             SizedBox(height: 8,),
-            Text('${widget.propertyListing.description}\n\n${widget.propertyListing.address}'),
+            Text('${widget.propertyListing.description}\n\n${property.address}'),
             SizedBox(height: 16),
             Text(
               "Preference",
@@ -111,7 +130,7 @@ class MyroomState extends State<MyRoom> {
               children: [
                 CircleAvatar(
                   radius: 40,
-                  backgroundImage: NetworkImage(widget.propertyListing.owner.profile_pic), // Load the image
+                  backgroundImage: NetworkImage(property.owner.profile_pic), // Load the image
                 ),
                 SizedBox(width: 16),
                 Expanded(
@@ -127,12 +146,12 @@ class MyroomState extends State<MyRoom> {
                         ),
                         SizedBox(height: 4),
                         Text(
-                          "Owner Name: ${widget.propertyListing.owner.name}",
+                          "Owner Name: ${property.owner.name}",
                           style: TextStyle(fontSize: 14),
                         ),
                         SizedBox(height: 4),
                         Text(
-                          "Contact Details: ${widget.propertyListing.owner.contact_no}",
+                          "Contact Details: ${property.owner.contact_no}",
                           style: TextStyle(fontSize: 14),
                         ),
                       ],
@@ -243,10 +262,10 @@ class MyroomState extends State<MyRoom> {
                       GestureDetector(
                         child: CircleAvatar(
                           radius: 40,
-                          backgroundImage: NetworkImage(widget.propertyListing.tenants[index].profilePic), // Load the image
+                          backgroundImage: NetworkImage(tenantList[index].profilePic), // Load the image
                         ),
                         onTap: () {
-                          Get.to(() => UserInfoPage(user: widget.propertyListing.tenants[index]),
+                          Get.to(() => UserInfoPage(user: tenantList[index]),
                           transition: Transition.circularReveal,
                           duration: const Duration(seconds: 1));
                         },
@@ -257,7 +276,7 @@ class MyroomState extends State<MyRoom> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "${widget.propertyListing.tenants[index].username}",
+                                "${tenantList[index].username}",
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
@@ -276,7 +295,7 @@ class MyroomState extends State<MyRoom> {
                   ),
                 );
               },
-                childCount: widget.propertyListing.tenants.length,
+                childCount: tenantList.length,
               ),
             ),
           ],

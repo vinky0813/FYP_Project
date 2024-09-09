@@ -1,8 +1,8 @@
-import 'package:fyp_project/models/owner.dart';
 import 'package:fyp_project/models/property_listing.dart';
 import 'package:fyp_project/models/review.dart';
 
 class User {
+  String id;
   String username;
   String profilePic;
   String contactDetails;
@@ -11,6 +11,7 @@ class User {
   bool isAccommodating;
 
   User({
+    required this.id,
     required this.username,
     required this.profilePic,
     required this.contactDetails,
@@ -26,27 +27,54 @@ class User {
         contactDetails: "PLACEHOLDER",
         sex: "male",
         nationality: "malaysian",
-        isAccommodating: false,);
+        isAccommodating: false,
+        id: "1",);
 
     return temp;
   }
+
+  static List<User> getTenants() {
+    List<User> tenantList = [];
+
+    tenantList.add(User(
+      username: "name",
+      profilePic: "imageurl",
+      contactDetails: "PLACEHOLDER",
+      sex: "male",
+      nationality: "malaysian",
+      isAccommodating: false,
+      id: "1",));
+
+    tenantList.add(User(
+      username: "name",
+      profilePic: "imageurl",
+      contactDetails: "PLACEHOLDER",
+      sex: "male",
+      nationality: "malaysian",
+      isAccommodating: false,
+      id: "1",));
+
+    tenantList.add(User(
+      username: "name",
+      profilePic: "imageurl",
+      contactDetails: "PLACEHOLDER",
+      sex: "male",
+      nationality: "malaysian",
+      isAccommodating: false,
+      id: "1",));
+    return tenantList;
+  }
   static PropertyListing getCurrentProperty() {
     return PropertyListing(
-      property_title: "property1",
+      listing_title: "property2",
       rating: 5.0,
       image_url: ["image_url"],
       price: 1000,
       deposit: 100,
       description: "placeholder description placeholder description placeholder description placeholder description ",
-      address: "placeholder address placeholder address placeholder address placeholder address ",
       sex_preference: "all",
       nationality_preference: "malaysian",
       amenities: ["placeholder","placeholder","placeholder"],
-      owner: Owner(
-          name: "OWNER NAME",
-          contact_no: "PHONE NUMBER",
-          profile_pic: "https://via.placeholder.com/150"
-      ),
       reviews: [
         Review(
           rating: 5,
@@ -61,22 +89,16 @@ class User {
           comment: "comment placeholder comment placeholder comment placeholder",
         ),
       ],
-      tenants: [
-        User(
-          username: "username",
-          profilePic: "profilePic",
-          contactDetails: "contactDetails",
-          sex: "sex",
-          nationality: "nationality",
-          isAccommodating: false,),
-        User(
-          username: "username",
-          profilePic: "profilePic",
-          contactDetails: "contactDetails",
-          sex: "sex",
-          nationality: "nationality",
-          isAccommodating: false,),
-      ],
+      tenant:
+      User(
+        username: "username",
+        profilePic: "profilePic",
+        contactDetails: "contactDetails",
+        sex: "sex",
+        nationality: "nationality",
+        isAccommodating: false,
+        id: "1",),
+      property_id: "1",
     );
   }
 

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:fyp_project/pages/home.dart';
 import 'package:fyp_project/pages/login.dart';
+import 'package:fyp_project/pages/manage_property.dart';
 import 'package:fyp_project/pages/my_room.dart';
 import 'package:fyp_project/pages/my_room_invitation.dart';
+import 'package:fyp_project/pages/owner_home.dart';
 import 'package:fyp_project/pages/saved_searches.dart';
 import 'package:fyp_project/pages/shortlist.dart';
 import 'package:get/get.dart';
@@ -10,17 +12,14 @@ import 'package:get/get.dart';
 import '../models/property_listing.dart';
 import '../models/user.dart';
 
-class AppDrawer extends StatelessWidget {
+class Ownerdrawer extends StatelessWidget {
 
   User? user = null;
 
-  AppDrawer({super.key});
+  Ownerdrawer({super.key});
 
   void _getUser() {
     user = User.getUser();
-  }
-  PropertyListing _getCurrentProperty() {
-    return User.getCurrentProperty();
   }
 
   @override
@@ -58,47 +57,29 @@ class AppDrawer extends StatelessWidget {
               padding: EdgeInsets.zero,
               children: [
                 ListTile(
-                  title: Text("Homepage"),
+                  title: Text("Dashboard"),
                   onTap: () {
-                    Get.to(() => HomePage(),
+                    Get.to(() =>DashboardOwner(),
                         transition: Transition.circularReveal,
                         duration: const Duration(seconds: 1));
                   },
                 ),
                 ListTile(
-                  title: Text("Saved Searches"),
+                  title: Text("Manage Property"),
                   onTap: () {
-                    Get.to(() => SavedSearches(),
+                    Get.to(() =>ManageProperty(),
                         transition: Transition.circularReveal,
                         duration: const Duration(seconds: 1));
                   },
                 ),
                 ListTile(
-                  title: Text("Shortlist"),
+                  title: Text("Add Room"),
                   onTap: () {
-                    Get.to(() => Shortlist(),
-                        transition: Transition.circularReveal,
-                        duration: const Duration(seconds: 1));
                   },
                 ),
                 ListTile(
                   title: Text("Chat"),
                   onTap: () {},
-                ),
-                ListTile(
-                  title: Text("My Room"),
-                  onTap: () {
-                    if (user!.isAccommodating) {
-                      Get.to(() => MyRoom(
-                          propertyListing: _getCurrentProperty()),
-                          transition: Transition.circularReveal,
-                          duration: const Duration(seconds: 1));
-                    } else {
-                      Get.to(() => MyRoomInvitation(),
-                          transition: Transition.circularReveal,
-                          duration: const Duration(seconds: 1));
-                    }
-                  },
                 ),
               ],
             ),

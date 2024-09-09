@@ -1,6 +1,8 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:fyp_project/models/property.dart';
+import 'package:fyp_project/models/user.dart';
 import 'package:fyp_project/pages/my_room.dart';
 import 'package:get/get.dart';
 
@@ -15,12 +17,19 @@ class MyRoomInvitationDetails extends StatefulWidget {
   MyroomState createState() => MyroomState();
 }
 
+_getTenants() {
+  return User.getTenants();
+}
+
 class MyroomState extends State<MyRoomInvitationDetails> {
   int _currentIndex = 0;
   List<Widget> body = [];
+  List<User> tenantList = _getTenants();
 
   @override
   Widget build(BuildContext context) {
+    Property property = PropertyListing.getProperty();
+
     return Scaffold(
       appBar: appBar(),
       body: _getBody(),
@@ -62,7 +71,7 @@ class MyroomState extends State<MyRoomInvitationDetails> {
           children: [
             ImageCarousel(),
             SizedBox(height:16),
-            Text(widget.propertyListing.property_title,
+            Text(widget.propertyListing.listing_title,
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
             SizedBox(height:16),
             Row(
@@ -96,7 +105,7 @@ class MyroomState extends State<MyRoomInvitationDetails> {
                   fontSize: 16),
             ),
             SizedBox(height: 8,),
-            Text('${widget.propertyListing.description}\n\n${widget.propertyListing.address}'),
+            Text('${widget.propertyListing.description}\n\n${property.address}'),
             SizedBox(height: 16),
             Text(
               "Preference",
@@ -130,7 +139,7 @@ class MyroomState extends State<MyRoomInvitationDetails> {
               children: [
                 CircleAvatar(
                   radius: 40,
-                  backgroundImage: NetworkImage(widget.propertyListing.owner.profile_pic), // Load the image
+                  backgroundImage: NetworkImage(property.owner.profile_pic), // Load the image
                 ),
                 SizedBox(width: 16),
                 Expanded(
@@ -146,12 +155,12 @@ class MyroomState extends State<MyRoomInvitationDetails> {
                         ),
                         SizedBox(height: 4),
                         Text(
-                          "Owner Name: ${widget.propertyListing.owner.name}",
+                          "Owner Name: ${property.owner.name}",
                           style: TextStyle(fontSize: 14),
                         ),
                         SizedBox(height: 4),
                         Text(
-                          "Contact Details: ${widget.propertyListing.owner.contact_no}",
+                          "Contact Details: ${property.owner.contact_no}",
                           style: TextStyle(fontSize: 14),
                         ),
                       ],
@@ -253,7 +262,7 @@ class MyroomState extends State<MyRoomInvitationDetails> {
                     children: [
                       CircleAvatar(
                         radius: 40,
-                        backgroundImage: NetworkImage(widget.propertyListing.tenants[index].profilePic), // Load the image
+                        backgroundImage: NetworkImage(tenantList[index].profilePic), // Load the image
                       ),
                       SizedBox(width: 16),
                       Expanded(
@@ -261,7 +270,7 @@ class MyroomState extends State<MyRoomInvitationDetails> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "${widget.propertyListing.tenants[index].username}",
+                                "${tenantList[index].username}",
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
@@ -273,7 +282,7 @@ class MyroomState extends State<MyRoomInvitationDetails> {
                   ),
                 );
               },
-                childCount: widget.propertyListing.tenants.length,
+                childCount: tenantList.length,
               ),
             ),
           ],

@@ -21,7 +21,6 @@ class SearchResult extends StatelessWidget {
     _getSearchResult();
     return Scaffold(
       appBar: appBar(),
-      drawer: AppDrawer(),
       body: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(
@@ -61,7 +60,7 @@ class SearchResult extends StatelessWidget {
                         child: Container(
                           padding: EdgeInsets.all(8),
                           child: Text(
-                            searchResult[index].property_title,
+                            searchResult[index].listing_title,
                             style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.bold,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fyp_project/pages/forgot_password_email.dart';
 import 'package:fyp_project/pages/home.dart';
+import 'package:fyp_project/pages/owner_home.dart';
 import 'package:fyp_project/pages/sign_up_form.dart';
 import 'package:get/get.dart';
 
@@ -69,6 +70,11 @@ class LoginForm extends StatelessWidget {
                         onPressed: () {
                           if (userType == "renter") {
                             Get.to(() => HomePage(),
+                            transition: Transition.circularReveal,
+                            duration: const Duration(seconds: 1));
+                          }
+                          if (userType == "owner") {
+                            Get.to(() => DashboardOwner(),
                             transition: Transition.circularReveal,
                             duration: const Duration(seconds: 1));
                           }

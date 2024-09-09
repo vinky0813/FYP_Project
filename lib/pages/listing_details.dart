@@ -1,7 +1,8 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:get/get.dart';
+import 'package:fyp_project/models/owner.dart';
+import 'package:fyp_project/models/property.dart';
 
 import '../models/property_listing.dart';
 
@@ -13,6 +14,17 @@ class Listingdetails extends StatefulWidget {
   @override
   ListingdetailsState createState() => ListingdetailsState();
 }
+
+final Property property = Property(
+    property_id: "1",
+    property_title: "PLACEHOLDER",
+    owner: Owner(
+        name: "name",
+        contact_no: "contact_no",
+        profile_pic: "profile_pic",
+        id: "1"),
+    address: "ADDRESS ADDRESS ADDRESS ADDRESS ADDRESS ADDRESS",
+    imageUrl: "https://via.placeholder.com/150");
 
   class ListingdetailsState extends State<Listingdetails> {
   int _currentIndex = 0;
@@ -42,7 +54,7 @@ class Listingdetails extends StatefulWidget {
           children: [
             ImageCarousel(),
             SizedBox(height:16),
-            Text(widget.propertyListing.property_title,
+            Text(widget.propertyListing.listing_title,
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
             SizedBox(height:16),
             Row(
@@ -76,7 +88,7 @@ class Listingdetails extends StatefulWidget {
                   fontSize: 16),
             ),
             SizedBox(height: 8,),
-            Text('${widget.propertyListing.description}\n\n${widget.propertyListing.address}'),
+            Text('${widget.propertyListing.description}\n\n${property.address}'),
             SizedBox(height: 16),
             Text(
               "Preference",
@@ -110,7 +122,7 @@ class Listingdetails extends StatefulWidget {
               children: [
                 CircleAvatar(
                   radius: 40,
-                  backgroundImage: NetworkImage(widget.propertyListing.owner.profile_pic), // Load the image
+                  backgroundImage: NetworkImage(property.owner.profile_pic), // Load the image
                 ),
                 SizedBox(width: 16),
                 Expanded(
@@ -126,12 +138,12 @@ class Listingdetails extends StatefulWidget {
                         ),
                         SizedBox(height: 4),
                         Text(
-                          "Owner Name: ${widget.propertyListing.owner.name}",
+                          "Owner Name: ${property.owner.name}",
                           style: TextStyle(fontSize: 14),
                         ),
                         SizedBox(height: 4),
                         Text(
-                          "Contact Details: ${widget.propertyListing.owner.contact_no}",
+                          "Contact Details: ${property.owner.contact_no}",
                           style: TextStyle(fontSize: 14),
                         ),
                       ],

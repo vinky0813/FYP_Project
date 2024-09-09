@@ -40,21 +40,15 @@ class HomePage extends StatelessWidget {
   }
 
   final PropertyListing propertyListing = PropertyListing(
-      property_title: "PALCEHOLDER",
-      rating: 5,
-      image_url: ["https://via.placeholder.com/150","https://via.placeholder.com/150","https://via.placeholder.com/150"],
-      price: 1000,
-      deposit: 100,
-      description: "placeholder description placeholder description placeholder description placeholder description ",
-      address: "placeholder address placeholder address placeholder address placeholder address ",
-      sex_preference: "all",
-      nationality_preference: "malaysian",
-      amenities: ["placeholder","placeholder","placeholder"],
-      owner: Owner(
-          name: "OWNER NAME",
-          contact_no: "PHONE NUMBER",
-          profile_pic: "https://via.placeholder.com/150"
-      ),
+    listing_title: "property2",
+    rating: 5.0,
+    image_url: ["image_url"],
+    price: 1000,
+    deposit: 100,
+    description: "placeholder description placeholder description placeholder description placeholder description ",
+    sex_preference: "all",
+    nationality_preference: "malaysian",
+    amenities: ["placeholder","placeholder","placeholder"],
     reviews: [
       Review(
         rating: 5,
@@ -69,22 +63,17 @@ class HomePage extends StatelessWidget {
         comment: "comment placeholder comment placeholder comment placeholder",
       ),
     ],
-    tenants: [
-      User(
-          username: "username",
-          profilePic: "profilePic",
-          contactDetails: "contactDetails",
-          sex: "sex",
-          nationality: "nationality",
-          isAccommodating: false),
-      User(
-          username: "username",
-          profilePic: "profilePic",
-          contactDetails: "contactDetails",
-          sex: "sex",
-          nationality: "nationality",
-          isAccommodating: false),
-    ],);
+    tenant:
+    User(
+      username: "username",
+      profilePic: "profilePic",
+      contactDetails: "contactDetails",
+      sex: "sex",
+      nationality: "nationality",
+      isAccommodating: false,
+      id: "1",),
+    property_id: "1",
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -159,7 +148,7 @@ class HomePage extends StatelessWidget {
                           Container(
                             padding: EdgeInsets.all(8),
                             child: Text(
-                              mostViewedPropertyListing[index].property_title,
+                              mostViewedPropertyListing[index].listing_title,
                               style: TextStyle(
                                 fontSize: 12,
                               ),
@@ -234,7 +223,7 @@ class HomePage extends StatelessWidget {
                           Container(
                             padding: EdgeInsets.all(8),
                             child: Text(
-                              topRatedPropertyListing[index].property_title,
+                              topRatedPropertyListing[index].listing_title,
                               style: TextStyle(
                                 fontSize: 12,
                               ),

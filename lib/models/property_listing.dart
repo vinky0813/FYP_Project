@@ -1,156 +1,134 @@
 import 'package:fyp_project/models/owner.dart';
+import 'package:fyp_project/models/property.dart';
 import 'package:fyp_project/models/review.dart';
 import 'package:fyp_project/models/user.dart';
 
 class PropertyListing {
-  String property_title;
+  String listing_title;
   double rating;
   List<String> image_url;
   double price;
   double deposit;
   String description;
-  String address;
   String sex_preference;
   String nationality_preference;
   List<String> amenities;
-  Owner owner;
+  String property_id;
   List<Review> reviews;
-  List<User> tenants;
+  User? tenant;
 
   PropertyListing({
-    required this.property_title,
+    required this.listing_title,
     required this.rating,
     required this.image_url,
     required this.price,
     required this.deposit,
     required this.description,
-    required this.address,
     required this.sex_preference,
     required this.nationality_preference,
     required this.amenities,
-    required this.owner,
+    required this.property_id,
     required this.reviews,
-    required this.tenants,
+    required this.tenant,
   });
+
+  static Property getProperty() {
+    return Property(
+        property_id: "1",
+        property_title: "property title",
+        owner: Owner(name: "name", contact_no: "contact_no", profile_pic: "profile_pic", id: "1"),
+        address: "ADDRESS ADDRESS ADDRESS ADDRESS ADDRESS",
+        imageUrl: "https://via.placeholder.com/150");
+  }
 
   static List<PropertyListing> getTopRatedListing() {
     List<PropertyListing> topRatedList = [];
 
     topRatedList.add(
-      PropertyListing(
-        property_title: "property1",
-        rating: 5.0,
-        image_url: ["image_url"],
-        price: 1000,
-        deposit: 100,
-        description: "placeholder description placeholder description placeholder description placeholder description ",
-        address: "placeholder address placeholder address placeholder address placeholder address ",
-        sex_preference: "all",
-        nationality_preference: "malaysian",
-        amenities: ["placeholder","placeholder","placeholder"],
-        owner: Owner(
-            name: "OWNER NAME",
-            contact_no: "PHONE NUMBER",
-            profile_pic: "https://via.placeholder.com/150"
-        ),
-        reviews: [
-          Review(
-            rating: 5,
-            comment: "comment placeholder comment placeholder comment placeholder",
-          ),
-          Review(
-            rating: 4,
-            comment: "comment placeholder comment placeholder comment placeholder",
-          ),
-          Review(
-            rating: 3,
-            comment: "comment placeholder comment placeholder comment placeholder",
-          ),
-        ],
-        tenants: [
+        PropertyListing(
+          listing_title: "property2",
+          rating: 5.0,
+          image_url: ["image_url"],
+          price: 1000,
+          deposit: 100,
+          description: "placeholder description placeholder description placeholder description placeholder description ",
+          sex_preference: "all",
+          nationality_preference: "malaysian",
+          amenities: ["placeholder","placeholder","placeholder"],
+          reviews: [
+            Review(
+              rating: 5,
+              comment: "comment placeholder comment placeholder comment placeholder",
+            ),
+            Review(
+              rating: 4,
+              comment: "comment placeholder comment placeholder comment placeholder",
+            ),
+            Review(
+              rating: 3,
+              comment: "comment placeholder comment placeholder comment placeholder",
+            ),
+          ],
+          tenant:
           User(
-              username: "username",
-              profilePic: "profilePic",
-              contactDetails: "contactDetails",
-              sex: "sex",
-              nationality: "nationality",
-              isAccommodating: false,),
+            username: "username",
+            profilePic: "profilePic",
+            contactDetails: "contactDetails",
+            sex: "sex",
+            nationality: "nationality",
+            isAccommodating: false,
+            id: "1",),
+          property_id: "1",
+        )
+    );
+    topRatedList.add(
+        PropertyListing(
+          listing_title: "property2",
+          rating: 5.0,
+          image_url: ["image_url"],
+          price: 1000,
+          deposit: 100,
+          description: "placeholder description placeholder description placeholder description placeholder description ",
+          sex_preference: "all",
+          nationality_preference: "malaysian",
+          amenities: ["placeholder","placeholder","placeholder"],
+          reviews: [
+            Review(
+              rating: 5,
+              comment: "comment placeholder comment placeholder comment placeholder",
+            ),
+            Review(
+              rating: 4,
+              comment: "comment placeholder comment placeholder comment placeholder",
+            ),
+            Review(
+              rating: 3,
+              comment: "comment placeholder comment placeholder comment placeholder",
+            ),
+          ],
+          tenant:
           User(
-              username: "username",
-              profilePic: "profilePic",
-              contactDetails: "contactDetails",
-              sex: "sex",
-              nationality: "nationality",
-              isAccommodating: false,),
-        ],
-      )
-    );
-    topRatedList.add(
-        PropertyListing(
-          property_title: "property2",
-          rating: 5.0,
-          image_url: ["image_url"],
-          price: 1000,
-          deposit: 100,
-          description: "placeholder description placeholder description placeholder description placeholder description ",
-          address: "placeholder address placeholder address placeholder address placeholder address ",
-          sex_preference: "all",
-          nationality_preference: "malaysian",
-          amenities: ["placeholder","placeholder","placeholder"],
-          owner: Owner(
-              name: "OWNER NAME",
-              contact_no: "PHONE NUMBER",
-              profile_pic: "https://via.placeholder.com/150"
-          ),
-          reviews: [
-            Review(
-              rating: 5,
-              comment: "comment placeholder comment placeholder comment placeholder",
-            ),
-            Review(
-              rating: 4,
-              comment: "comment placeholder comment placeholder comment placeholder",
-            ),
-            Review(
-              rating: 3,
-              comment: "comment placeholder comment placeholder comment placeholder",
-            ),
-          ],
-          tenants: [
-            User(
-                username: "username",
-                profilePic: "profilePic",
-                contactDetails: "contactDetails",
-                sex: "sex",
-                nationality: "nationality",
-                isAccommodating: false,),
-            User(
-                username: "username",
-                profilePic: "profilePic",
-                contactDetails: "contactDetails",
-                sex: "sex",
-                nationality: "nationality",
-                isAccommodating: false,),
-          ],
+            username: "username",
+            profilePic: "profilePic",
+            contactDetails: "contactDetails",
+            sex: "sex",
+            nationality: "nationality",
+            isAccommodating: false,
+            id: "1",),
+          property_id: "1",
         )
     );
     topRatedList.add(
         PropertyListing(
-          property_title: "property3",
+          listing_title: "property2",
           rating: 5.0,
           image_url: ["image_url"],
           price: 1000,
           deposit: 100,
           description: "placeholder description placeholder description placeholder description placeholder description ",
-          address: "placeholder address placeholder address placeholder address placeholder address ",
           sex_preference: "all",
           nationality_preference: "malaysian",
           amenities: ["placeholder","placeholder","placeholder"],
-          owner: Owner(
-              name: "OWNER NAME",
-              contact_no: "PHONE NUMBER",
-              profile_pic: "https://via.placeholder.com/150"
-          ),
           reviews: [
             Review(
               rating: 5,
@@ -165,41 +143,29 @@ class PropertyListing {
               comment: "comment placeholder comment placeholder comment placeholder",
             ),
           ],
-          tenants: [
-            User(
-                username: "username",
-                profilePic: "profilePic",
-                contactDetails: "contactDetails",
-                sex: "sex",
-                nationality: "nationality",
-                isAccommodating: false,),
-            User(
-                username: "username",
-                profilePic: "profilePic",
-                contactDetails: "contactDetails",
-                sex: "sex",
-                nationality: "nationality",
-                isAccommodating: false,),
-          ],
+          tenant:
+          User(
+            username: "username",
+            profilePic: "profilePic",
+            contactDetails: "contactDetails",
+            sex: "sex",
+            nationality: "nationality",
+            isAccommodating: false,
+            id: "1",),
+          property_id: "1",
         )
     );
     topRatedList.add(
         PropertyListing(
-          property_title: "property4",
+          listing_title: "property2",
           rating: 5.0,
           image_url: ["image_url"],
           price: 1000,
           deposit: 100,
           description: "placeholder description placeholder description placeholder description placeholder description ",
-          address: "placeholder address placeholder address placeholder address placeholder address ",
           sex_preference: "all",
           nationality_preference: "malaysian",
           amenities: ["placeholder","placeholder","placeholder"],
-          owner: Owner(
-              name: "OWNER NAME",
-              contact_no: "PHONE NUMBER",
-              profile_pic: "https://via.placeholder.com/150"
-          ),
           reviews: [
             Review(
               rating: 5,
@@ -214,41 +180,29 @@ class PropertyListing {
               comment: "comment placeholder comment placeholder comment placeholder",
             ),
           ],
-          tenants: [
-            User(
-                username: "username",
-                profilePic: "profilePic",
-                contactDetails: "contactDetails",
-                sex: "sex",
-                nationality: "nationality",
-                isAccommodating: false,),
-            User(
-                username: "username",
-                profilePic: "profilePic",
-                contactDetails: "contactDetails",
-                sex: "sex",
-                nationality: "nationality",
-                isAccommodating: false,),
-          ],
+          tenant:
+          User(
+            username: "username",
+            profilePic: "profilePic",
+            contactDetails: "contactDetails",
+            sex: "sex",
+            nationality: "nationality",
+            isAccommodating: false,
+            id: "1",),
+          property_id: "1",
         )
     );
     topRatedList.add(
         PropertyListing(
-          property_title: "property5",
+          listing_title: "property2",
           rating: 5.0,
           image_url: ["image_url"],
           price: 1000,
           deposit: 100,
           description: "placeholder description placeholder description placeholder description placeholder description ",
-          address: "placeholder address placeholder address placeholder address placeholder address ",
           sex_preference: "all",
           nationality_preference: "malaysian",
           amenities: ["placeholder","placeholder","placeholder"],
-          owner: Owner(
-              name: "OWNER NAME",
-              contact_no: "PHONE NUMBER",
-              profile_pic: "https://via.placeholder.com/150"
-          ),
           reviews: [
             Review(
               rating: 5,
@@ -263,22 +217,16 @@ class PropertyListing {
               comment: "comment placeholder comment placeholder comment placeholder",
             ),
           ],
-          tenants: [
-            User(
-                username: "username",
-                profilePic: "profilePic",
-                contactDetails: "contactDetails",
-                sex: "sex",
-                nationality: "nationality",
-                isAccommodating: false,),
-            User(
-                username: "username",
-                profilePic: "profilePic",
-                contactDetails: "contactDetails",
-                sex: "sex",
-                nationality: "nationality",
-                isAccommodating: false,),
-          ],
+          tenant:
+          User(
+            username: "username",
+            profilePic: "profilePic",
+            contactDetails: "contactDetails",
+            sex: "sex",
+            nationality: "nationality",
+            isAccommodating: false,
+            id: "1",),
+          property_id: "1",
         )
     );
     return topRatedList;
@@ -289,21 +237,15 @@ class PropertyListing {
 
     mostViewedListing.add(
         PropertyListing(
-          property_title: "property6",
+          listing_title: "property2",
           rating: 5.0,
           image_url: ["image_url"],
           price: 1000,
           deposit: 100,
           description: "placeholder description placeholder description placeholder description placeholder description ",
-          address: "placeholder address placeholder address placeholder address placeholder address ",
           sex_preference: "all",
           nationality_preference: "malaysian",
           amenities: ["placeholder","placeholder","placeholder"],
-          owner: Owner(
-              name: "OWNER NAME",
-              contact_no: "PHONE NUMBER",
-              profile_pic: "https://via.placeholder.com/150"
-          ),
           reviews: [
             Review(
               rating: 5,
@@ -318,41 +260,29 @@ class PropertyListing {
               comment: "comment placeholder comment placeholder comment placeholder",
             ),
           ],
-          tenants: [
-            User(
-                username: "username",
-                profilePic: "profilePic",
-                contactDetails: "contactDetails",
-                sex: "sex",
-                nationality: "nationality",
-                isAccommodating: false,),
-            User(
-                username: "username",
-                profilePic: "profilePic",
-                contactDetails: "contactDetails",
-                sex: "sex",
-                nationality: "nationality",
-                isAccommodating: false,),
-          ],
+          tenant:
+          User(
+            username: "username",
+            profilePic: "profilePic",
+            contactDetails: "contactDetails",
+            sex: "sex",
+            nationality: "nationality",
+            isAccommodating: false,
+            id: "1",),
+          property_id: "1",
         )
     );
     mostViewedListing.add(
         PropertyListing(
-          property_title: "property7",
+          listing_title: "property2",
           rating: 5.0,
           image_url: ["image_url"],
           price: 1000,
           deposit: 100,
           description: "placeholder description placeholder description placeholder description placeholder description ",
-          address: "placeholder address placeholder address placeholder address placeholder address ",
           sex_preference: "all",
           nationality_preference: "malaysian",
           amenities: ["placeholder","placeholder","placeholder"],
-          owner: Owner(
-              name: "OWNER NAME",
-              contact_no: "PHONE NUMBER",
-              profile_pic: "https://via.placeholder.com/150"
-          ),
           reviews: [
             Review(
               rating: 5,
@@ -367,41 +297,29 @@ class PropertyListing {
               comment: "comment placeholder comment placeholder comment placeholder",
             ),
           ],
-          tenants: [
-            User(
-                username: "username",
-                profilePic: "profilePic",
-                contactDetails: "contactDetails",
-                sex: "sex",
-                nationality: "nationality",
-                isAccommodating: false),
-            User(
-                username: "username",
-                profilePic: "profilePic",
-                contactDetails: "contactDetails",
-                sex: "sex",
-                nationality: "nationality",
-                isAccommodating: false),
-          ],
+          tenant:
+          User(
+            username: "username",
+            profilePic: "profilePic",
+            contactDetails: "contactDetails",
+            sex: "sex",
+            nationality: "nationality",
+            isAccommodating: false,
+            id: "1",),
+          property_id: "1",
         )
     );
     mostViewedListing.add(
         PropertyListing(
-          property_title: "property8",
+          listing_title: "property2",
           rating: 5.0,
           image_url: ["image_url"],
           price: 1000,
           deposit: 100,
           description: "placeholder description placeholder description placeholder description placeholder description ",
-          address: "placeholder address placeholder address placeholder address placeholder address ",
           sex_preference: "all",
           nationality_preference: "malaysian",
           amenities: ["placeholder","placeholder","placeholder"],
-          owner: Owner(
-              name: "OWNER NAME",
-              contact_no: "PHONE NUMBER",
-              profile_pic: "https://via.placeholder.com/150"
-          ),
           reviews: [
             Review(
               rating: 5,
@@ -416,41 +334,29 @@ class PropertyListing {
               comment: "comment placeholder comment placeholder comment placeholder",
             ),
           ],
-          tenants: [
-            User(
-                username: "username",
-                profilePic: "profilePic",
-                contactDetails: "contactDetails",
-                sex: "sex",
-                nationality: "nationality",
-                isAccommodating: false,),
-            User(
-                username: "username",
-                profilePic: "profilePic",
-                contactDetails: "contactDetails",
-                sex: "sex",
-                nationality: "nationality",
-                isAccommodating: false),
-          ],
+          tenant:
+          User(
+            username: "username",
+            profilePic: "profilePic",
+            contactDetails: "contactDetails",
+            sex: "sex",
+            nationality: "nationality",
+            isAccommodating: false,
+            id: "1",),
+          property_id: "1",
         )
     );
     mostViewedListing.add(
         PropertyListing(
-          property_title: "property9",
+          listing_title: "property2",
           rating: 5.0,
           image_url: ["image_url"],
           price: 1000,
           deposit: 100,
           description: "placeholder description placeholder description placeholder description placeholder description ",
-          address: "placeholder address placeholder address placeholder address placeholder address ",
           sex_preference: "all",
           nationality_preference: "malaysian",
           amenities: ["placeholder","placeholder","placeholder"],
-          owner: Owner(
-              name: "OWNER NAME",
-              contact_no: "PHONE NUMBER",
-              profile_pic: "https://via.placeholder.com/150"
-          ),
           reviews: [
             Review(
               rating: 5,
@@ -465,41 +371,29 @@ class PropertyListing {
               comment: "comment placeholder comment placeholder comment placeholder",
             ),
           ],
-          tenants: [
-            User(
-                username: "username",
-                profilePic: "profilePic",
-                contactDetails: "contactDetails",
-                sex: "sex",
-                nationality: "nationality",
-                isAccommodating: false),
-            User(
-                username: "username",
-                profilePic: "profilePic",
-                contactDetails: "contactDetails",
-                sex: "sex",
-                nationality: "nationality",
-                isAccommodating: false),
-          ],
+          tenant:
+          User(
+            username: "username",
+            profilePic: "profilePic",
+            contactDetails: "contactDetails",
+            sex: "sex",
+            nationality: "nationality",
+            isAccommodating: false,
+            id: "1",),
+          property_id: "1",
         )
     );
     mostViewedListing.add(
         PropertyListing(
-          property_title: "property10",
+          listing_title: "property2",
           rating: 5.0,
           image_url: ["image_url"],
           price: 1000,
           deposit: 100,
           description: "placeholder description placeholder description placeholder description placeholder description ",
-          address: "placeholder address placeholder address placeholder address placeholder address ",
           sex_preference: "all",
           nationality_preference: "malaysian",
           amenities: ["placeholder","placeholder","placeholder"],
-          owner: Owner(
-              name: "OWNER NAME",
-              contact_no: "PHONE NUMBER",
-              profile_pic: "https://via.placeholder.com/150"
-          ),
           reviews: [
             Review(
               rating: 5,
@@ -514,22 +408,16 @@ class PropertyListing {
               comment: "comment placeholder comment placeholder comment placeholder",
             ),
           ],
-          tenants: [
-            User(
-                username: "username",
-                profilePic: "profilePic",
-                contactDetails: "contactDetails",
-                sex: "sex",
-                nationality: "nationality",
-                isAccommodating: false),
-            User(
-                username: "username",
-                profilePic: "profilePic",
-                contactDetails: "contactDetails",
-                sex: "sex",
-                nationality: "nationality",
-                isAccommodating: false),
-          ],
+          tenant:
+          User(
+            username: "username",
+            profilePic: "profilePic",
+            contactDetails: "contactDetails",
+            sex: "sex",
+            nationality: "nationality",
+            isAccommodating: false,
+            id: "1",),
+          property_id: "1",
         )
     );
     return mostViewedListing;
@@ -540,21 +428,15 @@ class PropertyListing {
 
     searchResultListing.add(
         PropertyListing(
-          property_title: "property6",
+          listing_title: "property2",
           rating: 5.0,
           image_url: ["image_url"],
           price: 1000,
           deposit: 100,
           description: "placeholder description placeholder description placeholder description placeholder description ",
-          address: "placeholder address placeholder address placeholder address placeholder address ",
           sex_preference: "all",
           nationality_preference: "malaysian",
           amenities: ["placeholder","placeholder","placeholder"],
-          owner: Owner(
-              name: "OWNER NAME",
-              contact_no: "PHONE NUMBER",
-              profile_pic: "https://via.placeholder.com/150"
-          ),
           reviews: [
             Review(
               rating: 5,
@@ -569,41 +451,29 @@ class PropertyListing {
               comment: "comment placeholder comment placeholder comment placeholder",
             ),
           ],
-          tenants: [
-            User(
-                username: "username",
-                profilePic: "profilePic",
-                contactDetails: "contactDetails",
-                sex: "sex",
-                nationality: "nationality",
-                isAccommodating: false),
-            User(
-                username: "username",
-                profilePic: "profilePic",
-                contactDetails: "contactDetails",
-                sex: "sex",
-                nationality: "nationality",
-                isAccommodating: false),
-          ],
+          tenant:
+          User(
+            username: "username",
+            profilePic: "profilePic",
+            contactDetails: "contactDetails",
+            sex: "sex",
+            nationality: "nationality",
+            isAccommodating: false,
+            id: "1",),
+          property_id: "1",
         )
     );
     searchResultListing.add(
         PropertyListing(
-          property_title: "property7",
+          listing_title: "property2",
           rating: 5.0,
           image_url: ["image_url"],
           price: 1000,
           deposit: 100,
           description: "placeholder description placeholder description placeholder description placeholder description ",
-          address: "placeholder address placeholder address placeholder address placeholder address ",
           sex_preference: "all",
           nationality_preference: "malaysian",
           amenities: ["placeholder","placeholder","placeholder"],
-          owner: Owner(
-              name: "OWNER NAME",
-              contact_no: "PHONE NUMBER",
-              profile_pic: "https://via.placeholder.com/150"
-          ),
           reviews: [
             Review(
               rating: 5,
@@ -618,41 +488,29 @@ class PropertyListing {
               comment: "comment placeholder comment placeholder comment placeholder",
             ),
           ],
-          tenants: [
-            User(
-                username: "username",
-                profilePic: "profilePic",
-                contactDetails: "contactDetails",
-                sex: "sex",
-                nationality: "nationality",
-                isAccommodating: false),
-            User(
-                username: "username",
-                profilePic: "profilePic",
-                contactDetails: "contactDetails",
-                sex: "sex",
-                nationality: "nationality",
-                isAccommodating: false),
-          ],
+          tenant:
+          User(
+            username: "username",
+            profilePic: "profilePic",
+            contactDetails: "contactDetails",
+            sex: "sex",
+            nationality: "nationality",
+            isAccommodating: false,
+            id: "1",),
+          property_id: "1",
         )
     );
     searchResultListing.add(
         PropertyListing(
-          property_title: "property8",
+          listing_title: "property2",
           rating: 5.0,
           image_url: ["image_url"],
           price: 1000,
           deposit: 100,
           description: "placeholder description placeholder description placeholder description placeholder description ",
-          address: "placeholder address placeholder address placeholder address placeholder address ",
           sex_preference: "all",
           nationality_preference: "malaysian",
           amenities: ["placeholder","placeholder","placeholder"],
-          owner: Owner(
-              name: "OWNER NAME",
-              contact_no: "PHONE NUMBER",
-              profile_pic: "https://via.placeholder.com/150"
-          ),
           reviews: [
             Review(
               rating: 5,
@@ -667,41 +525,29 @@ class PropertyListing {
               comment: "comment placeholder comment placeholder comment placeholder",
             ),
           ],
-          tenants: [
-            User(
-                username: "username",
-                profilePic: "profilePic",
-                contactDetails: "contactDetails",
-                sex: "sex",
-                nationality: "nationality",
-                isAccommodating: false),
-            User(
-                username: "username",
-                profilePic: "profilePic",
-                contactDetails: "contactDetails",
-                sex: "sex",
-                nationality: "nationality",
-                isAccommodating: false),
-          ],
+          tenant:
+          User(
+            username: "username",
+            profilePic: "profilePic",
+            contactDetails: "contactDetails",
+            sex: "sex",
+            nationality: "nationality",
+            isAccommodating: false,
+            id: "1",),
+          property_id: "1",
         )
     );
     searchResultListing.add(
         PropertyListing(
-          property_title: "property9",
+          listing_title: "property2",
           rating: 5.0,
           image_url: ["image_url"],
           price: 1000,
           deposit: 100,
           description: "placeholder description placeholder description placeholder description placeholder description ",
-          address: "placeholder address placeholder address placeholder address placeholder address ",
           sex_preference: "all",
           nationality_preference: "malaysian",
           amenities: ["placeholder","placeholder","placeholder"],
-          owner: Owner(
-              name: "OWNER NAME",
-              contact_no: "PHONE NUMBER",
-              profile_pic: "https://via.placeholder.com/150"
-          ),
           reviews: [
             Review(
               rating: 5,
@@ -716,41 +562,29 @@ class PropertyListing {
               comment: "comment placeholder comment placeholder comment placeholder",
             ),
           ],
-          tenants: [
-            User(
-                username: "username",
-                profilePic: "profilePic",
-                contactDetails: "contactDetails",
-                sex: "sex",
-                nationality: "nationality",
-                isAccommodating: false),
-            User(
-                username: "username",
-                profilePic: "profilePic",
-                contactDetails: "contactDetails",
-                sex: "sex",
-                nationality: "nationality",
-                isAccommodating: false),
-          ],
+          tenant:
+          User(
+            username: "username",
+            profilePic: "profilePic",
+            contactDetails: "contactDetails",
+            sex: "sex",
+            nationality: "nationality",
+            isAccommodating: false,
+            id: "1",),
+          property_id: "1",
         )
     );
     searchResultListing.add(
         PropertyListing(
-          property_title: "property10",
+          listing_title: "property2",
           rating: 5.0,
           image_url: ["image_url"],
           price: 1000,
           deposit: 100,
           description: "placeholder description placeholder description placeholder description placeholder description ",
-          address: "placeholder address placeholder address placeholder address placeholder address ",
           sex_preference: "all",
           nationality_preference: "malaysian",
           amenities: ["placeholder","placeholder","placeholder"],
-          owner: Owner(
-              name: "OWNER NAME",
-              contact_no: "PHONE NUMBER",
-              profile_pic: "https://via.placeholder.com/150"
-          ),
           reviews: [
             Review(
               rating: 5,
@@ -765,22 +599,16 @@ class PropertyListing {
               comment: "comment placeholder comment placeholder comment placeholder",
             ),
           ],
-          tenants: [
-            User(
-                username: "username",
-                profilePic: "profilePic",
-                contactDetails: "contactDetails",
-                sex: "sex",
-                nationality: "nationality",
-                isAccommodating: false),
-            User(
-                username: "username",
-                profilePic: "profilePic",
-                contactDetails: "contactDetails",
-                sex: "sex",
-                nationality: "nationality",
-                isAccommodating: false),
-          ],
+          tenant:
+          User(
+            username: "username",
+            profilePic: "profilePic",
+            contactDetails: "contactDetails",
+            sex: "sex",
+            nationality: "nationality",
+            isAccommodating: false,
+            id: "1",),
+          property_id: "1",
         )
     );
     return searchResultListing;
@@ -791,21 +619,15 @@ class PropertyListing {
 
     shortlist.add(
         PropertyListing(
-          property_title: "property6",
+          listing_title: "property2",
           rating: 5.0,
           image_url: ["image_url"],
           price: 1000,
           deposit: 100,
           description: "placeholder description placeholder description placeholder description placeholder description ",
-          address: "placeholder address placeholder address placeholder address placeholder address ",
           sex_preference: "all",
           nationality_preference: "malaysian",
           amenities: ["placeholder","placeholder","placeholder"],
-          owner: Owner(
-              name: "OWNER NAME",
-              contact_no: "PHONE NUMBER",
-              profile_pic: "https://via.placeholder.com/150"
-          ),
           reviews: [
             Review(
               rating: 5,
@@ -820,41 +642,29 @@ class PropertyListing {
               comment: "comment placeholder comment placeholder comment placeholder",
             ),
           ],
-          tenants: [
-            User(
-                username: "username",
-                profilePic: "profilePic",
-                contactDetails: "contactDetails",
-                sex: "sex",
-                nationality: "nationality",
-                isAccommodating: false),
-            User(
-                username: "username",
-                profilePic: "profilePic",
-                contactDetails: "contactDetails",
-                sex: "sex",
-                nationality: "nationality",
-                isAccommodating: false),
-          ],
+          tenant:
+          User(
+            username: "username",
+            profilePic: "profilePic",
+            contactDetails: "contactDetails",
+            sex: "sex",
+            nationality: "nationality",
+            isAccommodating: false,
+            id: "1",),
+          property_id: "1",
         )
     );
     shortlist.add(
         PropertyListing(
-          property_title: "property7",
+          listing_title: "property2",
           rating: 5.0,
           image_url: ["image_url"],
           price: 1000,
           deposit: 100,
           description: "placeholder description placeholder description placeholder description placeholder description ",
-          address: "placeholder address placeholder address placeholder address placeholder address ",
           sex_preference: "all",
           nationality_preference: "malaysian",
           amenities: ["placeholder","placeholder","placeholder"],
-          owner: Owner(
-              name: "OWNER NAME",
-              contact_no: "PHONE NUMBER",
-              profile_pic: "https://via.placeholder.com/150"
-          ),
           reviews: [
             Review(
               rating: 5,
@@ -869,41 +679,29 @@ class PropertyListing {
               comment: "comment placeholder comment placeholder comment placeholder",
             ),
           ],
-          tenants: [
-            User(
-                username: "username",
-                profilePic: "profilePic",
-                contactDetails: "contactDetails",
-                sex: "sex",
-                nationality: "nationality",
-                isAccommodating: false),
-            User(
-                username: "username",
-                profilePic: "profilePic",
-                contactDetails: "contactDetails",
-                sex: "sex",
-                nationality: "nationality",
-                isAccommodating: false),
-          ],
+          tenant:
+          User(
+            username: "username",
+            profilePic: "profilePic",
+            contactDetails: "contactDetails",
+            sex: "sex",
+            nationality: "nationality",
+            isAccommodating: false,
+            id: "1",),
+          property_id: "1",
         )
     );
     shortlist.add(
         PropertyListing(
-          property_title: "property8",
+          listing_title: "property2",
           rating: 5.0,
           image_url: ["image_url"],
           price: 1000,
           deposit: 100,
           description: "placeholder description placeholder description placeholder description placeholder description ",
-          address: "placeholder address placeholder address placeholder address placeholder address ",
           sex_preference: "all",
           nationality_preference: "malaysian",
           amenities: ["placeholder","placeholder","placeholder"],
-          owner: Owner(
-              name: "OWNER NAME",
-              contact_no: "PHONE NUMBER",
-              profile_pic: "https://via.placeholder.com/150"
-          ),
           reviews: [
             Review(
               rating: 5,
@@ -918,41 +716,29 @@ class PropertyListing {
               comment: "comment placeholder comment placeholder comment placeholder",
             ),
           ],
-          tenants: [
-            User(
-                username: "username",
-                profilePic: "profilePic",
-                contactDetails: "contactDetails",
-                sex: "sex",
-                nationality: "nationality",
-                isAccommodating: false),
-            User(
-                username: "username",
-                profilePic: "profilePic",
-                contactDetails: "contactDetails",
-                sex: "sex",
-                nationality: "nationality",
-                isAccommodating: false),
-          ],
+          tenant:
+          User(
+            username: "username",
+            profilePic: "profilePic",
+            contactDetails: "contactDetails",
+            sex: "sex",
+            nationality: "nationality",
+            isAccommodating: false,
+            id: "1",),
+          property_id: "1",
         )
     );
     shortlist.add(
         PropertyListing(
-          property_title: "property9",
+          listing_title: "property2",
           rating: 5.0,
           image_url: ["image_url"],
           price: 1000,
           deposit: 100,
           description: "placeholder description placeholder description placeholder description placeholder description ",
-          address: "placeholder address placeholder address placeholder address placeholder address ",
           sex_preference: "all",
           nationality_preference: "malaysian",
           amenities: ["placeholder","placeholder","placeholder"],
-          owner: Owner(
-              name: "OWNER NAME",
-              contact_no: "PHONE NUMBER",
-              profile_pic: "https://via.placeholder.com/150"
-          ),
           reviews: [
             Review(
               rating: 5,
@@ -967,41 +753,29 @@ class PropertyListing {
               comment: "comment placeholder comment placeholder comment placeholder",
             ),
           ],
-          tenants: [
-            User(
-                username: "username",
-                profilePic: "profilePic",
-                contactDetails: "contactDetails",
-                sex: "sex",
-                nationality: "nationality",
-                isAccommodating: false),
-            User(
-                username: "username",
-                profilePic: "profilePic",
-                contactDetails: "contactDetails",
-                sex: "sex",
-                nationality: "nationality",
-                isAccommodating: false),
-          ],
+          tenant:
+          User(
+            username: "username",
+            profilePic: "profilePic",
+            contactDetails: "contactDetails",
+            sex: "sex",
+            nationality: "nationality",
+            isAccommodating: false,
+            id: "1",),
+          property_id: "1",
         )
     );
     shortlist.add(
         PropertyListing(
-          property_title: "property10",
+          listing_title: "property2",
           rating: 5.0,
           image_url: ["image_url"],
           price: 1000,
           deposit: 100,
           description: "placeholder description placeholder description placeholder description placeholder description ",
-          address: "placeholder address placeholder address placeholder address placeholder address ",
           sex_preference: "all",
           nationality_preference: "malaysian",
           amenities: ["placeholder","placeholder","placeholder"],
-          owner: Owner(
-              name: "OWNER NAME",
-              contact_no: "PHONE NUMBER",
-              profile_pic: "https://via.placeholder.com/150"
-          ),
           reviews: [
             Review(
               rating: 5,
@@ -1016,22 +790,16 @@ class PropertyListing {
               comment: "comment placeholder comment placeholder comment placeholder",
             ),
           ],
-          tenants: [
-            User(
-                username: "username",
-                profilePic: "profilePic",
-                contactDetails: "contactDetails",
-                sex: "sex",
-                nationality: "nationality",
-                isAccommodating: false),
-            User(
-                username: "username",
-                profilePic: "profilePic",
-                contactDetails: "contactDetails",
-                sex: "sex",
-                nationality: "nationality",
-                isAccommodating: false),
-          ],
+          tenant:
+          User(
+            username: "username",
+            profilePic: "profilePic",
+            contactDetails: "contactDetails",
+            sex: "sex",
+            nationality: "nationality",
+            isAccommodating: false,
+            id: "1",),
+          property_id: "1",
         )
     );
     return shortlist;
@@ -1042,21 +810,15 @@ class PropertyListing {
 
     invitations.add(
         PropertyListing(
-          property_title: "property6",
+          listing_title: "property2",
           rating: 5.0,
           image_url: ["image_url"],
           price: 1000,
           deposit: 100,
           description: "placeholder description placeholder description placeholder description placeholder description ",
-          address: "placeholder address placeholder address placeholder address placeholder address ",
           sex_preference: "all",
           nationality_preference: "malaysian",
-          amenities: ["placeholder", "placeholder", "placeholder"],
-          owner: Owner(
-              name: "OWNER NAME",
-              contact_no: "PHONE NUMBER",
-              profile_pic: "https://via.placeholder.com/150"
-          ),
+          amenities: ["placeholder","placeholder","placeholder"],
           reviews: [
             Review(
               rating: 5,
@@ -1071,22 +833,16 @@ class PropertyListing {
               comment: "comment placeholder comment placeholder comment placeholder",
             ),
           ],
-          tenants: [
-            User(
-                username: "username",
-                profilePic: "profilePic",
-                contactDetails: "contactDetails",
-                sex: "sex",
-                nationality: "nationality",
-                isAccommodating: false),
-            User(
-                username: "username",
-                profilePic: "profilePic",
-                contactDetails: "contactDetails",
-                sex: "sex",
-                nationality: "nationality",
-                isAccommodating: false),
-          ],
+          tenant:
+          User(
+            username: "username",
+            profilePic: "profilePic",
+            contactDetails: "contactDetails",
+            sex: "sex",
+            nationality: "nationality",
+            isAccommodating: false,
+            id: "1",),
+          property_id: "1",
         )
     );
     return invitations;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:fyp_project/models/owner.dart';
 import 'package:fyp_project/pages/my_room.dart';
 import 'package:fyp_project/pages/my_room_invitation_details.dart';
 import 'package:fyp_project/widgets/AppDrawer.dart';
@@ -76,7 +77,7 @@ class MyRoomInvitation extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                invitations[index].property_title,
+                                invitations[index].listing_title,
                                 style: TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.bold,
@@ -85,7 +86,7 @@ class MyRoomInvitation extends StatelessWidget {
                               ),
                               SizedBox(height: 10,),
                               Text(
-                                "From: ${invitations[index].owner.name}",
+                                "From: ${PropertyListing.getProperty().owner.name}",
                                 style: TextStyle(
                                   fontSize: 12,
                                 ),

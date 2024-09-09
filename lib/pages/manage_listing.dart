@@ -1,32 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:fyp_project/pages/listing_details.dart';
-import 'package:fyp_project/widgets/AppDrawer.dart';
+import 'package:fyp_project/models/property.dart';
+import 'package:fyp_project/pages/listing_details_owner.dart';
+import 'package:fyp_project/widgets/OwnerDrawer.dart';
 import 'package:get/get.dart';
 
 import '../models/property_listing.dart';
 
-class Shortlist extends StatelessWidget {
-  Shortlist({super.key});
+class ManageListing extends StatelessWidget {
 
-  List<PropertyListing> shortlist = [];
+  final Property property;
 
-  void _getShortlist() {
-    shortlist = PropertyListing.getShortlist();
+  ManageListing({super.key, required this.property});
+
+  List<PropertyListing> propertyList = [];
+
+  void _getPropertyListing() {
+    propertyList = Property.getPropertyListing();
   }
 
   @override
   Widget build(BuildContext context) {
-    _getShortlist();
+    _getPropertyListing();
     return Scaffold(
       appBar: appBar(),
-      drawer: AppDrawer(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+
+        },
+        child: Icon(Icons.add, color: Colors.white,),
+        backgroundColor: Colors.black,
+      ),
       body: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(
             child: const Padding(
               padding: EdgeInsets.only(left: 20),
-              child: Text("Shortlist",
+              child: Text("Manage Listing",
                 textAlign: TextAlign.left,
                 style: TextStyle(
                   color: Colors.black,
@@ -36,7 +46,7 @@ class Shortlist extends StatelessWidget {
             ),
           ),
           SliverToBoxAdapter(
-            child: SizedBox(height: 16,)
+              child: SizedBox(height: 16,)
           ),
           SliverList(
             delegate: SliverChildBuilderDelegate((context, index) {
@@ -70,7 +80,7 @@ class Shortlist extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              shortlist[index].listing_title,
+                              propertyList[index].listing_title,
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,
@@ -108,14 +118,13 @@ class Shortlist extends StatelessWidget {
                   ],
                 ),
               ),
-              onTap: () {
-                Get.to(() => Listingdetails(propertyListing: shortlist[index]),
-                transition: Transition.circularReveal,
-                duration: const Duration(seconds: 1));
-              },);
-              
+                onTap: () {
+                  Get.to(() => ListingDetailsOwner(propertyListing: propertyList[index]),
+                      transition: Transition.circularReveal,
+                      duration: const Duration(seconds: 1));
+                },);
             },
-              childCount: shortlist.length,
+              childCount: propertyList.length,
             ),
           ),
         ],
