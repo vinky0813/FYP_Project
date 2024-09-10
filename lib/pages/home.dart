@@ -72,7 +72,7 @@ class HomePage extends StatelessWidget {
       nationality: "nationality",
       isAccommodating: false,
       id: "1",),
-    property_id: "1",
+    property_id: "1",room_type: "single",
   );
 
   @override

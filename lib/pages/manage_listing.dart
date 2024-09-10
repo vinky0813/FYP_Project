@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:fyp_project/models/property.dart';
+import 'package:fyp_project/pages/add_listing.dart';
 import 'package:fyp_project/pages/listing_details_owner.dart';
 import 'package:fyp_project/widgets/OwnerDrawer.dart';
 import 'package:get/get.dart';
@@ -26,7 +27,9 @@ class ManageListing extends StatelessWidget {
       appBar: appBar(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-
+          Get.to(() => AddListing(property: property,),
+          transition: Transition.circularReveal,
+          duration: const Duration(seconds: 1));
         },
         child: Icon(Icons.add, color: Colors.white,),
         backgroundColor: Colors.black,

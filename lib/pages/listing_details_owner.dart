@@ -105,6 +105,13 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
                 Text("Deposit: RM${widget.propertyListing.deposit}"),
               ],
             ),
+            SizedBox(height: 16,),
+            Text(
+              "Room Type: ${widget.propertyListing.room_type}",
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16),
+            ),
             SizedBox(
               height: 16,
             ),

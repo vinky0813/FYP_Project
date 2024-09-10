@@ -8,6 +8,7 @@ class PropertyListing {
   double rating;
   List<String> image_url;
   double price;
+  String room_type;
   double deposit;
   String description;
   String sex_preference;
@@ -22,6 +23,7 @@ class PropertyListing {
     required this.rating,
     required this.image_url,
     required this.price,
+    required this.room_type,
     required this.deposit,
     required this.description,
     required this.sex_preference,
@@ -78,7 +80,7 @@ class PropertyListing {
             nationality: "nationality",
             isAccommodating: false,
             id: "1",),
-          property_id: "1",
+          property_id: "1", room_type: "single",
         )
     );
     topRatedList.add(
@@ -115,7 +117,7 @@ class PropertyListing {
             nationality: "nationality",
             isAccommodating: false,
             id: "1",),
-          property_id: "1",
+          property_id: "1",room_type: "single",
         )
     );
     topRatedList.add(
@@ -152,7 +154,7 @@ class PropertyListing {
             nationality: "nationality",
             isAccommodating: false,
             id: "1",),
-          property_id: "1",
+          property_id: "1",room_type: "single",
         )
     );
     topRatedList.add(
@@ -189,7 +191,7 @@ class PropertyListing {
             nationality: "nationality",
             isAccommodating: false,
             id: "1",),
-          property_id: "1",
+          property_id: "1",room_type: "single",
         )
     );
     topRatedList.add(
@@ -226,7 +228,7 @@ class PropertyListing {
             nationality: "nationality",
             isAccommodating: false,
             id: "1",),
-          property_id: "1",
+          property_id: "1",room_type: "single",
         )
     );
     return topRatedList;
@@ -269,7 +271,7 @@ class PropertyListing {
             nationality: "nationality",
             isAccommodating: false,
             id: "1",),
-          property_id: "1",
+          property_id: "1",room_type: "single",
         )
     );
     mostViewedListing.add(
@@ -306,7 +308,7 @@ class PropertyListing {
             nationality: "nationality",
             isAccommodating: false,
             id: "1",),
-          property_id: "1",
+          property_id: "1",room_type: "single",
         )
     );
     mostViewedListing.add(
@@ -343,7 +345,7 @@ class PropertyListing {
             nationality: "nationality",
             isAccommodating: false,
             id: "1",),
-          property_id: "1",
+          property_id: "1",room_type: "single",
         )
     );
     mostViewedListing.add(
@@ -380,7 +382,7 @@ class PropertyListing {
             nationality: "nationality",
             isAccommodating: false,
             id: "1",),
-          property_id: "1",
+          property_id: "1",room_type: "single",
         )
     );
     mostViewedListing.add(
@@ -417,7 +419,7 @@ class PropertyListing {
             nationality: "nationality",
             isAccommodating: false,
             id: "1",),
-          property_id: "1",
+          property_id: "1",room_type: "single",
         )
     );
     return mostViewedListing;
@@ -460,7 +462,7 @@ class PropertyListing {
             nationality: "nationality",
             isAccommodating: false,
             id: "1",),
-          property_id: "1",
+          property_id: "1",room_type: "single",
         )
     );
     searchResultListing.add(
@@ -497,7 +499,7 @@ class PropertyListing {
             nationality: "nationality",
             isAccommodating: false,
             id: "1",),
-          property_id: "1",
+          property_id: "1",room_type: "single",
         )
     );
     searchResultListing.add(
@@ -534,7 +536,7 @@ class PropertyListing {
             nationality: "nationality",
             isAccommodating: false,
             id: "1",),
-          property_id: "1",
+          property_id: "1",room_type: "single",
         )
     );
     searchResultListing.add(
@@ -571,7 +573,7 @@ class PropertyListing {
             nationality: "nationality",
             isAccommodating: false,
             id: "1",),
-          property_id: "1",
+          property_id: "1",room_type: "single",
         )
     );
     searchResultListing.add(
@@ -608,7 +610,7 @@ class PropertyListing {
             nationality: "nationality",
             isAccommodating: false,
             id: "1",),
-          property_id: "1",
+          property_id: "1",room_type: "single",
         )
     );
     return searchResultListing;
@@ -651,7 +653,7 @@ class PropertyListing {
             nationality: "nationality",
             isAccommodating: false,
             id: "1",),
-          property_id: "1",
+          property_id: "1",room_type: "single",
         )
     );
     shortlist.add(
@@ -688,7 +690,7 @@ class PropertyListing {
             nationality: "nationality",
             isAccommodating: false,
             id: "1",),
-          property_id: "1",
+          property_id: "1",room_type: "single",
         )
     );
     shortlist.add(
@@ -725,7 +727,7 @@ class PropertyListing {
             nationality: "nationality",
             isAccommodating: false,
             id: "1",),
-          property_id: "1",
+          property_id: "1",room_type: "single",
         )
     );
     shortlist.add(
@@ -762,7 +764,7 @@ class PropertyListing {
             nationality: "nationality",
             isAccommodating: false,
             id: "1",),
-          property_id: "1",
+          property_id: "1",room_type: "single",
         )
     );
     shortlist.add(
@@ -799,7 +801,7 @@ class PropertyListing {
             nationality: "nationality",
             isAccommodating: false,
             id: "1",),
-          property_id: "1",
+          property_id: "1",room_type: "single",
         )
     );
     return shortlist;
@@ -842,7 +844,7 @@ class PropertyListing {
             nationality: "nationality",
             isAccommodating: false,
             id: "1",),
-          property_id: "1",
+          property_id: "1",room_type: "single",
         )
     );
     return invitations;

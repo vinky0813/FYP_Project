@@ -82,6 +82,13 @@ final Property property = Property(
             ),
             SizedBox(height: 16,),
             Text(
+              "Room Type: ${widget.propertyListing.room_type}",
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16),
+            ),
+            SizedBox(height: 16,),
+            Text(
               "Description",
               style: TextStyle(
                   fontWeight: FontWeight.bold,

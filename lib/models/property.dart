@@ -74,7 +74,7 @@ class Property {
             nationality: "nationality",
             isAccommodating: false,
             id: "1",),
-          property_id: "1",
+          property_id: "1",room_type: "single",
         )
     );
 
@@ -112,7 +112,7 @@ class Property {
             nationality: "nationality",
             isAccommodating: false,
             id: "1",),
-          property_id: "1",
+          property_id: "1",room_type: "single",
         )
     );
     return propertyListing;

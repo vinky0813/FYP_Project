@@ -1,42 +1,35 @@
+import 'dart:io';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:fyp_project/models/owner.dart';
 import 'package:fyp_project/models/property.dart';
-import 'package:fyp_project/models/user.dart';
-import 'package:fyp_project/pages/user_info_page.dart';
-import 'package:get/get.dart';
 
+import '../models/boolean_variable.dart';
 import '../models/property_listing.dart';
 
-class MyRoom extends StatefulWidget {
+class ConfirmationPage extends StatefulWidget {
 
-  final PropertyListing propertyListing;
-  MyRoom({super.key, required this.propertyListing});
+  final String listingTitle;
+  final List<File> imageFiles;
+  final String price;
+  final String deposit;
+  final String sex_preference;
+  final String nationality_preference;
+  final String description;
+  final String roomType;
+  final List<BooleanVariable> ammenities;
+
+  final Property property;
+  ConfirmationPage({super.key, required this.property, required this.listingTitle, required this.imageFiles, required this.price, required this.deposit, required this.sex_preference, required this.nationality_preference, required this.description, required this.ammenities, required this.roomType});
 
   @override
-  MyroomState createState() => MyroomState();
+  ConfirmationPageState createState() => ConfirmationPageState();
 }
 
-final Property property = Property(
-    property_id: "1",
-    property_title: "PLACEHOLDER",
-    owner: Owner(
-        name: "name",
-        contact_no: "contact_no",
-        profile_pic: "profile_pic",
-        id: "1"),
-    address: "ADDRESS ADDRESS ADDRESS ADDRESS ADDRESS ADDRESS",
-    imageUrl: "https://via.placeholder.com/150");
-
-_getTenants() {
-  return User.getTenants();
-}
-
-class MyroomState extends State<MyRoom> {
+class ConfirmationPageState extends State<ConfirmationPage> {
   int _currentIndex = 0;
   List<Widget> body = [];
-  List<User> tenantList = _getTenants();
 
   @override
   Widget build(BuildContext context) {
@@ -44,12 +37,28 @@ class MyroomState extends State<MyRoom> {
       appBar: appBar(),
       body: _getBody(),
       bottomNavigationBar: bottomNavigationBar(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-        },
-        child: Icon(Icons.chat,
-          color: Colors.white,),
-        backgroundColor: Colors.black,
+      floatingActionButton: Stack(
+        children: [
+          Positioned(
+            bottom: 80,
+            right: 0,
+            child: FloatingActionButton(
+              onPressed: () {
+              },
+              child: Text("Reject", style: TextStyle(color: Colors.white),),
+              backgroundColor: Colors.black,
+            ),),
+          Positioned(
+            bottom: 0,
+            right: 0,
+            child: FloatingActionButton(
+              onPressed: () {
+              },
+              child: Text("Accept", style: TextStyle(color: Colors.white),),
+              backgroundColor: Colors.black,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -62,7 +71,7 @@ class MyroomState extends State<MyRoom> {
           children: [
             ImageCarousel(),
             SizedBox(height:16),
-            Text(widget.propertyListing.listing_title,
+            Text(widget.listingTitle,
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
             SizedBox(height:16),
             Row(
@@ -74,23 +83,23 @@ class MyroomState extends State<MyRoom> {
                 ),
                 SizedBox(width: 8,),
                 Text(
-                  "${widget.propertyListing.rating}/5",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  "5/5",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ],
             ),
             SizedBox(height: 16,),
             Row(
-              children: [Text("Price: RM${widget.propertyListing.price}"),
+              children: [Text("Price: RM${widget.price}"),
                 SizedBox(width: 16,),
-                Text("Deposit: RM${widget.propertyListing.deposit}"),],
+                Text("Deposit: RM${widget.deposit}"),],
             ),
             SizedBox(height: 16,),
             Text(
-              "Room Type: ${widget.propertyListing.room_type}",
+              "Room Type: ${widget.roomType}",
               style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 16),
@@ -99,11 +108,11 @@ class MyroomState extends State<MyRoom> {
             Text(
               "Description",
               style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16),
             ),
             SizedBox(height: 8,),
-            Text('${widget.propertyListing.description}\n\n${property.address}'),
+            Text('${widget.description}\n\n${widget.property.address}'),
             SizedBox(height: 16),
             Text(
               "Preference",
@@ -112,9 +121,9 @@ class MyroomState extends State<MyRoom> {
             SizedBox(height: 8,),
             Row(
               children: [
-                Text("Sex: ${widget.propertyListing.sex_preference}"),
+                Text("Sex: ${widget.sex_preference}"),
                 SizedBox(width: 16,),
-                Text("Nationality: ${widget.propertyListing.nationality_preference}"),
+                Text("Nationality: ${widget.nationality_preference}"),
               ],
             ),
             SizedBox(height: 16,),
@@ -124,20 +133,21 @@ class MyroomState extends State<MyRoom> {
             ),
             SizedBox(height: 8,),
             Wrap(
-                spacing: 8.0,
-                runSpacing: 4.0,
-                children: widget.propertyListing.amenities.map((amenity) {
-                  return Chip(
-                    label: Text(amenity),
-                    backgroundColor: Colors.grey[200],
-                  );
-                }).toList()),
+              spacing: 8.0,
+              runSpacing: 4.0,
+              children: widget.ammenities.map((amenity) {
+                return Chip(
+                  label: Text(amenity.name),
+                  backgroundColor: Colors.grey[200],
+                );
+              }).toList(),
+            ),
             SizedBox(height: 16),
             Row(
               children: [
                 CircleAvatar(
                   radius: 40,
-                  backgroundImage: NetworkImage(property.owner.profile_pic), // Load the image
+                  backgroundImage: NetworkImage(widget.property.owner.profile_pic), // Load the image
                 ),
                 SizedBox(width: 16),
                 Expanded(
@@ -153,12 +163,12 @@ class MyroomState extends State<MyRoom> {
                         ),
                         SizedBox(height: 4),
                         Text(
-                          "Owner Name: ${property.owner.name}",
+                          "Owner Name: ${widget.property.owner.name}",
                           style: TextStyle(fontSize: 14),
                         ),
                         SizedBox(height: 4),
                         Text(
-                          "Contact Details: ${property.owner.contact_no}",
+                          "Contact Details: ${widget.property.owner.contact_no}",
                           style: TextStyle(fontSize: 14),
                         ),
                       ],
@@ -172,28 +182,15 @@ class MyroomState extends State<MyRoom> {
           children: [
             Container(
               padding: EdgeInsets.only(left: 20),
-              child: Row(
-                children: [
-                  Align(
-                    child: Text("Review", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,)),
-                    alignment: Alignment.centerLeft,
-                  ),
-                  Spacer(),
-                  TextButton(
-                    onPressed: () {},
-                    child: Text("Leave a Review",
-                      style: TextStyle(color: Colors.white),),
-                    style: TextButton.styleFrom(
-                        backgroundColor: Colors.black
-                    ),),
-                  SizedBox(width: 20,)
-                ],
+              child: Align(
+                child: Text("Review", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,)),
+                alignment: Alignment.centerLeft,
               ),
             ),
             SizedBox(height: 16),
             Expanded(
               child: ListView.separated(
-                itemCount: widget.propertyListing.reviews.length,
+                itemCount: 0,
                 scrollDirection: Axis.vertical,
                 padding: EdgeInsets.only(left: 20, right: 20),
                 separatorBuilder: (context, index) {
@@ -210,13 +207,13 @@ class MyroomState extends State<MyRoom> {
                           Row(
                             children: [
                               Icon(Icons.star, color: Colors.yellow,),
-                              Text("${widget.propertyListing.reviews[index].rating}/5")
+                              Text("")
                             ],
                           ),
                           Container(
                             padding: EdgeInsets.all(8),
                             child: Text(
-                              "${widget.propertyListing.reviews[index].comment}/5",
+                              "",
                               style: TextStyle(
                                 fontSize: 12,
                               ),
@@ -242,71 +239,6 @@ class MyroomState extends State<MyRoom> {
             )
           ],
         );
-      case 3:
-        return CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: const Padding(
-                padding: EdgeInsets.only(left: 20),
-                child: Text("Tenants",
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),),
-              ),
-            ),
-            SliverToBoxAdapter(
-                child: SizedBox(height: 16,)
-            ),
-            SliverList(
-              delegate: SliverChildBuilderDelegate((context, index) {
-                return Container(
-                  margin: EdgeInsets.only(left: 20, right: 20, bottom: 20),
-                  child: Row(
-                    children: [
-                      GestureDetector(
-                        child: CircleAvatar(
-                          radius: 40,
-                          backgroundImage: NetworkImage(tenantList[index].profilePic), // Load the image
-                        ),
-                        onTap: () {
-                          Get.to(() => UserInfoPage(user: tenantList[index]),
-                          transition: Transition.circularReveal,
-                          duration: const Duration(seconds: 1));
-                        },
-                      ),
-                      SizedBox(width: 16),
-                      Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "${tenantList[index].username}",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Align(
-                                alignment: Alignment.bottomRight,
-                                child: IconButton(
-                                    onPressed: () {},
-                                    style: IconButton.styleFrom(backgroundColor: Colors.black),
-                                    icon: Icon(Icons.chat, color: Colors.white,))
-                              )
-                            ],
-                          ))
-                    ],
-                  ),
-                );
-              },
-                childCount: tenantList.length,
-              ),
-            ),
-          ],
-        );
       default:
         return ListView(
           children: [
@@ -324,7 +256,7 @@ class MyroomState extends State<MyRoom> {
   CarouselSlider ImageCarousel() {
     return CarouselSlider(
       options: CarouselOptions(height: 200),
-      items: widget.propertyListing.image_url.map((imageUrl) {
+      items: widget.imageFiles.map((imageUrl) {
         return Builder(
           builder: (BuildContext context) {
             return Container(
@@ -333,7 +265,7 @@ class MyroomState extends State<MyRoom> {
               decoration: BoxDecoration(
                 color: Colors.white,
               ),
-              child: Image.network(
+              child: Image.file(
                 imageUrl,
                 fit: BoxFit.cover,
               ),
@@ -360,10 +292,6 @@ class MyroomState extends State<MyRoom> {
           icon: Icon(Icons.map),
           label: "Map",
         ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.people),
-          label: "Tenants",
-        ),
       ],
       onTap: (int newIndex) {
         setState(() {
@@ -378,7 +306,7 @@ class MyroomState extends State<MyRoom> {
   AppBar appBar() {
     return AppBar(
       // App bar title
-      title: const Text("My Room",
+      title: const Text("Listing Details",
         style: TextStyle(
           color: Colors.black,
           fontSize: 20,
@@ -387,6 +315,14 @@ class MyroomState extends State<MyRoom> {
       ),
       centerTitle: true,
       elevation: 0,
+
+      // action is right side of the app bar
+      actions: [IconButton(
+        // placeholder icon fix later
+        icon: const Icon(Icons.view_list),
+        // same thing here
+        onPressed: () => {},
+      )],
     );
   } // end of appBar method
 }
