@@ -42,3 +42,9 @@ android {
 flutter {
     source = "../.."
 }
+
+def localProperties = new Properties()
+localProperties.load(new FileInputStream(rootProject.file("local.properties")))
+
+def supabase_url = localProperties.getProperty("supasebase_url")
+def api_key = localProperties.getProperty("api_key")

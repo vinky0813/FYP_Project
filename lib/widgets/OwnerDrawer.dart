@@ -8,18 +8,19 @@ import 'package:fyp_project/pages/owner_home.dart';
 import 'package:fyp_project/pages/saved_searches.dart';
 import 'package:fyp_project/pages/shortlist.dart';
 import 'package:get/get.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../models/property_listing.dart';
-import '../models/user.dart';
+import '../models/user.dart' as project_user;
 
 class Ownerdrawer extends StatelessWidget {
 
-  User? user = null;
+  project_user.User? user = null;
 
   Ownerdrawer({super.key});
 
   void _getUser() {
-    user = User.getUser();
+    user = project_user.User.getUser();
   }
 
   @override
@@ -89,6 +90,7 @@ class Ownerdrawer extends StatelessWidget {
             child: ListTile(
               title: Text("Logout",),
               onTap: () {
+                Supabase.instance.client.auth.signOut();
                 Get.offAll(() => Login());
               },
             ),

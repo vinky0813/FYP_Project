@@ -1,10 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:fyp_project/pages/forgot_password_tac.dart';
 import 'package:get/get.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-class ForgotPasswordEmail extends StatelessWidget {
+class ForgotPasswordEmail extends StatefulWidget {
 
   ForgotPasswordEmail({super.key});
+
+  @override
+  State<ForgotPasswordEmail> createState() => _ForgotPasswordEmailState();
+}
+
+class _ForgotPasswordEmailState extends State<ForgotPasswordEmail> {
+
+  final TextEditingController emailController = TextEditingController();
+
+  Future<void> _resetPassword() async {
+    final String email = emailController.text;
+
+    if (email.isEmpty) {
+      Get.snackbar("Error", "Please enter your email address");
+      return;
+    }
+    Get.back();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +61,7 @@ class ForgotPasswordEmail extends StatelessWidget {
                       children: [
                         SizedBox(height: 10),
                         TextField(
+                          controller: emailController,
                           decoration: InputDecoration(
                             labelText: "Email",
                             border: OutlineInputBorder(
@@ -53,9 +73,7 @@ class ForgotPasswordEmail extends StatelessWidget {
                         SizedBox(height: 20),
                         TextButton(
                           onPressed: () {
-                            Get.to(() => ForgotPasswordTac(),
-                                transition: Transition.circularReveal,
-                                duration: const Duration(seconds: 1));
+                            _ForgotPasswordEmailState;
                           },
                           style: TextButton.styleFrom(
                             backgroundColor: Colors.black,
