@@ -4,7 +4,6 @@ import 'package:fyp_project/pages/splash_page.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-import 'pages/login.dart';
 
 void main() async {
   await dotenv.load(fileName: ".env");
