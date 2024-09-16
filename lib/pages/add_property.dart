@@ -1,9 +1,14 @@
+import 'dart:convert';
 import 'dart:io';
+import 'dart:developer' as developer;
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
+import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../models/owner.dart';
 import '../models/property.dart';
 
 class AddProperty extends StatefulWidget {
@@ -17,12 +22,28 @@ class AddProperty extends StatefulWidget {
 }
 
 class _AddPropertyState extends State<AddProperty> {
+
+  String? userId;
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    final user = Supabase.instance.client.auth.currentUser;
+    userId = user?.id;
+
+    if (widget.isEditing && widget.property != null) {
+      _propertyTitleController.text = widget.property!.property_title;
+      _addressController.text = widget.property!.address;
+    }
+  }
+
   int _currentStep = 1;
   final TextEditingController _propertyTitleController =
       TextEditingController();
   final TextEditingController _addressController = TextEditingController();
   final ImagePicker _picker = ImagePicker();
-  File? _profileImage;
+  File? _propertyImage;
 
   String default_pic = "https://via.placeholder.com/150";
 
@@ -30,61 +51,212 @@ class _AddPropertyState extends State<AddProperty> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: widget.isEditing ? Text("Edit Property") : Text("Add Property"),
+        title: widget.isEditing ? const Text("Edit Property") : const Text("Add Property"),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             showDialog(
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
                     title: widget.isEditing
-                        ? Text("Cancel Edit Property")
-                        : Text("Cancel Add Property"),
-                    content: Text("Are you sure you want to discard this form"),
+                        ? const Text("Cancel Edit Property")
+                        : const Text("Cancel Add Property"),
+                    content: const Text("Are you sure you want to discard this form"),
                     actions: [
-                      TextButton(onPressed: () => {}, child: Text("Cancel")),
+                      TextButton(onPressed: () => {
+                        Navigator.of(context).pop()
+                      }, child: const Text("Cancel")),
                       TextButton(
-                          onPressed: () => {Get.back()}, child: Text("Discard"))
+                          onPressed: () => {
+                            Navigator.of(context).pop(),
+                            Get.back()}, child: const Text("Discard"))
                     ],
                   );
                 });
           },
         ),
         actions: [
-          if (widget.isEditing == false)
+          if (widget.isEditing)
             IconButton(
-                onPressed: () {
-                  AlertDialog(
-                    title: Text("Delete Property"),
-                    content:
-                        Text("Are you sure you want to delete this property?"),
-                    actions: [
-                      TextButton(onPressed: () => {}, child: Text("Cancel")),
-                      TextButton(
-                          onPressed: () => {Get.back()}, child: Text("COnfirm"))
-                    ],
-                  );
-                },
-                icon: Icon(Icons.delete))
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text("Delete Property"),
+                      content: const Text("Are you sure you want to delete this property?"),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text("Cancel"),
+                        ),
+                        TextButton(
+                          onPressed: () async {
+                            Navigator.of(context).pop();
+                            await _deleteProperty();
+                          },
+                          child: const Text("Confirm"),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+              icon: const Icon(Icons.delete),
+            )
         ],
         centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: _currentStep == 1 ? _buildStep1() : _buildStep2(),
+        child: Form(
+          child: _currentStep == 1 ? _buildStep1() : _buildStep2(),
+          key: _formKey,
+        )
       ),
     );
   }
 
-  Future<void> _pickProfilePicture() async {
+  Future<void> _pickImage() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
-        _profileImage = File(pickedFile.path);
+        _propertyImage = File(pickedFile.path);
       });
     }
   }
+
+  Future<String?> _uploadImage(File image) async {
+    final url = Uri.parse("http://10.0.2.2:2000/api/upload-property-image");
+
+    var request = http.MultipartRequest("POST", url);
+    developer.log(image.path);
+    request.files.add(await http.MultipartFile.fromPath("image", image.path));
+
+    var response = await request.send();
+    if (response.statusCode == 200) {
+      var res = await http.Response.fromStream(response);
+      var responseData = jsonDecode(res.body);
+
+      return responseData["imageUrl"];
+    } else {
+      developer.log("${response.statusCode} : Image upload failed");
+      return null;
+    }
+  }
+
+  Future<void> _addProperty() async {
+    if (_formKey.currentState?.validate() ?? false) {
+      if (_propertyImage == null) {
+        Get.snackbar("Error", "Please upload an image");
+        return;
+      }
+
+      final imageUrl = await _uploadImage(_propertyImage!);
+      developer.log(imageUrl!);
+      if (imageUrl == null) {
+        Get.snackbar("Error", "Image upload failed");
+        return;
+      }
+
+      final url = Uri.parse("http://10.0.2.2:2000/api/add-property");
+      final response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          "property_title": _propertyTitleController.text,
+          "owner_id": userId,
+          "property_image": imageUrl,
+          "address": _addressController.text,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        developer.log("${response.statusCode}: Success, Property Added");
+
+        final responseData = jsonDecode(response.body);
+        final propertyId = responseData["data"]["property_id"];
+
+        developer.log("response data: ${responseData}");
+
+        if (propertyId == null) {
+          Get.snackbar("Error", "Failed to retrieve property ID from response");
+          return;
+        }
+        Owner owner = await Owner.getOwnerWithId(userId!);
+
+        Property newProperty = Property(
+          property_id: propertyId,
+          property_title: _propertyTitleController.text,
+          address: _addressController.text,
+          imageUrl: imageUrl,
+          owner: owner,
+        );
+        Get.back(result: newProperty);
+      } else {
+        developer.log("${response.statusCode}: Failed, Please Try Again");
+        Get.snackbar("Failed", "Please Try Again");
+      }
+    }
+  }
+
+  Future<void> _updateProperty() async {
+    if (_formKey.currentState?.validate() ?? false) {
+      String? imageUrl;
+
+      if (_propertyImage != null) {
+        imageUrl = await _uploadImage(_propertyImage!);
+        if (imageUrl == null) {
+          Get.snackbar("Error", "Image upload failed");
+          return;
+        }
+      } else {
+        imageUrl = widget.property?.imageUrl ?? default_pic;
+      }
+
+      final url = Uri.parse("http://10.0.2.2:2000/api/update-property/${widget.property?.property_id}");
+      final response = await http.put(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          "property_title": _propertyTitleController.text,
+          "owner_id": userId,
+          "property_image": imageUrl,
+          "address": _addressController.text,
+        }),
+      );
+      Navigator.of(context).pop();
+      if (response.statusCode == 200) {
+        developer.log("${response.statusCode}: Success, Property Updated");
+        Get.snackbar("Success", "Property Updated");
+        widget.property?.property_title = _propertyTitleController.text;
+        widget.property?.address = _addressController.text;
+        widget.property?.imageUrl = imageUrl;
+        Get.back(result: widget.property);
+      } else {
+        developer.log("${response.statusCode}: Failed, Please Try Again");
+        Get.snackbar("Failed", "Please Try Again");
+      }
+    }
+  }
+
+  Future<void> _deleteProperty() async {
+
+      final url = Uri.parse("http://10.0.2.2:2000/api/delete-property/${widget.property?.property_id}");
+      final response = await http.delete(url);
+
+      if (response.statusCode == 200) {
+        developer.log("Success: Property Deleted");
+
+        Get.back(result: false);
+      } else {
+        developer.log("Failed: ${response.statusCode}");
+        Get.snackbar("Failed", "Property Deletion Failed");
+      }
+    }
 
   Widget _buildStep1() {
     return Stack(
@@ -93,29 +265,34 @@ class _AddPropertyState extends State<AddProperty> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 "Property Title",
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 16),
-              TextField(
+              const SizedBox(height: 16),
+              TextFormField(
                 controller: _propertyTitleController,
                 decoration: InputDecoration(
                   labelText: widget.isEditing
                       ? widget.property?.property_title
                       : "Property Title",
-                  border: OutlineInputBorder(),
+                  border: const OutlineInputBorder(),
                   hintText: widget.isEditing
                       ? widget.property?.property_title
                       : "Enter Property Title",
                 ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Please enter a Property Title";
+                  }
+                },
               ),
-              SizedBox(height: 16),
-              Text(
+              const SizedBox(height: 16),
+              const Text(
                 "Thumbnail",
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Stack(
                 children: [
                   Container(
@@ -126,11 +303,11 @@ class _AddPropertyState extends State<AddProperty> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
                           image: DecorationImage(
-                            image: widget.isEditing
+                            image: _propertyImage != null
+                                ? FileImage(_propertyImage!)
+                                : widget.isEditing && widget.property != null
                                 ? NetworkImage(widget.property!.imageUrl)
-                                : _profileImage == null
-                                ? NetworkImage(default_pic)
-                                : FileImage(_profileImage!) as ImageProvider,
+                                : NetworkImage(default_pic),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -140,14 +317,39 @@ class _AddPropertyState extends State<AddProperty> {
                   Positioned(
                     right: 0,
                     bottom: 0,
-                    child: IconButton(
-                      onPressed: _pickProfilePicture,
-                      icon: Icon(Icons.edit),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.black,
+                        shape: BoxShape.circle,
+                      ),
+                      child: IconButton(
+                        onPressed: _pickImage,
+                        icon: const Icon(Icons.edit, color: Colors.white,),
+                      ),
                     ),
                   ),
+                  if (_propertyImage != null)
+                    Positioned(
+                      top: 0,
+                      right: 0,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.black,
+                          shape: BoxShape.circle,
+                        ),
+                        child: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              _propertyImage = null;
+                            });
+                          },
+                          icon: const Icon(Icons.delete, color: Colors.white,),
+                        ),
+                      ),
+                    ),
                 ],
               ),
-              SizedBox(height: 80),
+              const SizedBox(height: 80),
             ],
           ),
         ),
@@ -157,11 +359,18 @@ class _AddPropertyState extends State<AddProperty> {
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: Colors.black),
             onPressed: () {
-              setState(() {
-                _currentStep++;
-              });
+              if (_formKey.currentState?.validate() ?? false) {
+                if (_propertyImage == null && widget.isEditing == false) {
+                  Get.snackbar("Error", "Please upload an image");
+                }
+                else {
+                  setState(() {
+                    _currentStep++;
+                  });
+                }
+              }
             },
-            child: Text(
+            child: const Text(
               "Save & Next",
               style: TextStyle(color: Colors.white),
             ),
@@ -177,22 +386,27 @@ class _AddPropertyState extends State<AddProperty> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               "Address",
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 16),
-            TextField(
+            const SizedBox(height: 16),
+            TextFormField(
               controller: _addressController,
               maxLines: 4,
               decoration: InputDecoration(
                 labelText: widget.isEditing ? widget.property?.address : "Address",
-                border: OutlineInputBorder(),
+                border: const OutlineInputBorder(),
                 hintText:
                 widget.isEditing ? widget.property?.address : "Enter Address",
               ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return "Enter Address before proceeding";
+                }
+              },
             ),
-            SizedBox(height: 80),
+            const SizedBox(height: 80),
           ],
         ),
         Positioned(
@@ -205,7 +419,7 @@ class _AddPropertyState extends State<AddProperty> {
                 _currentStep--; // Go back to step 1
               });
             },
-            child: Text(
+            child: const Text(
               "Previous",
               style: TextStyle(color: Colors.white),
             ),
@@ -217,32 +431,36 @@ class _AddPropertyState extends State<AddProperty> {
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: Colors.black),
             onPressed: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    title: Text("Add Property"),
-                    content: Text("Create this property?"),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        child: Text("Cancel"),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          // Handle Confirm action
-                          Navigator.of(context).pop();
-                        },
-                        child: Text("Confirm"),
-                      ),
-                    ],
-                  );
-                },
-              );
-              print("Property Title: ${_propertyTitleController.text}");
-              print("Property Address: ${_addressController.text}");
+              if (_formKey.currentState?.validate() ?? false) {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: widget.isEditing ? const Text("Update Property") : const Text("Add Property"),
+                      content: widget.isEditing ? const Text("Update this Property") : const Text("Create this property?"),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: const Text("Cancel"),
+                        ),
+                        TextButton(
+                          onPressed: () async {
+                            Navigator.of(context).pop();
+                            if (widget.isEditing) {
+                              await _updateProperty();
+                            } else {
+                              await _addProperty();
+                            }
+                          },
+                          child: const Text("Confirm"),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              }
             },
-            child: Text(
+            child: const Text(
               "Confirm",
               style: TextStyle(color: Colors.white),
             ),

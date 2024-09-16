@@ -18,7 +18,7 @@ final Property property = Property(
     property_id: "1",
     property_title: "PLACEHOLDER",
     owner: Owner(
-        name: "name",
+        username: "name",
         contact_no: "contact_no",
         profile_pic: "profile_pic",
         id: "1"),
@@ -183,7 +183,7 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
                     ),
                     SizedBox(height: 4),
                     Text(
-                      "Owner Name: ${property.owner.name}",
+                      "Owner Name: ${property.owner.username}",
                       style: TextStyle(fontSize: 14),
                     ),
                     SizedBox(height: 4),

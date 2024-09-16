@@ -86,7 +86,7 @@ class MyRoomInvitation extends StatelessWidget {
                               ),
                               SizedBox(height: 10,),
                               Text(
-                                "From: ${PropertyListing.getProperty().owner.name}",
+                                "From: ${PropertyListing.getProperty().owner.username}",
                                 style: TextStyle(
                                   fontSize: 12,
                                 ),

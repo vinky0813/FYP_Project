@@ -163,7 +163,7 @@ class ConfirmationPageState extends State<ConfirmationPage> {
                         ),
                         SizedBox(height: 4),
                         Text(
-                          "Owner Name: ${widget.property.owner.name}",
+                          "Owner Name: ${widget.property.owner.username}",
                           style: TextStyle(fontSize: 14),
                         ),
                         SizedBox(height: 4),

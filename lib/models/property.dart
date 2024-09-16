@@ -1,7 +1,10 @@
 import 'package:fyp_project/models/owner.dart';
 import 'package:fyp_project/models/property_listing.dart';
 import 'package:fyp_project/models/review.dart';
-import 'package:fyp_project/models/user.dart';
+import 'package:fyp_project/models/user.dart' as my_user;
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'dart:developer' as developer;
 
 class Property {
   String property_id;
@@ -18,25 +21,41 @@ class Property {
     required this.imageUrl,
   });
 
-  static List<Property> getPropertyList() {
-    List<Property> propertyList = [];
+  factory Property.fromJson(Map<String, dynamic> json, Owner owner) {
 
-    propertyList.add(Property(
-        property_id: "1",
-        property_title: "property_title",
-        owner: Owner(id: "id", name: "name", contact_no: "contact_no", profile_pic: "profile_pic"),
-        address: "address",
-        imageUrl: "https://via.placeholder.com/150"));
-
-    propertyList.add(Property(
-        property_id: "1",
-        property_title: "property_title",
-        owner: Owner(id: "id", name: "name", contact_no: "contact_no", profile_pic: "profile_pic"),
-        address: "address",
-        imageUrl: "https://via.placeholder.com/150"));
-
-    return propertyList;
+    return Property(
+      property_id: json["property_id"],
+      property_title: json["property_title"],
+      owner: owner,
+      address: json["address"],
+      imageUrl: json["property_image"],
+    );
   }
+
+  static Future<List<Property>> getOwnerProperties(Owner owner) async {
+
+    final url = Uri.parse("http://10.0.2.2:2000/api/get-all-owner-properties")
+        .replace(queryParameters: {"owner_id": owner.id});
+    final response = await http.get(url, headers: {"Accept": "application/json"});
+    
+    developer.log(owner.profile_pic);
+
+    developer.log("what happens here: ${response.body}");
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body);
+      developer.log("data: ${data}");
+      final value = data.map((json) {
+        return Property.fromJson(json, owner);
+      }).toList();
+      developer.log("value: ${value}");
+
+      return value;
+    } else {
+      throw Exception("Failed to load properties");
+    }
+  }
+
   static List<PropertyListing> getPropertyListing() {
     List<PropertyListing> propertyListing = [];
 
@@ -66,7 +85,7 @@ class Property {
             ),
           ],
           tenant:
-          User(
+          my_user.User(
             username: "username",
             profilePic: "profilePic",
             contactDetails: "contactDetails",
@@ -104,7 +123,7 @@ class Property {
             ),
           ],
           tenant:
-          User(
+          my_user.User(
             username: "username",
             profilePic: "profilePic",
             contactDetails: "contactDetails",

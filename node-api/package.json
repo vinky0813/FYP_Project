@@ -17,6 +17,9 @@
   "homepage": "https://github.com/kelvinkyy/FYP_Project#readme",
   "description": "",
   "dependencies": {
-    "express": "^4.21.0"
+    "cors": "^2.8.5",
+    "express": "^4.21.0",
+    "mime-types": "^2.1.35",
+    "multer": "^1.4.5-lts.1"
   }
 }

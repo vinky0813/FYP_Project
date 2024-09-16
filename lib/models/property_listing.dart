@@ -38,7 +38,7 @@ class PropertyListing {
     return Property(
         property_id: "1",
         property_title: "property title",
-        owner: Owner(name: "name", contact_no: "contact_no", profile_pic: "profile_pic", id: "1"),
+        owner: Owner(username: "name", contact_no: "contact_no", profile_pic: "profile_pic", id: "1"),
         address: "ADDRESS ADDRESS ADDRESS ADDRESS ADDRESS",
         imageUrl: "https://via.placeholder.com/150");
   }

@@ -162,7 +162,7 @@ class MyroomState extends State<MyRoomInvitationDetails> {
                         ),
                         SizedBox(height: 4),
                         Text(
-                          "Owner Name: ${property.owner.name}",
+                          "Owner Name: ${property.owner.username}",
                           style: TextStyle(fontSize: 14),
                         ),
                         SizedBox(height: 4),
