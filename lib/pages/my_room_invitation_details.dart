@@ -137,7 +137,7 @@ class MyroomState extends State<MyRoomInvitationDetails> {
                 runSpacing: 4.0,
                 children: widget.propertyListing.amenities.map((amenity) {
                   return Chip(
-                    label: Text(amenity),
+                    label: Text(amenity.name),
                     backgroundColor: Colors.grey[200],
                   );
                 }).toList()),

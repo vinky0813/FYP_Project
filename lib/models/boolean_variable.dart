@@ -2,5 +2,5 @@ class BooleanVariable {
   final String name;
   bool value;
 
-  BooleanVariable(this.name, this.value);
+  BooleanVariable({required this.name, required this.value});
 }

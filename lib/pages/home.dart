@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:fyp_project/models/boolean_variable.dart';
 import 'package:fyp_project/models/user.dart';
 import 'package:fyp_project/pages/account_page.dart';
 import 'package:fyp_project/pages/listing_details.dart';
@@ -11,6 +12,7 @@ import 'package:fyp_project/pages/search_result_filter.dart';
 import 'package:fyp_project/pages/shortlist.dart';
 import 'package:fyp_project/widgets/AppDrawer.dart';
 import 'package:get/get.dart';
+import 'dart:developer' as developer;
 
 import '../models/owner.dart';
 import '../models/property_listing.dart';
@@ -32,14 +34,20 @@ class HomePage extends StatelessWidget {
     mostViewedPropertyListing = PropertyListing.getMostViewedListing();
   }
 
-  void _getUser() {
-    user = User.getUser();
+  Future<void> _getUser(String user_id) async {
+    try {
+      user = await User.getUserById(user_id);
+    } catch (e) {
+      developer.log("Error fetching user: $e");
+      user = null;
+    }
   }
   PropertyListing _getCurrentProperty() {
     return User.getCurrentProperty();
   }
 
   final PropertyListing propertyListing = PropertyListing(
+    listing_id: "randomid",
     listing_title: "property2",
     rating: 5.0,
     image_url: ["image_url"],
@@ -48,36 +56,38 @@ class HomePage extends StatelessWidget {
     description: "placeholder description placeholder description placeholder description placeholder description ",
     sex_preference: "all",
     nationality_preference: "malaysian",
-    amenities: ["placeholder","placeholder","placeholder"],
+    amenities: [BooleanVariable(name: "isWifiAccess", value: false,),
+      BooleanVariable(name: "isAirCon", value: false),
+      BooleanVariable(name: "isNearMarket", value: false),
+      BooleanVariable(name: "isCarPark", value: false),
+      BooleanVariable(name: "isNearMRT", value: false),
+      BooleanVariable(name: "isNearLRT", value: false),
+      BooleanVariable(name: "isPrivateBathroom", value: false),
+      BooleanVariable(name: "isGymnasium", value: false),
+      BooleanVariable(name: "isCookingAllowed", value: false),
+      BooleanVariable(name: "isWashingMachine", value: false),
+      BooleanVariable(name: "isNearBusStop", value: false),],
     reviews: [
       Review(
         rating: 5,
-        comment: "comment placeholder comment placeholder comment placeholder",
+        comment: "comment placeholder comment placeholder comment placeholder",review_id: '', user_id: '', listing_id: '',
       ),
       Review(
         rating: 4,
-        comment: "comment placeholder comment placeholder comment placeholder",
+        comment: "comment placeholder comment placeholder comment placeholder",review_id: '', user_id: '', listing_id: '',
       ),
       Review(
         rating: 3,
-        comment: "comment placeholder comment placeholder comment placeholder",
+        comment: "comment placeholder comment placeholder comment placeholder",review_id: '', user_id: '', listing_id: '',
       ),
     ],
-    tenant:
-    User(
-      username: "username",
-      profilePic: "profilePic",
-      contactDetails: "contactDetails",
-      sex: "sex",
-      nationality: "nationality",
-      isAccommodating: false,
-      id: "1",),
-    property_id: "1",room_type: "single",
+    tenant: null,
+    property_id: "1",room_type: "single", isPublished: true, isVerified: false,
   );
 
   @override
   Widget build(BuildContext context) {
-    _getUser();
+    _getUser("randomid");
     _getTopRatedListing();
     _getMostViewedPropertyListing();
     return Scaffold(

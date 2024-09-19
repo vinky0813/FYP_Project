@@ -4,13 +4,54 @@ import 'package:flutter/rendering.dart';
 import 'package:fyp_project/pages/account_page.dart';
 import 'package:fyp_project/widgets/OwnerDrawer.dart';
 import 'package:get/get.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'dart:developer' as developer;
 
-class DashboardOwner extends StatelessWidget {
+import '../models/owner.dart';
+
+class DashboardOwner extends StatefulWidget {
 
   const DashboardOwner({super.key});
 
   @override
+  State<DashboardOwner> createState() => _DashboardOwnerState();
+}
+
+class _DashboardOwnerState extends State<DashboardOwner> {
+
+  String? userId;
+  Owner? owner;
+
+  void initState() {
+    super.initState();
+    _initialize();
+  }
+
+  Future<void> _initialize() async {
+    final user = Supabase.instance.client.auth.currentUser;
+    userId = user?.id;
+
+    developer.log('User: $user');
+    developer.log('User ID: $userId');
+
+    if (userId != null) {
+      try {
+        final fetchedOwner = await Owner.getOwnerWithId(userId!);
+
+        setState(() {
+          owner = fetchedOwner;
+        });
+
+        developer.log(owner!.username);
+      } catch (e) {
+        print('Error: $e');
+      }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         title: Text("INTI Accommodation Finder"),

@@ -1,58 +1,115 @@
 import 'package:flutter/material.dart';
-import 'package:fyp_project/pages/home.dart';
+import 'package:fyp_project/models/owner.dart';
 import 'package:fyp_project/pages/login.dart';
 import 'package:fyp_project/pages/manage_property.dart';
-import 'package:fyp_project/pages/my_room.dart';
-import 'package:fyp_project/pages/my_room_invitation.dart';
 import 'package:fyp_project/pages/owner_home.dart';
-import 'package:fyp_project/pages/saved_searches.dart';
-import 'package:fyp_project/pages/shortlist.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'dart:developer' as developer;
 
-import '../models/property_listing.dart';
-import '../models/user.dart' as project_user;
 
 class Ownerdrawer extends StatelessWidget {
 
-  project_user.User? user = null;
-
   Ownerdrawer({super.key});
 
-  void _getUser() {
-    user = project_user.User.getUser();
+  Future<Owner?> _fetchOwner() async {
+    final user = Supabase.instance.client.auth.currentUser;
+    final userId = user?.id;
+
+    developer.log('User: $user');
+    developer.log('User ID: $userId');
+
+    if (userId != null) {
+      try {
+        return await Owner.getOwnerWithId(userId);
+      } catch (e) {
+        developer.log('Error fetching owner: $e');
+        return null;
+      }
+    }
+    return null;
   }
 
   @override
   Widget build(BuildContext context) {
-    _getUser();
     return Drawer(
       child: Column(
         children: [
-          SizedBox(
-            height: 150,
-            child: DrawerHeader(
-              child: Row(
-                children: [
-                  CircleAvatar(
-                    radius: 25,
-                    backgroundImage: NetworkImage('https://via.placeholder.com/150'),
-                  ),
-                  SizedBox(width: 20),
-                  Text(
-                    user!.username,
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
+          FutureBuilder<Owner?>(
+              future: _fetchOwner(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return SizedBox(
+                    height: 150,
+                    child: DrawerHeader(
+                      child: Row(
+                        children: [
+                          Center(child: CircularProgressIndicator()),
+                          SizedBox(width: 20),
+                          Text(
+                            "Loading User Data",
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
+                      decoration: const BoxDecoration(
+                        color: Colors.grey,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              decoration: const BoxDecoration(
-                color: Colors.grey,
-              ),
-            ),
-          ),
+                  );
+                } else if (snapshot.data==null) {
+                  return SizedBox(
+                    height: 150,
+                    child: DrawerHeader(
+                      child: Row(
+                        children: [
+                          Center(child: CircularProgressIndicator()),
+                          SizedBox(width: 20),
+                          Text(
+                            "Loading User Data",
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
+                      decoration: const BoxDecoration(
+                        color: Colors.grey,
+                      ),
+                    ),
+                  );
+                } else {
+                  final owner = snapshot.data!;
+                  return SizedBox(
+                    height: 150,
+                    child: DrawerHeader(
+                      child: Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 25,
+                            backgroundImage: NetworkImage(owner.profile_pic),
+                          ),
+                          SizedBox(width: 20),
+                          Text(
+                            owner.username,
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
+                      decoration: const BoxDecoration(
+                        color: Colors.grey,
+                      ),
+                    ),
+                  );
+                }
+              }),
           Expanded(
             child: ListView(
               padding: EdgeInsets.zero,

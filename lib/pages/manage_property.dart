@@ -188,7 +188,7 @@ class _ManagePropertyState extends State<ManageProperty> {
                   ),
                   onTap: () {
                     if (!isEditing) {
-                      Get.to(() => ManageListing(property: propertyList[index],),
+                      Get.to(() => ManageListing(property: propertyList[index], userId: userId!, owner: owner!,),
                       transition: Transition.circularReveal,
                       duration: const Duration(seconds: 1));
                     }

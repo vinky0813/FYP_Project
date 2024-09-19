@@ -1,3 +1,4 @@
+import 'package:fyp_project/models/boolean_variable.dart';
 import 'package:fyp_project/models/owner.dart';
 import 'package:fyp_project/models/property_listing.dart';
 import 'package:fyp_project/models/review.dart';
@@ -22,7 +23,6 @@ class Property {
   });
 
   factory Property.fromJson(Map<String, dynamic> json, Owner owner) {
-
     return Property(
       property_id: json["property_id"],
       property_title: json["property_title"],
@@ -33,11 +33,11 @@ class Property {
   }
 
   static Future<List<Property>> getOwnerProperties(Owner owner) async {
-
     final url = Uri.parse("http://10.0.2.2:2000/api/get-all-owner-properties")
         .replace(queryParameters: {"owner_id": owner.id});
-    final response = await http.get(url, headers: {"Accept": "application/json"});
-    
+    final response = await http.get(
+        url, headers: {"Accept": "application/json"});
+
     developer.log(owner.profile_pic);
 
     developer.log("what happens here: ${response.body}");
@@ -55,87 +55,5 @@ class Property {
       throw Exception("Failed to load properties");
     }
   }
-
-  static List<PropertyListing> getPropertyListing() {
-    List<PropertyListing> propertyListing = [];
-
-    propertyListing.add(
-        PropertyListing(
-          listing_title: "property2",
-          rating: 5.0,
-          image_url: ["image_url"],
-          price: 1000,
-          deposit: 100,
-          description: "placeholder description placeholder description placeholder description placeholder description ",
-          sex_preference: "all",
-          nationality_preference: "malaysian",
-          amenities: ["placeholder","placeholder","placeholder"],
-          reviews: [
-            Review(
-              rating: 5,
-              comment: "comment placeholder comment placeholder comment placeholder",
-            ),
-            Review(
-              rating: 4,
-              comment: "comment placeholder comment placeholder comment placeholder",
-            ),
-            Review(
-              rating: 3,
-              comment: "comment placeholder comment placeholder comment placeholder",
-            ),
-          ],
-          tenant:
-          my_user.User(
-            username: "username",
-            profilePic: "profilePic",
-            contactDetails: "contactDetails",
-            sex: "sex",
-            nationality: "nationality",
-            isAccommodating: false,
-            id: "1",),
-          property_id: "1",room_type: "single",
-        )
-    );
-
-    propertyListing.add(
-        PropertyListing(
-          listing_title: "property2",
-          rating: 5.0,
-          image_url: ["image_url"],
-          price: 1000,
-          deposit: 100,
-          description: "placeholder description placeholder description placeholder description placeholder description ",
-          sex_preference: "all",
-          nationality_preference: "malaysian",
-          amenities: ["placeholder","placeholder","placeholder"],
-          reviews: [
-            Review(
-              rating: 5,
-              comment: "comment placeholder comment placeholder comment placeholder",
-            ),
-            Review(
-              rating: 4,
-              comment: "comment placeholder comment placeholder comment placeholder",
-            ),
-            Review(
-              rating: 3,
-              comment: "comment placeholder comment placeholder comment placeholder",
-            ),
-          ],
-          tenant:
-          my_user.User(
-            username: "username",
-            profilePic: "profilePic",
-            contactDetails: "contactDetails",
-            sex: "sex",
-            nationality: "nationality",
-            isAccommodating: false,
-            id: "1",),
-          property_id: "1",room_type: "single",
-        )
-    );
-    return propertyListing;
-  }
-
 }
 

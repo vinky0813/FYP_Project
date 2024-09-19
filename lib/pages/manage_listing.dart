@@ -3,31 +3,57 @@ import 'package:flutter/rendering.dart';
 import 'package:fyp_project/models/property.dart';
 import 'package:fyp_project/pages/add_listing.dart';
 import 'package:fyp_project/pages/listing_details_owner.dart';
-import 'package:fyp_project/widgets/OwnerDrawer.dart';
 import 'package:get/get.dart';
+import 'dart:developer' as developer;
 
+import '../models/owner.dart';
 import '../models/property_listing.dart';
 
-class ManageListing extends StatelessWidget {
+class ManageListing extends StatefulWidget {
 
   final Property property;
+  final Owner owner;
+  final String userId;
 
-  ManageListing({super.key, required this.property});
+  ManageListing({super.key, required this.property, required this.owner, required this.userId});
 
-  List<PropertyListing> propertyList = [];
+  @override
+  State<ManageListing> createState() => _ManageListingState();
+}
 
-  void _getPropertyListing() {
-    propertyList = Property.getPropertyListing();
+class _ManageListingState extends State<ManageListing> {
+  List<PropertyListing> listingList = [];
+
+  void initState() {
+    super.initState();
+    _initialize();
+  }
+
+  Future<void> _initialize() async {
+
+    if (widget.userId != null) {
+      try {
+        developer.log("property id ${widget.property.property_id}");
+        final listings = await PropertyListing.getPropertyListing(widget.property.property_id);
+
+        setState(() {
+          listingList = listings;
+        });
+
+        developer.log("listings: $listingList");
+      } catch (e) {
+        print('Error: $e');
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    _getPropertyListing();
     return Scaffold(
       appBar: appBar(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Get.to(() => AddListing(property: property,),
+          Get.to(() => AddListing(property: widget.property, isEditing: false, propertyListing: null, ),
           transition: Transition.circularReveal,
           duration: const Duration(seconds: 1));
         },
@@ -70,8 +96,21 @@ class ManageListing extends StatelessWidget {
                           color: Colors.green,
                         ),
                         child: Image.network(
-                          "https://via.placeholder.com/150",
+                          listingList[index].image_url[0],
                           fit: BoxFit.cover,
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) {
+                              return child;
+                            } else {
+                              return Center(child: CircularProgressIndicator());
+                            }
+                          },
+                          errorBuilder: (context, error, stackTrace) {
+                            return Image.asset(
+                              "https://via.placeholder.com/150",
+                              fit: BoxFit.cover,
+                            );
+                          },
                         ),
                       ),
                     ), borderRadius: BorderRadius.circular(10),),
@@ -83,37 +122,28 @@ class ManageListing extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              propertyList[index].listing_title,
+                              listingList[index].listing_title,
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,
                               ),
                               textAlign: TextAlign.left,
                             ),
-                            Spacer(),
-                            Align(
-                              alignment: Alignment.bottomRight,
-                              child: IconButton(
-                                  onPressed: () {
-                                    showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return AlertDialog(
-                                            title: Text("Remove Item"),
-                                            content: Text("Are you sure you want to remove this shortlist?"),
-                                            actions: [
-                                              TextButton(
-                                                  onPressed: () => {},
-                                                  child: Text("Cancel")),
-                                              TextButton(
-                                                  onPressed: () => {},
-                                                  child: Text("Remove"))
-                                            ],
-                                          );
-                                        });
-                                  },
-                                  icon: Icon(Icons.remove_circle_outline)),
-                            )
+                            SizedBox(height: 18,),
+                            Text(
+                              "RM ${listingList[index].price.toString()}",
+                              style: TextStyle(
+                                fontSize: 9,
+                              ),
+                              textAlign: TextAlign.left,
+                            ),
+                            Text(
+                              "Published: ${listingList[index].isPublished}",
+                              style: TextStyle(
+                                fontSize: 9,
+                              ),
+                              textAlign: TextAlign.left,
+                            ),
                           ],
                         ),
                       ),
@@ -121,13 +151,20 @@ class ManageListing extends StatelessWidget {
                   ],
                 ),
               ),
-                onTap: () {
-                  Get.to(() => ListingDetailsOwner(propertyListing: propertyList[index]),
+                onTap: () async {
+                  final result = await Get.to(() => ListingDetailsOwner(propertyListing: listingList[index], property: widget.property,),
                       transition: Transition.circularReveal,
                       duration: const Duration(seconds: 1));
-                },);
+
+                  if (result is bool && result == false) {
+                      setState(() {
+                        listingList.removeAt(index);
+                      });
+                    }
+                  }
+              );
             },
-              childCount: propertyList.length,
+              childCount: listingList.length,
             ),
           ),
         ],
@@ -147,14 +184,5 @@ class ManageListing extends StatelessWidget {
       ),
       centerTitle: true,
       elevation: 0,
-
-      // action is right side of the app bar
-      actions: [IconButton(
-        // placeholder icon fix later
-        icon: const Icon(Icons.account_tree_outlined),
-        // same thing here
-        onPressed: () => {},
-      )],
     );
-  } // end of appBar method
-}
+  } }

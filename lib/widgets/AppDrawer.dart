@@ -10,23 +10,36 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../models/property_listing.dart';
 import '../models/user.dart' as project_user;
+import 'dart:developer' as developer;
 
-class AppDrawer extends StatelessWidget {
+class AppDrawer extends StatefulWidget {
 
-  project_user.User? user = null;
 
   AppDrawer({super.key});
 
-  void _getUser() {
-    user = project_user.User.getUser();
+  @override
+  State<AppDrawer> createState() => _AppDrawerState();
+}
+
+class _AppDrawerState extends State<AppDrawer> {
+  project_user.User? user = null;
+
+  Future<void> _getUser(String user_id) async {
+    try {
+      user = await project_user.User.getUserById(user_id);
+    } catch (e) {
+      developer.log("Error fetching user: $e");
+      user = null;
+    }
   }
+
   PropertyListing _getCurrentProperty() {
     return project_user.User.getCurrentProperty();
   }
 
   @override
   Widget build(BuildContext context) {
-    _getUser();
+    _getUser("randomid");
     return Drawer(
       child: Column(
         children: [

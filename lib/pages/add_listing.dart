@@ -3,21 +3,31 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:fyp_project/models/boolean_variable.dart';
 import 'package:fyp_project/pages/confirmation_page.dart';
-import 'package:fyp_project/pages/listing_details.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'dart:developer' as developer;
 
 import '../models/property.dart';
+import '../models/property_listing.dart';
 
 class AddListing extends StatefulWidget {
+  final bool isEditing;
   final Property property;
-  const AddListing({super.key, required this.property});
+  PropertyListing? propertyListing;
+
+  AddListing(
+      {super.key,
+      required this.property,
+      required this.isEditing,
+      required this.propertyListing});
 
   @override
   _AddListingState createState() => _AddListingState();
 }
 
 class _AddListingState extends State<AddListing> {
+  String? userId;
   PageController _pageController = PageController();
   int _currentStep = 0;
   final ImagePicker _picker = ImagePicker();
@@ -45,35 +55,108 @@ class _AddListingState extends State<AddListing> {
   bool isWashingMachine = false;
   bool isNearBusStop = false;
 
+
   String sex_preference = "";
   String nationality_preference = "";
 
-  List<File> _imageFiles = [];
+  List<String> _deletedExistingImageUrls = [];
+  List<File> _addedNewImages = [];
+  List<String> _existingImageUrls = [];
 
   String roomtype = "";
   List<BooleanVariable> amenities = [
-    BooleanVariable("isWifiAccess", false),
-    BooleanVariable("isAirCon", false),
-    BooleanVariable("isNearMarket", false),
-    BooleanVariable("isCarPark", false),
-    BooleanVariable("isNearMRT", false),
-    BooleanVariable("isNearLRT", false),
-    BooleanVariable("isPrivateBathroom", false),
-    BooleanVariable("isGymnasium", false),
-    BooleanVariable("isCookingAllowed", false),
-    BooleanVariable("isWashingMachine", false),
-    BooleanVariable("isNearBusStop", false),
+    BooleanVariable(
+      name: "isWifiAccess",
+      value: false,
+    ),
+    BooleanVariable(name: "isAirCon", value: false),
+    BooleanVariable(name: "isNearMarket", value: false),
+    BooleanVariable(name: "isCarPark", value: false),
+    BooleanVariable(name: "isNearMRT", value: false),
+    BooleanVariable(name: "isNearLRT", value: false),
+    BooleanVariable(name: "isPrivateBathroom", value: false),
+    BooleanVariable(name: "isGymnasium", value: false),
+    BooleanVariable(name: "isCookingAllowed", value: false),
+    BooleanVariable(name: "isWashingMachine", value: false),
+    BooleanVariable(name: "isNearBusStop", value: false),
   ];
 
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    final user = Supabase.instance.client.auth.currentUser;
+    userId = user?.id;
+
+    if (widget.isEditing && widget.propertyListing != null) {
+      developer.log("-------------------EDITING MODE---------------------");
+      _listingTitleController.text = widget.propertyListing!.listing_title;
+      _descriptionController.text = widget.propertyListing!.description;
+      _priceController.text = widget.propertyListing!.price.toString();
+      _depositController.text = widget.propertyListing!.deposit.toString();
+
+      sex_preference = widget.propertyListing!.sex_preference;
+      nationality_preference = widget.propertyListing!.nationality_preference;
+
+      widget.propertyListing!.amenities.removeRange(0, 4);
+
+      isWifiAccess = widget.propertyListing!.amenities[0].value;
+      isAirCon = widget.propertyListing!.amenities[1].value;
+      isNearMarket = widget.propertyListing!.amenities[2].value;
+      isCarPark = widget.propertyListing!.amenities[3].value;
+      isNearMRT = widget.propertyListing!.amenities[4].value;
+      isNearLRT = widget.propertyListing!.amenities[5].value;
+      isPrivateBathroom = widget.propertyListing!.amenities[6].value;
+      isGymnasium = widget.propertyListing!.amenities[7].value;
+      isCookingAllowed = widget.propertyListing!.amenities[8].value;
+      isWashingMachine = widget.propertyListing!.amenities[9].value;
+      isNearBusStop = widget.propertyListing!.amenities[10].value;
+
+      amenities[0].value = widget.propertyListing!.amenities[0].value;
+      amenities[1].value = widget.propertyListing!.amenities[1].value;
+      amenities[2].value = widget.propertyListing!.amenities[2].value;
+      amenities[3].value = widget.propertyListing!.amenities[3].value;
+      amenities[4].value = widget.propertyListing!.amenities[4].value;
+      amenities[5].value = widget.propertyListing!.amenities[5].value;
+      amenities[6].value = widget.propertyListing!.amenities[6].value;
+      amenities[7].value = widget.propertyListing!.amenities[7].value;
+      amenities[8].value = widget.propertyListing!.amenities[8].value;
+      amenities[9].value = widget.propertyListing!.amenities[9].value;
+      amenities[10].value = widget.propertyListing!.amenities[10].value;
+
+      if (widget.propertyListing!.room_type == "master") {
+        isMasterRoom = true;
+        roomtype = "master";
+      } else if (widget.propertyListing!.room_type == "single") {
+        isSingleRoom = true;
+        roomtype = "single";
+      } else if (widget.propertyListing!.room_type == "shared") {
+        isSharedRoom = true;
+        roomtype = "shared";
+      } else if (widget.propertyListing!.room_type == "suite") {
+        isSuite = true;
+        roomtype = "suite";
+      }
+      _existingImageUrls = widget.propertyListing!.image_url;
+    }
+  }
+
   void _nextPage() {
-    if (_currentStep < 3) {
-      setState(() {
-        _currentStep++;
-      });
-      _pageController.nextPage(
-        duration: Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
+    if (roomtype.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please choose a room type.')),
       );
+    } else if (_currentStep < 3) {
+      if (_formKey.currentState?.validate() ?? false) {
+        setState(() {
+          _currentStep++;
+        });
+        _pageController.nextPage(
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      }
     }
   }
 
@@ -93,14 +176,19 @@ class _AddListingState extends State<AddListing> {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() {
-        _imageFiles.add(File(pickedFile.path));
+        _addedNewImages.add(File(pickedFile.path));
       });
     }
   }
 
-  void _removeImage(int index) {
+  void _removeImage(int index, bool isExistingImage) {
     setState(() {
-      _imageFiles.removeAt(index);
+      if (isExistingImage) {
+        _deletedExistingImageUrls.add(_existingImageUrls[index]);
+        _existingImageUrls.removeAt(index);
+      } else {
+        _addedNewImages.removeAt(index - _existingImageUrls.length);
+      }
     });
   }
 
@@ -108,7 +196,7 @@ class _AddListingState extends State<AddListing> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Add Listing"),
+        title: widget.isEditing ? Text("Edit Listing") : Text("Add Listing"),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
@@ -116,12 +204,18 @@ class _AddListingState extends State<AddListing> {
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    title: Text("Cancel Add Listing"),
+                    title: widget.isEditing ? Text("Cancel Edit Listing") : Text("Cancel Add Listing"),
                     content: Text("Are you sure you want to discard this form"),
                     actions: [
-                      TextButton(onPressed: () => {}, child: Text("Cancel")),
                       TextButton(
-                          onPressed: () => {Get.back()}, child: Text("Discard"))
+                          onPressed: () => {
+                                Navigator.of(context).pop(),
+                              },
+                          child: Text("Cancel")),
+                      TextButton(
+                          onPressed: () =>
+                              {Navigator.of(context).pop(), Get.back()},
+                          child: Text("Discard"))
                     ],
                   );
                 });
@@ -132,7 +226,10 @@ class _AddListingState extends State<AddListing> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
-          child: _getBody(),
+          child: Form(
+            child: _getBody(),
+            key: _formKey,
+          ),
         ),
       ),
       bottomNavigationBar: BottomAppBar(
@@ -168,7 +265,20 @@ class _AddListingState extends State<AddListing> {
                           backgroundColor: Colors.black,
                           minimumSize: Size(120, 50)),
                       onPressed: () {
-                        _buildConfirmation();
+                        if (((_existingImageUrls.length - _deletedExistingImageUrls.length) + _addedNewImages.length)< 3) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content: Text("Please add at least 4 images")),
+                          );
+                        } else {
+                          if (widget.isEditing) {
+                            _buildConfirmation(
+                                true, widget.propertyListing?.listing_id);
+
+                          } else {
+                            _buildConfirmation(false, null);
+                          }
+                        }
                       },
                       child: Text("Submit",
                           style: TextStyle(fontSize: 16, color: Colors.white)),
@@ -227,8 +337,14 @@ class _AddListingState extends State<AddListing> {
       children: [
         Text("Listing Title",
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-        TextField(
+        TextFormField(
           controller: _listingTitleController,
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return "Please enter a listing title";
+            }
+            return null;
+          },
           decoration: InputDecoration(hintText: "Listing Title"),
         ),
         SizedBox(height: 16),
@@ -237,65 +353,88 @@ class _AddListingState extends State<AddListing> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: CheckboxListTile(
-                    title: Text("Master Room"),
-                    value: isMasterRoom,
-                    onChanged: (bool? value) {
-                      isMasterRoom = value!;
-                      isSingleRoom = false;
-                      isSharedRoom = false;
-                      isSuite = false;
-                      roomtype = "master";
-                    },
-                  ),
-                ),
-                Expanded(
-                  child: CheckboxListTile(
-                    title: Text("Single Room"),
-                    value: isSingleRoom,
-                    onChanged: (bool? value) {
-                      isSingleRoom = value!;
-                      isMasterRoom = false;
-                      isSharedRoom = false;
-                      isSuite = false;
-                      roomtype = "single";
-                    },
-                  ),
-                )
-              ],
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: CheckboxListTile(
-                    title: Text("Shared Room"),
-                    value: isSharedRoom,
-                    onChanged: (bool? value) {
-                      isSharedRoom = value!;
-                      isMasterRoom = false;
-                      isSingleRoom = false;
-                      isSuite = false;
-                      roomtype="shared";
-                    },
-                  ),
-                ),
-                Expanded(
-                  child: CheckboxListTile(
-                    title: Text("Suite"),
-                    value: isSuite,
-                    onChanged: (bool? value) {
-                      isSuite = value!;
-                      isSharedRoom = false;
-                      isMasterRoom = false;
-                      isSingleRoom = false;
-                      roomtype = "suite";
-                    },
-                  ),
-                )
-              ],
+            FormField(
+              validator: (value) {
+                if (roomtype == null || roomtype.isEmpty) {
+                  return "Please select a room type";
+                }
+                return null;
+              },
+              builder: (FormFieldState<String> state) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: CheckboxListTile(
+                            title: Text("Master Room"),
+                            value: isMasterRoom,
+                            onChanged: (bool? value) {
+                              setState(() {
+                                isMasterRoom = value!;
+                                isSingleRoom = false;
+                                isSharedRoom = false;
+                                isSuite = false;
+                                roomtype = "master";
+                              });
+                            },
+                          ),
+                        ),
+                        Expanded(
+                          child: CheckboxListTile(
+                            title: Text("Single Room"),
+                            value: isSingleRoom,
+                            onChanged: (bool? value) {
+                              setState(() {
+                                isSingleRoom = value!;
+                                isMasterRoom = false;
+                                isSharedRoom = false;
+                                isSuite = false;
+                                roomtype = "single";
+                              });
+                            },
+                          ),
+                        )
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: CheckboxListTile(
+                            title: Text("Shared Room"),
+                            value: isSharedRoom,
+                            onChanged: (bool? value) {
+                              setState(() {
+                                isSharedRoom = value!;
+                                isMasterRoom = false;
+                                isSingleRoom = false;
+                                isSuite = false;
+                                roomtype = "shared";
+                              });
+                            },
+                          ),
+                        ),
+                        Expanded(
+                          child: CheckboxListTile(
+                            title: Text("Suite"),
+                            value: isSuite,
+                            onChanged: (bool? value) {
+                              setState(() {
+                                isSuite = value!;
+                                isSharedRoom = false;
+                                isMasterRoom = false;
+                                isSingleRoom = false;
+                                roomtype = "suite";
+                              });
+                            },
+                          ),
+                        )
+                      ],
+                    ),
+                  ],
+                );
+              },
             ),
           ],
         ),
@@ -466,6 +605,11 @@ class _AddListingState extends State<AddListing> {
           children: [
             Expanded(
               child: DropdownButtonFormField<String>(
+                value: widget.isEditing
+                    ? widget.propertyListing?.sex_preference ?? sex_preference
+                    : sex_preference.isNotEmpty
+                        ? sex_preference
+                        : null,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -479,8 +623,15 @@ class _AddListingState extends State<AddListing> {
                   DropdownMenuItem(
                       value: "no preference", child: Text("No Preference")),
                 ],
-                onChanged: (sex_preference) {
-                  print(sex_preference);
+                onChanged: (value) {
+                  widget.propertyListing!.sex_preference = value!;
+                  sex_preference = value!;
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Please select a gender preference";
+                  }
+                  return null;
                 },
               ),
             ),
@@ -489,6 +640,12 @@ class _AddListingState extends State<AddListing> {
             ),
             Expanded(
               child: DropdownButtonFormField<String>(
+                value: widget.isEditing
+                    ? widget.propertyListing?.nationality_preference ??
+                        nationality_preference
+                    : nationality_preference.isNotEmpty
+                        ? nationality_preference
+                        : null,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
@@ -504,8 +661,15 @@ class _AddListingState extends State<AddListing> {
                   DropdownMenuItem(
                       value: "no preference", child: Text("No Preference")),
                 ],
-                onChanged: (nationality_preference) {
-                  print(nationality_preference);
+                onChanged: (value) {
+                  widget.propertyListing?.nationality_preference = value!;
+                  nationality_preference = value!;
+                },
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Please select a nationality preference";
+                  }
+                  return null;
                 },
               ),
             ),
@@ -513,11 +677,11 @@ class _AddListingState extends State<AddListing> {
         ),
         SizedBox(height: 16),
         Text(
-          "Address",
+          "Description",
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         SizedBox(height: 16),
-        TextField(
+        TextFormField(
           controller: _descriptionController,
           maxLines: 4,
           decoration: InputDecoration(
@@ -525,6 +689,12 @@ class _AddListingState extends State<AddListing> {
             border: OutlineInputBorder(),
             hintText: "Enter Description",
           ),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return "Please enter a description";
+            }
+            return null;
+          },
         ),
         SizedBox(height: 16),
         Text("Price",
@@ -533,7 +703,7 @@ class _AddListingState extends State<AddListing> {
         Row(
           children: [
             Expanded(
-              child: TextField(
+              child: TextFormField(
                 controller: _priceController,
                 decoration: InputDecoration(
                   labelText: "Price",
@@ -543,13 +713,19 @@ class _AddListingState extends State<AddListing> {
                   contentPadding: EdgeInsets.symmetric(horizontal: 10),
                 ),
                 keyboardType: TextInputType.number,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Please enter a price";
+                  }
+                  return null;
+                },
               ),
             ),
             SizedBox(
               width: 20,
             ),
             Expanded(
-              child: TextField(
+              child: TextFormField(
                 controller: _depositController,
                 decoration: InputDecoration(
                   labelText: "Deposit",
@@ -559,6 +735,12 @@ class _AddListingState extends State<AddListing> {
                   contentPadding: EdgeInsets.symmetric(horizontal: 10),
                 ),
                 keyboardType: TextInputType.number,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return "Please enter a deposit";
+                  }
+                  return null;
+                },
               ),
             )
           ],
@@ -568,41 +750,53 @@ class _AddListingState extends State<AddListing> {
   }
 
   Widget _buildStep3() {
+    List<File> allImages = List<File>.from(_addedNewImages);
+    List<String> allExistingImageUrls = List<String>.from(_existingImageUrls);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text("Pictures",
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         SizedBox(height: 16),
-        _imageFiles.isEmpty
+        allImages.isEmpty && allExistingImageUrls.isEmpty
             ? Center(
-                child:
-                    Text('No images added. Add images using the "+" button.'))
+            child: Text('No images added. Add images using the "+" button.'))
             : GridView.builder(
-                shrinkWrap: true,
-                itemCount: _imageFiles.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
+          shrinkWrap: true,
+          itemCount: allImages.length + allExistingImageUrls.length,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 10,
+          ),
+          itemBuilder: (context, index) {
+            bool isExistingImage = index < allExistingImageUrls.length;
+            return Stack(
+              children: [
+                isExistingImage
+                    ? Image.network(
+                  allExistingImageUrls[index],
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                )
+                    : Image.file(
+                  allImages[index - allExistingImageUrls.length],
+                  fit: BoxFit.cover,
+                  width: double.infinity,
                 ),
-                itemBuilder: (context, index) {
-                  return Stack(
-                    children: [
-                      Image.file(_imageFiles[index],
-                          fit: BoxFit.cover, width: double.infinity),
-                      Positioned(
-                        right: 0,
-                        top: 0,
-                        child: IconButton(
-                          icon: Icon(Icons.remove_circle, color: Colors.red),
-                          onPressed: () => _removeImage(index),
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              ),
+                Positioned(
+                  right: 0,
+                  top: 0,
+                  child: IconButton(
+                    icon: Icon(Icons.remove_circle, color: Colors.red),
+                    onPressed: () => _removeImage(index, isExistingImage),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
         SizedBox(height: 16),
         Align(
           alignment: Alignment.bottomCenter,
@@ -615,20 +809,27 @@ class _AddListingState extends State<AddListing> {
     );
   }
 
-  void _buildConfirmation() {
-    List<BooleanVariable> trueAmenities = amenities.where((b) => b.value).toList();
 
-    Get.to(() => ConfirmationPage(
-      property: property,
-      listingTitle: _listingTitleController.text,
-      imageFiles: _imageFiles,
-      price: _priceController.text,
-      deposit: _depositController.text,
-      sex_preference: sex_preference,
-      nationality_preference: nationality_preference,
-      description: _descriptionController.text,
-      roomType: roomtype,
-      ammenities: trueAmenities,),
+  void _buildConfirmation(bool isEditing, String? listing_id) {
+
+    Get.to(
+        () => ConfirmationPage(
+            property: widget.property,
+            listing_id: isEditing ? listing_id : null,
+            listingTitle: _listingTitleController.text,
+            imageFiles: _addedNewImages,
+            price: double.tryParse(_priceController.text) ?? 0.0,
+            deposit: double.tryParse(_depositController.text) ?? 0.0,
+            sex_preference: sex_preference,
+            nationality_preference: nationality_preference,
+            description: _descriptionController.text,
+            roomType: roomtype,
+            ammenities: amenities,
+            userId: userId!,
+            existingImageUrls: isEditing ? _existingImageUrls : [],
+            isEditing: isEditing,
+            rating: isEditing ? widget.propertyListing!.rating : 0,
+            removedExistingImages: isEditing ? _deletedExistingImageUrls : [],),
         transition: Transition.circularReveal,
         duration: const Duration(seconds: 1));
   }

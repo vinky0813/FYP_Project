@@ -1,33 +1,31 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:fyp_project/models/boolean_variable.dart';
 import 'package:fyp_project/models/owner.dart';
 import 'package:fyp_project/models/property.dart';
+import 'package:fyp_project/pages/add_listing.dart';
+import 'package:get/get.dart';
 
 import '../models/property_listing.dart';
 
 class ListingDetailsOwner extends StatefulWidget {
   PropertyListing propertyListing;
-  ListingDetailsOwner({super.key, required this.propertyListing});
+  final Property property;
+  ListingDetailsOwner({super.key, required this.propertyListing, required this.property});
 
   @override
   ListingDetailsOwnerState createState() => ListingDetailsOwnerState();
 }
 
-final Property property = Property(
-    property_id: "1",
-    property_title: "PLACEHOLDER",
-    owner: Owner(
-        username: "name",
-        contact_no: "contact_no",
-        profile_pic: "profile_pic",
-        id: "1"),
-    address: "ADDRESS ADDRESS ADDRESS ADDRESS ADDRESS ADDRESS",
-    imageUrl: "https://via.placeholder.com/150");
-
 class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
   int _currentIndex = 0;
   List<Widget> body = [];
+
+  void _deleteListing(String listing_id) {
+    PropertyListing.deleteListing(listing_id);
+    Get.back(result: false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,10 +43,15 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
                   content: Text("Are you sure you want to remove this listing?"),
                   actions: [
                     TextButton(
-                        onPressed: () => {},
+                        onPressed: () => {
+                          Navigator.of(context).pop(),
+                        },
                         child: Text("Cancel")),
                     TextButton(
-                        onPressed: () => {},
+                        onPressed: () => {
+                          Navigator.of(context).pop(),
+                          _deleteListing(widget.propertyListing.listing_id),
+                        },
                         child: Text("Remove"))
                   ],
                 );
@@ -62,6 +65,8 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
 
   //https://youtu.be/VfUUOI6BUtE?si=yAhaupWJhH8CTQeU
   Widget _getBody() {
+    List<BooleanVariable> trueAmenities = widget.propertyListing.amenities.where((b) => b.value).toList();
+    trueAmenities.removeAt(0);
     switch (_currentIndex) {
       case 0:
         return ListView(
@@ -123,7 +128,7 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
               height: 8,
             ),
             Text(
-                '${widget.propertyListing.description}\n\n${property.address}'),
+                '${widget.propertyListing.description}\n\n${widget.property.address}'),
             SizedBox(height: 16),
             Text(
               "Preference",
@@ -155,9 +160,9 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
             Wrap(
                 spacing: 8.0,
                 runSpacing: 4.0,
-                children: widget.propertyListing.amenities.map((amenity) {
+                children: trueAmenities.map((amenity) {
                   return Chip(
-                    label: Text(amenity),
+                    label: Text(amenity.name),
                     backgroundColor: Colors.grey[200],
                   );
                 }).toList()),
@@ -167,7 +172,7 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
                 CircleAvatar(
                   radius: 40,
                   backgroundImage: NetworkImage(
-                      property.owner.profile_pic), // Load the image
+                      widget.property.owner.profile_pic), // Load the image
                 ),
                 SizedBox(width: 16),
                 Expanded(
@@ -183,12 +188,12 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
                     ),
                     SizedBox(height: 4),
                     Text(
-                      "Owner Name: ${property.owner.username}",
+                      "Owner Name: ${widget.property.owner.username}",
                       style: TextStyle(fontSize: 14),
                     ),
                     SizedBox(height: 4),
                     Text(
-                      "Contact Details: ${property.owner.contact_no}",
+                      "Contact Details: ${widget.property.owner.contact_no}",
                       style: TextStyle(fontSize: 14),
                     ),
                   ],
@@ -450,7 +455,11 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
       actions: [
         IconButton(
           icon: Icon(Icons.edit, color: Colors.black),
-          onPressed: () {},
+          onPressed: () {
+            Get.to(() => AddListing(property: widget.property, isEditing: true, propertyListing: widget.propertyListing, ),
+              transition: Transition.circularReveal,
+              duration: const Duration(seconds: 1));
+          },
         ),
       ],
     );
