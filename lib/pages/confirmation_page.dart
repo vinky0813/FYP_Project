@@ -5,9 +5,11 @@ import 'dart:developer' as developer;
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:fyp_project/models/property.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:latlong2/latlong.dart';
 
 import '../models/boolean_variable.dart';
 
@@ -593,14 +595,51 @@ class ConfirmationPageState extends State<ConfirmationPage> {
             ],
           );
         case 2:
-          return ListView(
+          return Column(
             children: [
-              Center(
-                child: Icon(Icons.account_tree_outlined),
+              Container(
+                padding: EdgeInsets.only(left: 20),
+                child: Row(
+                  children: [
+                    Align(
+                      child: Text("Map",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          )),
+                      alignment: Alignment.centerLeft,
+                    ),
+                  ],
+                ),
               ),
-              Center(
-                child: Text("MAP PART"),
-              )
+              SizedBox(height: 16),
+              Expanded(
+                child: FlutterMap(
+                  options: MapOptions(
+                    initialCenter: LatLng(widget.property.lat, widget.property.long),
+                  ),
+                  children: [
+                    TileLayer(
+                      urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                      subdomains: ['a', 'b', 'c'],
+                    ),
+                    MarkerLayer(
+                      markers: [
+                        Marker(
+                          point: LatLng(widget.property.lat, widget.property.long),
+                          child: Container(
+                            child: Icon(
+                              Icons.location_on,
+                              color: Colors.red,
+                              size: 30,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             ],
           );
         default:
