@@ -82,7 +82,7 @@ class HomePage extends StatelessWidget {
       ),
     ],
     tenant: null,
-    property_id: "1",room_type: "single", isPublished: true, isVerified: false,
+    property_id: "1",room_type: "single", isPublished: true, isVerified: false, view_count: 0,
   );
 
   @override

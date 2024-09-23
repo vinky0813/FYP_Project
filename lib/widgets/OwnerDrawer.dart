@@ -131,11 +131,6 @@ class Ownerdrawer extends StatelessWidget {
                   },
                 ),
                 ListTile(
-                  title: Text("Add Room"),
-                  onTap: () {
-                  },
-                ),
-                ListTile(
                   title: Text("Chat"),
                   onTap: () {},
                 ),

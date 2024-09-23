@@ -295,7 +295,7 @@ app.get("/api/get-all-listing/:property_id", async (req, res) => {
       return res.status(404).json({ message: "No listings found for this property." });
     }
 
-    res.status(200).json({ message: "Listings fetched successfully", data });
+    res.status(200).json({ message: "Listings fetched successfully", data }); 
   } catch (e) {
     console.error("Catch Error:", e.message);
     res.status(500).json({ message: e.message });
@@ -516,6 +516,7 @@ app.put("/api/edit-listing-ammenities", async (req, res) => {
     res.status(500).json({ message: e.message });
   }
 });
+
 
 app.listen(2000, () => {
   console.log("connected at server port 2000");

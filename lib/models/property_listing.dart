@@ -28,6 +28,7 @@ class PropertyListing {
   User? tenant;
   bool isPublished;
   bool isVerified;
+  int view_count;
 
   PropertyListing({
     required this.listing_id,
@@ -46,6 +47,7 @@ class PropertyListing {
     required this.tenant,
     required this.isPublished,
     required this.isVerified,
+    required this.view_count,
   });
 
   static Future<List<PropertyListing>> getPropertyListing(String property_id) async {
@@ -132,7 +134,7 @@ class PropertyListing {
       reviews: reviews,
       isPublished: listingJson["isPublished"],
       isVerified: listingJson["isVerified"],
-      tenant: tenant,
+      tenant: tenant, view_count: listingJson["view_count"],
     );
 
     return propertyListingItem;
@@ -370,7 +372,7 @@ class PropertyListing {
       property_id: "1",
       room_type: "single",
       isPublished: true,
-      isVerified: false,
+      isVerified: false, view_count: 0,
     ));
     topRatedList.add(PropertyListing(
       listing_id: "randomid",
@@ -437,7 +439,7 @@ class PropertyListing {
       property_id: "1",
       room_type: "single",
       isPublished: true,
-      isVerified: false,
+      isVerified: false, view_count: 0,
     ));
     topRatedList.add(PropertyListing(
       listing_id: "randomid",
@@ -504,7 +506,7 @@ class PropertyListing {
       property_id: "1",
       room_type: "single",
       isPublished: true,
-      isVerified: false,
+      isVerified: false, view_count: 0,
     ));
     topRatedList.add(PropertyListing(
       listing_id: "randomid",
@@ -571,7 +573,7 @@ class PropertyListing {
       property_id: "1",
       room_type: "single",
       isPublished: true,
-      isVerified: false,
+      isVerified: false, view_count: 0,
     ));
     topRatedList.add(PropertyListing(
       listing_id: "randomid",
@@ -638,7 +640,7 @@ class PropertyListing {
       property_id: "1",
       room_type: "single",
       isPublished: true,
-      isVerified: false,
+      isVerified: false, view_count: 0,
     ));
     return topRatedList;
   }
@@ -711,7 +713,7 @@ class PropertyListing {
       property_id: "1",
       room_type: "single",
       isPublished: true,
-      isVerified: false,
+      isVerified: false, view_count: 0,
     ));
     mostViewedListing.add(PropertyListing(
       listing_id: "randomid",
@@ -778,7 +780,7 @@ class PropertyListing {
       property_id: "1",
       room_type: "single",
       isPublished: true,
-      isVerified: false,
+      isVerified: false, view_count: 0,
     ));
     mostViewedListing.add(PropertyListing(
       listing_id: "randomid",
@@ -845,7 +847,7 @@ class PropertyListing {
       property_id: "1",
       room_type: "single",
       isPublished: true,
-      isVerified: false,
+      isVerified: false, view_count: 0,
     ));
     mostViewedListing.add(PropertyListing(
       listing_id: "randomid",
@@ -912,7 +914,7 @@ class PropertyListing {
       property_id: "1",
       room_type: "single",
       isPublished: true,
-      isVerified: false,
+      isVerified: false, view_count: 0,
     ));
     mostViewedListing.add(PropertyListing(
       listing_id: "randomid",
@@ -979,7 +981,7 @@ class PropertyListing {
       property_id: "1",
       room_type: "single",
       isPublished: true,
-      isVerified: false,
+      isVerified: false, view_count: 0,
     ));
     return mostViewedListing;
   }
@@ -1052,7 +1054,7 @@ class PropertyListing {
       property_id: "1",
       room_type: "single",
       isPublished: true,
-      isVerified: false,
+      isVerified: false, view_count: 0,
     ));
     searchResultListing.add(PropertyListing(
       listing_id: "randomid",
@@ -1119,7 +1121,7 @@ class PropertyListing {
       property_id: "1",
       room_type: "single",
       isPublished: true,
-      isVerified: false,
+      isVerified: false, view_count: 0,
     ));
     searchResultListing.add(PropertyListing(
       listing_id: "randomid",
@@ -1186,7 +1188,7 @@ class PropertyListing {
       property_id: "1",
       room_type: "single",
       isPublished: true,
-      isVerified: false,
+      isVerified: false, view_count: 0,
     ));
     searchResultListing.add(PropertyListing(
       listing_id: "randomid",
@@ -1253,7 +1255,7 @@ class PropertyListing {
       property_id: "1",
       room_type: "single",
       isPublished: true,
-      isVerified: false,
+      isVerified: false, view_count: 0,
     ));
     searchResultListing.add(PropertyListing(
       listing_id: "randomid",
@@ -1320,7 +1322,7 @@ class PropertyListing {
       property_id: "1",
       room_type: "single",
       isPublished: true,
-      isVerified: false,
+      isVerified: false, view_count: 0,
     ));
     return searchResultListing;
   }
@@ -1393,7 +1395,7 @@ class PropertyListing {
       property_id: "1",
       room_type: "single",
       isPublished: true,
-      isVerified: false,
+      isVerified: false, view_count: 0,
     ));
     shortlist.add(PropertyListing(
       listing_id: "randomid",
@@ -1460,7 +1462,7 @@ class PropertyListing {
       property_id: "1",
       room_type: "single",
       isPublished: true,
-      isVerified: false,
+      isVerified: false, view_count: 0,
     ));
     shortlist.add(PropertyListing(
       listing_id: "randomid",
@@ -1527,7 +1529,7 @@ class PropertyListing {
       property_id: "1",
       room_type: "single",
       isPublished: true,
-      isVerified: false,
+      isVerified: false, view_count: 0,
     ));
     shortlist.add(PropertyListing(
       listing_id: "randomid",
@@ -1594,7 +1596,7 @@ class PropertyListing {
       property_id: "1",
       room_type: "single",
       isPublished: true,
-      isVerified: false,
+      isVerified: false, view_count: 0,
     ));
     shortlist.add(PropertyListing(
       listing_id: "randomid",
@@ -1661,7 +1663,7 @@ class PropertyListing {
       property_id: "1",
       room_type: "single",
       isPublished: true,
-      isVerified: false,
+      isVerified: false, view_count: 0,
     ));
     return shortlist;
   }
@@ -1734,7 +1736,7 @@ class PropertyListing {
       property_id: "1",
       room_type: "single",
       isPublished: true,
-      isVerified: false,
+      isVerified: false, view_count: 0,
     ));
     return invitations;
   }

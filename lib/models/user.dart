@@ -133,7 +133,7 @@ class User {
         isAccommodating: false,
         id: "1",),
       property_id: "1",
-      room_type: "single", isPublished: true, isVerified: false,
+      room_type: "single", isPublished: true, isVerified: false, view_count: 0,
     );
   }
 

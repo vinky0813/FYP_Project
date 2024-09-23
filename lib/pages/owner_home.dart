@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/rendering.dart';
+import 'package:fyp_project/models/property.dart';
 import 'package:fyp_project/pages/account_page.dart';
+import 'package:fyp_project/pages/manage_property.dart';
 import 'package:fyp_project/widgets/OwnerDrawer.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:developer' as developer;
 
 import '../models/owner.dart';
+import '../models/property_listing.dart';
+import '../widgets/ListingCard.dart';
 
 class DashboardOwner extends StatefulWidget {
 
@@ -21,6 +25,11 @@ class _DashboardOwnerState extends State<DashboardOwner> {
 
   String? userId;
   Owner? owner;
+  int number_of_listing = 0;
+  int number_of_published_listing = 0;
+  int number_of_tenants = 0;
+  int number_of_verified_listing = 0;
+  List<PropertyListing> all_listing = [];
 
   void initState() {
     super.initState();
@@ -38,6 +47,8 @@ class _DashboardOwnerState extends State<DashboardOwner> {
       try {
         final fetchedOwner = await Owner.getOwnerWithId(userId!);
 
+        developer.log("fetched owner ${fetchedOwner.toString()}");
+
         setState(() {
           owner = fetchedOwner;
         });
@@ -46,19 +57,67 @@ class _DashboardOwnerState extends State<DashboardOwner> {
       } catch (e) {
         print('Error: $e');
       }
+
+      try {
+        final propertyList = await Property.getOwnerProperties(owner!);
+
+        for (var property in propertyList) {
+          String propertyId = property.property_id;
+
+          developer.log("property id: ${property.property_id}");
+
+          List<dynamic> tempList = await PropertyListing.getPropertyListing(propertyId);
+
+          for (var listing in tempList) {
+
+            developer.log("listing id: ${listing.listing_id}");
+            developer.log("listing isPublished: ${listing.isPublished}");
+            developer.log("listing isVerified: ${listing.isVerified}");
+            developer.log("listing tenant: ${listing.tenant != null}");
+
+            all_listing.add(listing);
+
+            number_of_listing++;
+
+            developer.log("$number_of_listing");
+
+            if (listing.isPublished == true) {
+              number_of_published_listing++;
+            }
+
+            if (listing.tenant != null) {
+              number_of_tenants++;
+            }
+            if (listing.isVerified == true) {
+              number_of_verified_listing++;
+            }
+          }
+        }
+        all_listing.sort((a, b) => b.view_count.compareTo(a.view_count));
+
+        setState(() {
+          number_of_listing;
+          number_of_published_listing;
+          number_of_tenants;
+          number_of_verified_listing;
+          all_listing;
+        });
+
+      } catch (e) {
+        print("Error: $e");
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: Text("INTI Accommodation Finder"),
         centerTitle: true,
         actions: [IconButton(
           // placeholder icon fix later
-          icon: const Icon(Icons.account_tree_outlined),
+          icon: const Icon(Icons.account_box),
           // same thing here
           onPressed: () => {
             Get.to(() => AccountPage(),
@@ -82,10 +141,10 @@ class _DashboardOwnerState extends State<DashboardOwner> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text(
-                      "Title",
+                      "Most Viewed Listing",
                       style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
-                    SizedBox(height: 200, child: LineChart(mainData())), // Graph here
+                    SizedBox(height: 200, child: mostViewedListing(all_listing)), // Graph here
                   ],
                 ),
               ),
@@ -101,8 +160,11 @@ class _DashboardOwnerState extends State<DashboardOwner> {
                       backgroundColor: Colors.black,
                     ),
                     onPressed: () {
+                      Get.to(() =>ManageProperty(),
+                          transition: Transition.circularReveal,
+                          duration: const Duration(seconds: 1));
                     },
-                    child: Text("Manage Rooms", style: TextStyle(color: Colors.white)),
+                    child: Text("Manage Property", style: TextStyle(color: Colors.white)),
                   ),
                 ),
                 SizedBox(width: 10),
@@ -140,16 +202,14 @@ class _DashboardOwnerState extends State<DashboardOwner> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "placeholder",
+                          "Number of Listings",
                           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                         SizedBox(height: 10),
                         Text(
-                          "\$45,678.90",
+                          "$number_of_listing",
                           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                         ),
-                        SizedBox(height: 5),
-                        Text("placeholder"),
                       ],
                     ),
                   ),
@@ -164,16 +224,14 @@ class _DashboardOwnerState extends State<DashboardOwner> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "placeholder",
+                          "Number of Published Listing",
                           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                         SizedBox(height: 10),
                         Text(
-                          "\$45,678.90",
+                          "$number_of_published_listing",
                           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                         ),
-                        SizedBox(height: 5),
-                        Text("placeholder"),
                       ],
                     ),
                   ),
@@ -188,16 +246,14 @@ class _DashboardOwnerState extends State<DashboardOwner> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "placeholder",
+                          "Number of Tenants",
                           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                         SizedBox(height: 10),
                         Text(
-                          "\$45,678.90",
+                          "$number_of_tenants",
                           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                         ),
-                        SizedBox(height: 5),
-                        Text("placeholder"),
                       ],
                     ),
                   ),
@@ -212,16 +268,14 @@ class _DashboardOwnerState extends State<DashboardOwner> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "placeholder",
+                          "Number of Verified Listings",
                           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                         SizedBox(height: 10),
                         Text(
-                          "\$45,678.90",
+                          "$number_of_verified_listing",
                           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                         ),
-                        SizedBox(height: 5),
-                        Text("placeholder"),
                       ],
                     ),
                   ),
@@ -232,40 +286,16 @@ class _DashboardOwnerState extends State<DashboardOwner> {
           );
   }
 
-  LineChartData mainData() {
-    return LineChartData(
-      gridData: FlGridData(show: true),
-      titlesData: FlTitlesData(show: true),
-      borderData: FlBorderData(
-        show: true,
-        border: Border.all(color: const Color(0xff37434d), width: 1),
+  Widget mostViewedListing(List<PropertyListing> all_listing) {
+    return Container(
+      height: 200, // Set a fixed height for the ListView
+      child: ListView.builder(
+        scrollDirection: Axis.vertical,
+        itemCount: all_listing.length,
+        itemBuilder: (context, index) {
+          return ListingCard(listing: all_listing[index]);
+        },
       ),
-      minX: 0,
-      maxX: 11,
-      minY: 0,
-      maxY: 6,
-      lineBarsData: [
-        LineChartBarData(
-          spots: [
-            FlSpot(0, 3),
-            FlSpot(1, 2),
-            FlSpot(2, 5),
-            FlSpot(3, 3.1),
-            FlSpot(4, 4),
-            FlSpot(5, 3),
-            FlSpot(6, 4),
-            FlSpot(7, 3),
-            FlSpot(8, 5),
-            FlSpot(9, 4),
-            FlSpot(10, 5),
-          ],
-          isCurved: true,
-          color: Colors.black,
-          barWidth: 4,
-          isStrokeCapRound: true,
-          dotData: FlDotData(show: true),
-        ),
-      ],
     );
   }
 }
