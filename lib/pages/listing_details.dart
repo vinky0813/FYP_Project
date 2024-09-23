@@ -24,7 +24,7 @@ final Property property = Property(
         profile_pic: "profile_pic",
         id: "1"),
     address: "ADDRESS ADDRESS ADDRESS ADDRESS ADDRESS ADDRESS",
-    imageUrl: "https://via.placeholder.com/150");
+    imageUrl: "https://via.placeholder.com/150", lat: 0, long: 0);
 
   class ListingdetailsState extends State<Listingdetails> {
   int _currentIndex = 0;

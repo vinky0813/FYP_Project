@@ -28,12 +28,12 @@ app.get('/api/data', async (req, res) => {
 });
 
 app.post("/api/add-property", async (req, res) => {
-  const { property_title, address, owner_id, property_image } = req.body;
+  const { property_title, address, owner_id, property_image, lat, long } = req.body;
 
   try {
     const { data, error } = await supabase
       .from('Property') 
-      .insert([{ property_title, address, owner_id, property_image }])
+      .insert([{ property_title, address, owner_id, property_image, lat, long }])
       .select("property_id") 
       .single();
 
@@ -123,7 +123,7 @@ app.get("/api/get-owner-with-id/:user_id", async (req, res) => {
 app.put("/api/update-property/:property_id", async (req, res) => {
   try{
     const { property_id } = req.params;
-    const { property_title, address, property_image, owner_id } = req.body;
+    const { property_title, address, property_image, owner_id, lat, long } = req.body;
 
     const { data, error } = await supabase
       .from("Property")
@@ -131,7 +131,9 @@ app.put("/api/update-property/:property_id", async (req, res) => {
         property_title: property_title,
         address: address,
         property_image: property_image,
-        owner_id: owner_id
+        owner_id: owner_id,
+        lat: lat,
+        long: long,
       })
       .eq("property_id", property_id);
 

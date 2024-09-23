@@ -13,6 +13,8 @@ class Property {
   Owner owner;
   String address;
   String imageUrl;
+  double lat;
+  double long;
 
   Property({
     required this.property_id,
@@ -20,6 +22,8 @@ class Property {
     required this.owner,
     required this.address,
     required this.imageUrl,
+    required this.lat,
+    required this.long,
   });
 
   factory Property.fromJson(Map<String, dynamic> json, Owner owner) {
@@ -29,6 +33,8 @@ class Property {
       owner: owner,
       address: json["address"],
       imageUrl: json["property_image"],
+      lat: json["lat"],
+      long: json["long"],
     );
   }
 
