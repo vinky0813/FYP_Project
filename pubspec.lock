@@ -113,14 +113,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.8"
-  dart_earcut:
-    dependency: transitive
-    description:
-      name: dart_earcut
-      sha256: "41b493147e30a051efb2da1e3acb7f38fe0db60afba24ac1ea5684cee272721e"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.1.0"
   dio:
     dependency: transitive
     description:
@@ -250,26 +242,26 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_map
-      sha256: "2ecb34619a4be19df6f40c2f8dce1591675b4eff7a6857bd8f533706977385da"
+      sha256: "87cc8349b8fa5dccda5af50018c7374b6645334a0d680931c1fe11bce88fa5bb"
       url: "https://pub.dev"
     source: hosted
-    version: "7.0.2"
+    version: "6.2.1"
   flutter_map_cancellable_tile_provider:
     dependency: transitive
     description:
       name: flutter_map_cancellable_tile_provider
-      sha256: "03662220ce0cd784ad2f2a45c36fc379b8b315c74f5c12b5ff4a0515eab1acd1"
+      sha256: ae18dd59faf74f3eca1d28f83e59b47741bbff962e123bbebe9335c04d432f44
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.2"
+    version: "2.0.0"
   flutter_map_location_marker:
     dependency: transitive
     description:
       name: flutter_map_location_marker
-      sha256: fa21753e7134d8a1f0b7b979d053c5cc43126e11685fe63c4c49da7b7416e1ae
+      sha256: c880c0ce6e6f64ade72f72d4d95b54ea75827818350af5596b301e0cbb350dcd
       url: "https://pub.dev"
     source: hosted
-    version: "9.0.0"
+    version: "8.0.5"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -308,10 +300,10 @@ packages:
     dependency: transitive
     description:
       name: geolocator
-      sha256: "149876cc5207a0f5daf4fdd3bfcf0a0f27258b3fe95108fa084f527ad0568f1b"
+      sha256: f4efb8d3c4cdcad2e226af9661eb1a0dd38c71a9494b22526f9da80ab79520e5
       url: "https://pub.dev"
     source: hosted
-    version: "12.0.0"
+    version: "10.1.1"
   geolocator_android:
     dependency: transitive
     description:
@@ -340,10 +332,10 @@ packages:
     dependency: transitive
     description:
       name: geolocator_web
-      sha256: "7a22f400d831f924a89d931ba126a10e6b8b437f31e6b9311320435f3e1571bd"
+      sha256: "102e7da05b48ca6bf0a5bda0010f886b171d1a08059f01bfe02addd0175ebece"
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.0"
+    version: "2.2.1"
   geolocator_windows:
     dependency: transitive
     description:
@@ -529,37 +521,38 @@ packages:
     source: hosted
     version: "1.0.1"
   location:
-    dependency: transitive
+    dependency: "direct main"
     description:
-      name: location
-      sha256: "6463a242973bf247e3fb1c7722919521b98026978ee3b5177202e103a39c145e"
-      url: "https://pub.dev"
-    source: hosted
-    version: "7.0.0"
+      path: "packages/location"
+      ref: V4
+      resolved-ref: "44745026a384c743cb5e64f94296303d9adbb237"
+      url: "https://github.com/781flyingdutchman/flutterlocation.git"
+    source: git
+    version: "4.4.1"
   location_picker_flutter_map:
     dependency: "direct main"
     description:
       name: location_picker_flutter_map
-      sha256: a28e83b9cc66dbdc107a225e75657b37f0d3d44e8a2af071f238f9d03e443f16
+      sha256: f120dff8807f4b4b1c47934ea08ed56b8b88a174c5124efffeaa0b5703674bd6
       url: "https://pub.dev"
     source: hosted
-    version: "3.1.0"
+    version: "3.0.1"
   location_platform_interface:
     dependency: transitive
     description:
       name: location_platform_interface
-      sha256: "1e535ccc8b4a9612de4e4319871136b45d2b5d1fb0c2a8bf99687242bf7ca5f7"
+      sha256: "62eeaf1658e92e4459b727f55a3c328eccbac8ba043fa6d262ac5286ad48384c"
       url: "https://pub.dev"
     source: hosted
-    version: "5.0.0"
+    version: "2.3.0"
   location_web:
     dependency: transitive
     description:
       name: location_web
-      sha256: "613597b489beb396f658c6f4358dd383c5ed0a1402d95e287642a5f2d8171cb0"
+      sha256: "6c08c408a040534c0269c4ff9fe17eebb5a36dea16512fbaf116b9c8bc21545b"
       url: "https://pub.dev"
     source: hosted
-    version: "5.0.3"
+    version: "3.1.1"
   logger:
     dependency: transitive
     description:
