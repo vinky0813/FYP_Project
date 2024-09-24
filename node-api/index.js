@@ -31,9 +31,11 @@ app.post("/api/add-property", async (req, res) => {
   const { property_title, address, owner_id, property_image, lat, long } = req.body;
 
   try {
+    const location = `POINT(${long} ${lat})`;
+
     const { data, error } = await supabase
       .from('Property') 
-      .insert([{ property_title, address, owner_id, property_image, lat, long }])
+      .insert([{ property_title, address, owner_id, property_image, location }])
       .select("property_id") 
       .single();
 
@@ -125,6 +127,8 @@ app.put("/api/update-property/:property_id", async (req, res) => {
     const { property_id } = req.params;
     const { property_title, address, property_image, owner_id, lat, long } = req.body;
 
+    const location = `POINT(${long} ${lat})`;
+
     const { data, error } = await supabase
       .from("Property")
       .update({
@@ -132,8 +136,7 @@ app.put("/api/update-property/:property_id", async (req, res) => {
         address: address,
         property_image: property_image,
         owner_id: owner_id,
-        lat: lat,
-        long: long,
+        location: location,
       })
       .eq("property_id", property_id);
 

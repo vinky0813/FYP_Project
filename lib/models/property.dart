@@ -27,14 +27,17 @@ class Property {
   });
 
   factory Property.fromJson(Map<String, dynamic> json, Owner owner) {
+
+    List<dynamic> coordinates = json["location"]["coordinates"];
+
     return Property(
       property_id: json["property_id"],
       property_title: json["property_title"],
       owner: owner,
       address: json["address"],
       imageUrl: json["property_image"],
-      lat: json["lat"],
-      long: json["long"],
+      lat: coordinates[1].toDouble(),
+      long: coordinates[0].toDouble(),
     );
   }
 
@@ -43,6 +46,8 @@ class Property {
         .replace(queryParameters: {"owner_id": owner.id});
     final response = await http.get(
         url, headers: {"Accept": "application/json"});
+
+    developer.log(response.body);
 
     developer.log(owner.profile_pic);
 

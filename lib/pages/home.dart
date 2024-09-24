@@ -6,8 +6,6 @@ import 'package:fyp_project/pages/listing_details.dart';
 import 'package:fyp_project/pages/my_room.dart';
 import 'package:fyp_project/pages/my_room_invitation.dart';
 import 'package:fyp_project/pages/saved_searches.dart';
-import 'package:fyp_project/pages/search_result.dart';
-import 'package:fyp_project/pages/search_result_filter.dart';
 import 'package:fyp_project/pages/shortlist.dart';
 import 'package:fyp_project/widgets/AppDrawer.dart';
 import 'package:get/get.dart';
@@ -15,6 +13,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:developer' as developer;
 
 import '../models/property_listing.dart';
+import '../widgets/SearchBarLocation.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({super.key});
@@ -100,7 +99,7 @@ class _HomePageState extends State<HomePage> {
       drawer: AppDrawer(),
       body: ListView(
         children: [
-          searchBar(),
+          SearchBarLocation(),
           quickAccess(),
           topRatedListView(),
           mostViewedListView(),
@@ -425,7 +424,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
  // end of appBar method
-  Container searchBar() {
+  /*Container searchBar() {
     return Container(
       margin: EdgeInsets.fromLTRB(30, 30, 30, 30),
       alignment: Alignment.center,
@@ -484,6 +483,6 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-    );
-  }
+    );*/
+  //}
 }

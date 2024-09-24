@@ -35,10 +35,16 @@ class _AddPropertyState extends State<AddProperty> {
     userId = user?.id;
 
     if (widget.isEditing && widget.property != null) {
-      _propertyTitleController.text = widget.property!.property_title;
-      _addressController.text = widget.property!.address;
-      lat = widget.property!.lat;
-      long = widget.property!.long;
+
+      setState(() {
+        _propertyTitleController.text = widget.property!.property_title;
+        _addressController.text = widget.property!.address;
+        lat = widget.property!.lat;
+        long = widget.property!.long;
+      });
+
+      developer.log("lat $lat");
+      developer.log("long $long");
     }
   }
 
@@ -418,8 +424,7 @@ class _AddPropertyState extends State<AddProperty> {
                 initZoom: 11,
                 minZoomLevel: 5,
                 maxZoomLevel: 16,
-                trackMyPosition: true,
-                initPosition: widget.isEditing? LatLong(widget.property!.lat, widget.property!.long) : LatLong(0, 0),
+                initPosition: widget.isEditing? LatLong(lat, long) : LatLong(0, 0),
                 onPicked: (pickedData) {
                   _addressController.text = pickedData.address;
                   lat = pickedData.latLong.latitude;
