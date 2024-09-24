@@ -11,7 +11,7 @@ import '../models/property_listing.dart';
 
 class MyRoom extends StatefulWidget {
 
-  final PropertyListing propertyListing;
+  final PropertyListing? propertyListing;
   MyRoom({super.key, required this.propertyListing});
 
   @override
@@ -62,7 +62,7 @@ class MyroomState extends State<MyRoom> {
           children: [
             ImageCarousel(),
             SizedBox(height:16),
-            Text(widget.propertyListing.listing_title,
+            Text(widget.propertyListing!.listing_title,
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
             SizedBox(height:16),
             Row(
@@ -74,7 +74,7 @@ class MyroomState extends State<MyRoom> {
                 ),
                 SizedBox(width: 8,),
                 Text(
-                  "${widget.propertyListing.rating}/5",
+                  "${widget.propertyListing!.rating}/5",
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -84,13 +84,13 @@ class MyroomState extends State<MyRoom> {
             ),
             SizedBox(height: 16,),
             Row(
-              children: [Text("Price: RM${widget.propertyListing.price}"),
+              children: [Text("Price: RM${widget.propertyListing!.price}"),
                 SizedBox(width: 16,),
-                Text("Deposit: RM${widget.propertyListing.deposit}"),],
+                Text("Deposit: RM${widget.propertyListing!.deposit}"),],
             ),
             SizedBox(height: 16,),
             Text(
-              "Room Type: ${widget.propertyListing.room_type}",
+              "Room Type: ${widget.propertyListing!.room_type}",
               style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 16),
@@ -103,7 +103,7 @@ class MyroomState extends State<MyRoom> {
                 fontSize: 16),
             ),
             SizedBox(height: 8,),
-            Text('${widget.propertyListing.description}\n\n${property.address}'),
+            Text('${widget.propertyListing!.description}\n\n${property.address}'),
             SizedBox(height: 16),
             Text(
               "Preference",
@@ -112,9 +112,9 @@ class MyroomState extends State<MyRoom> {
             SizedBox(height: 8,),
             Row(
               children: [
-                Text("Sex: ${widget.propertyListing.sex_preference}"),
+                Text("Sex: ${widget.propertyListing!.sex_preference}"),
                 SizedBox(width: 16,),
-                Text("Nationality: ${widget.propertyListing.nationality_preference}"),
+                Text("Nationality: ${widget.propertyListing!.nationality_preference}"),
               ],
             ),
             SizedBox(height: 16,),
@@ -126,7 +126,7 @@ class MyroomState extends State<MyRoom> {
             Wrap(
                 spacing: 8.0,
                 runSpacing: 4.0,
-                children: widget.propertyListing.amenities.map((amenity) {
+                children: widget.propertyListing!.amenities.map((amenity) {
                   return Chip(
                     label: Text(amenity.name),
                     backgroundColor: Colors.grey[200],
@@ -193,7 +193,7 @@ class MyroomState extends State<MyRoom> {
             SizedBox(height: 16),
             Expanded(
               child: ListView.separated(
-                itemCount: widget.propertyListing.reviews.length,
+                itemCount: widget.propertyListing!.reviews.length,
                 scrollDirection: Axis.vertical,
                 padding: EdgeInsets.only(left: 20, right: 20),
                 separatorBuilder: (context, index) {
@@ -210,13 +210,13 @@ class MyroomState extends State<MyRoom> {
                           Row(
                             children: [
                               Icon(Icons.star, color: Colors.yellow,),
-                              Text("${widget.propertyListing.reviews[index].rating}/5")
+                              Text("${widget.propertyListing!.reviews[index].rating}/5")
                             ],
                           ),
                           Container(
                             padding: EdgeInsets.all(8),
                             child: Text(
-                              "${widget.propertyListing.reviews[index].comment}/5",
+                              "${widget.propertyListing!.reviews[index].comment}/5",
                               style: TextStyle(
                                 fontSize: 12,
                               ),
@@ -324,7 +324,7 @@ class MyroomState extends State<MyRoom> {
   CarouselSlider ImageCarousel() {
     return CarouselSlider(
       options: CarouselOptions(height: 200),
-      items: widget.propertyListing.image_url.map((imageUrl) {
+      items: widget.propertyListing!.image_url.map((imageUrl) {
         return Builder(
           builder: (BuildContext context) {
             return Container(

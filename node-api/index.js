@@ -519,6 +519,70 @@ app.put("/api/edit-listing-ammenities", async (req, res) => {
   }
 });
 
+app.get("/api/get-most-viewed-listing", async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from("Listing")
+      .select("")
+      .order("view_count", { ascending: false })
+      .limit(5);
+
+    if (error) {
+      throw error;
+    }
+    res.status(200).json({
+      message: "Successfully fetched most-viewed listing",
+      data,
+    });
+  } catch (error) {
+    console.error("Error fetching most-viewed listing:", error.message);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.get("/api/get-top-rated-listing", async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from("Listing")
+      .select("")
+      .order("rating", { ascending: false })
+      .limit(5);
+
+    if (error) {
+      throw error;
+    }
+    res.status(200).json({
+      message: "Successfully fetched top-rated listing",
+      data,
+    });
+  } catch (error) {
+    console.error("Error fetching top-rated listing:", error.message);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.get("/api/get-listing-with-id/:listing_id", async (req, res) => {
+
+  const { listing_id } = req.params;
+  try {
+    const { data, error } = await supabase
+      .from("Listing")
+      .select("*")
+      .eq("listing_id", listing_id)
+      .single();
+
+    if (error) {
+      throw error;
+    }
+    res.status(200).json({
+      message: "Successfully fetched top-rated listing",
+      data,
+    });
+  } catch (error) {
+    console.error("Error fetching top-rated listing:", error.message);
+    res.status(500).json({ message: error.message });
+  }
+});
 
 app.listen(2000, () => {
   console.log("connected at server port 2000");

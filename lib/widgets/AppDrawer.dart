@@ -23,6 +23,8 @@ class AppDrawer extends StatefulWidget {
 
 class _AppDrawerState extends State<AppDrawer> {
   project_user.User? user = null;
+  PropertyListing? currentListing = null;
+  String? userId;
 
   Future<void> _getUser(String user_id) async {
     try {
@@ -33,40 +35,130 @@ class _AppDrawerState extends State<AppDrawer> {
     }
   }
 
-  PropertyListing _getCurrentProperty() {
-    return project_user.User.getCurrentProperty();
+  Future<project_user.User?> _fetchUser() async {
+    final user = Supabase.instance.client.auth.currentUser;
+    final userId = user?.id;
+
+    developer.log('User: $user');
+    developer.log('User ID: $userId');
+
+    if (userId != null) {
+      try {
+        return await project_user.User.getUserById(userId);
+      } catch (e) {
+        developer.log('Error fetching owner: $e');
+        return null;
+      }
+    }
+    return null;
+  }
+
+  Future<PropertyListing?> _getCurrentProperty() {
+    return PropertyListing.getCurrentProperty(user!.listing_id);
+  }
+
+  void initState() {
+    super.initState();
+    _initialize();
+  }
+
+  Future<void> _initialize() async {
+    final user = Supabase.instance.client.auth.currentUser;
+    userId = user?.id;
+
+    developer.log('User: $user');
+    developer.log('User ID: $userId');
+
+    if (userId != null) {
+      try {
+        _getUser(userId!);
+        currentListing = (await _getCurrentProperty())!;
+      } catch (e) {
+        print('Error: $e');
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    _getUser("randomid");
     return Drawer(
       child: Column(
         children: [
-          SizedBox(
-            height: 150,
-            child: DrawerHeader(
-              child: Row(
-                children: [
-                  CircleAvatar(
-                    radius: 25,
-                    backgroundImage: NetworkImage('https://via.placeholder.com/150'),
-                  ),
-                  SizedBox(width: 20),
-                  Text(
-                    user!.username,
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
+          FutureBuilder<project_user.User?>(
+              future: _fetchUser(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return SizedBox(
+                    height: 150,
+                    child: DrawerHeader(
+                      child: Row(
+                        children: [
+                          Center(child: CircularProgressIndicator()),
+                          SizedBox(width: 20),
+                          Text(
+                            "Loading User Data",
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
+                      decoration: const BoxDecoration(
+                        color: Colors.grey,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              decoration: const BoxDecoration(
-                color: Colors.grey,
-              ),
-            ),
-          ),
+                  );
+                } else if (snapshot.data==null) {
+                  return SizedBox(
+                    height: 150,
+                    child: DrawerHeader(
+                      child: Row(
+                        children: [
+                          Center(child: CircularProgressIndicator()),
+                          SizedBox(width: 20),
+                          Text(
+                            "Loading User Data",
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
+                      decoration: const BoxDecoration(
+                        color: Colors.grey,
+                      ),
+                    ),
+                  );
+                } else {
+                  final renter = snapshot.data!;
+                  return SizedBox(
+                    height: 150,
+                    child: DrawerHeader(
+                      child: Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 25,
+                            backgroundImage: NetworkImage(renter.profilePic),
+                          ),
+                          SizedBox(width: 20),
+                          Text(
+                            renter.username,
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
+                      decoration: const BoxDecoration(
+                        color: Colors.grey,
+                      ),
+                    ),
+                  );
+                }
+              }),
           Expanded(
             child: ListView(
               padding: EdgeInsets.zero,
@@ -104,7 +196,7 @@ class _AppDrawerState extends State<AppDrawer> {
                   onTap: () {
                     if (user!.isAccommodating) {
                       Get.to(() => MyRoom(
-                          propertyListing: _getCurrentProperty()),
+                          propertyListing: currentListing),
                           transition: Transition.circularReveal,
                           duration: const Duration(seconds: 1));
                     } else {

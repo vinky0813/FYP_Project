@@ -30,7 +30,7 @@ class User {
     return User(
       id: json["user_id"],
       username: json["username"],
-      profilePic: json["profile_pic"],
+      profilePic: json["profile_pic"] ?? "https://via.placeholder.com/150",
       contactDetails: json["contact_no"],
       sex: json["sex"],
       nationality: json["nationality"],
@@ -87,54 +87,4 @@ class User {
       id: "1",));
     return tenantList;
   }
-  static PropertyListing getCurrentProperty() {
-    return PropertyListing(
-      listing_id: "randomid",
-      listing_title: "property2",
-      rating: 5.0,
-      image_url: ["image_url"],
-      price: 1000,
-      deposit: 100,
-      description: "placeholder description placeholder description placeholder description placeholder description ",
-      sex_preference: "all",
-      nationality_preference: "malaysian",
-      amenities: [BooleanVariable(name: "isWifiAccess", value: false,),
-        BooleanVariable(name: "isAirCon", value: false),
-        BooleanVariable(name: "isNearMarket", value: false),
-        BooleanVariable(name: "isCarPark", value: false),
-        BooleanVariable(name: "isNearMRT", value: false),
-        BooleanVariable(name: "isNearLRT", value: false),
-        BooleanVariable(name: "isPrivateBathroom", value: false),
-        BooleanVariable(name: "isGymnasium", value: false),
-        BooleanVariable(name: "isCookingAllowed", value: false),
-        BooleanVariable(name: "isWashingMachine", value: false),
-        BooleanVariable(name: "isNearBusStop", value: false),],
-      reviews: [
-        Review(
-          rating: 5,
-          comment: "comment placeholder comment placeholder comment placeholder", review_id: '', user_id: '', listing_id: '',
-        ),
-        Review(
-          rating: 4,
-          comment: "comment placeholder comment placeholder comment placeholder", review_id: '', user_id: '', listing_id: '',
-        ),
-        Review(
-          rating: 3,
-          comment: "comment placeholder comment placeholder comment placeholder", review_id: '', user_id: '', listing_id: '',
-        ),
-      ],
-      tenant:
-      User(
-        username: "username",
-        profilePic: "profilePic",
-        contactDetails: "contactDetails",
-        sex: "sex",
-        nationality: "nationality",
-        isAccommodating: false,
-        id: "1",),
-      property_id: "1",
-      room_type: "single", isPublished: true, isVerified: false, view_count: 0,
-    );
-  }
-
 }

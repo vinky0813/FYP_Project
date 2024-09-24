@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:fyp_project/models/boolean_variable.dart';
-import 'package:fyp_project/models/user.dart';
+import 'package:fyp_project/models/user.dart' as project_user;
 import 'package:fyp_project/pages/account_page.dart';
 import 'package:fyp_project/pages/listing_details.dart';
 import 'package:fyp_project/pages/my_room.dart';
@@ -12,84 +11,90 @@ import 'package:fyp_project/pages/search_result_filter.dart';
 import 'package:fyp_project/pages/shortlist.dart';
 import 'package:fyp_project/widgets/AppDrawer.dart';
 import 'package:get/get.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:developer' as developer;
 
-import '../models/owner.dart';
 import '../models/property_listing.dart';
-import '../models/review.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   HomePage({super.key});
 
-  User? user = null;
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
 
+class _HomePageState extends State<HomePage> {
+
+  project_user.User? user = null;
   List<PropertyListing> topRatedPropertyListing = [];
   List<PropertyListing> mostViewedPropertyListing = [];
+  String? userId;
+  PropertyListing? currentListing = null;
 
-  void _getTopRatedListing() {
-    topRatedPropertyListing = PropertyListing.getTopRatedListing();
+  Future<void> _getTopRatedListing() async {
+    topRatedPropertyListing = await PropertyListing.getTopRatedListing();
+
+    setState(() {
+      topRatedPropertyListing;
+    });
   }
 
-  void _getMostViewedPropertyListing() {
-    mostViewedPropertyListing = PropertyListing.getMostViewedListing();
+  Future<void> _getMostViewedPropertyListing() async {
+    mostViewedPropertyListing = await PropertyListing.getMostViewedListing();
+
+    setState(() {
+      mostViewedPropertyListing;
+    });
   }
 
   Future<void> _getUser(String user_id) async {
     try {
-      user = await User.getUserById(user_id);
+      user = await project_user.User.getUserById(user_id);
     } catch (e) {
       developer.log("Error fetching user: $e");
       user = null;
     }
   }
-  PropertyListing _getCurrentProperty() {
-    return User.getCurrentProperty();
+
+  Future<PropertyListing?> _getCurrentProperty() async {
+
+    developer.log("listing id: ${user!.listing_id}");
+    if (user!.listing_id!=null) {
+      developer.log("listing id: ${user!.listing_id}");
+      return await PropertyListing.getCurrentProperty(user!.listing_id);
+    }
   }
 
-  final PropertyListing propertyListing = PropertyListing(
-    listing_id: "randomid",
-    listing_title: "property2",
-    rating: 5.0,
-    image_url: ["image_url"],
-    price: 1000,
-    deposit: 100,
-    description: "placeholder description placeholder description placeholder description placeholder description ",
-    sex_preference: "all",
-    nationality_preference: "malaysian",
-    amenities: [BooleanVariable(name: "isWifiAccess", value: false,),
-      BooleanVariable(name: "isAirCon", value: false),
-      BooleanVariable(name: "isNearMarket", value: false),
-      BooleanVariable(name: "isCarPark", value: false),
-      BooleanVariable(name: "isNearMRT", value: false),
-      BooleanVariable(name: "isNearLRT", value: false),
-      BooleanVariable(name: "isPrivateBathroom", value: false),
-      BooleanVariable(name: "isGymnasium", value: false),
-      BooleanVariable(name: "isCookingAllowed", value: false),
-      BooleanVariable(name: "isWashingMachine", value: false),
-      BooleanVariable(name: "isNearBusStop", value: false),],
-    reviews: [
-      Review(
-        rating: 5,
-        comment: "comment placeholder comment placeholder comment placeholder",review_id: '', user_id: '', listing_id: '',
-      ),
-      Review(
-        rating: 4,
-        comment: "comment placeholder comment placeholder comment placeholder",review_id: '', user_id: '', listing_id: '',
-      ),
-      Review(
-        rating: 3,
-        comment: "comment placeholder comment placeholder comment placeholder",review_id: '', user_id: '', listing_id: '',
-      ),
-    ],
-    tenant: null,
-    property_id: "1",room_type: "single", isPublished: true, isVerified: false, view_count: 0,
-  );
+  void initState() {
+    super.initState();
+    _initialize();
+  }
+
+  Future<void> _initialize() async {
+    final user = Supabase.instance.client.auth.currentUser;
+    userId = user?.id;
+
+    developer.log('User: $user');
+    developer.log('User ID: $userId');
+
+    if (userId != null) {
+      try {
+        _getUser(userId!);
+        _getTopRatedListing();
+        _getMostViewedPropertyListing();
+        currentListing = await _getCurrentProperty();
+
+        developer.log("top rated listing length: ${topRatedPropertyListing.length}");
+        developer.log("top rated listing: ${topRatedPropertyListing}");
+
+      } catch (e) {
+        print('Error: $e');
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    _getUser("randomid");
-    _getTopRatedListing();
-    _getMostViewedPropertyListing();
     return Scaffold(
       appBar: appBar(),
       drawer: AppDrawer(),
@@ -148,7 +153,7 @@ class HomePage extends StatelessWidget {
                                 topRight: Radius.circular(10),
                               ),
                               child: Image.network(
-                                "https://via.placeholder.com/150",
+                                mostViewedPropertyListing[index].image_url[0],
                                 fit: BoxFit.cover,
                                 width: double.infinity,
                                 height: double.infinity,
@@ -223,7 +228,7 @@ class HomePage extends StatelessWidget {
                                 topRight: Radius.circular(10),
                               ),
                               child: Image.network(
-                                "https://via.placeholder.com/150",
+                                topRatedPropertyListing[index].image_url[0],
                                 fit: BoxFit.cover,
                                 width: double.infinity,
                                 height: double.infinity,
@@ -376,7 +381,7 @@ class HomePage extends StatelessWidget {
                     onTap: () {
                       if (user!.isAccommodating) {
                         Get.to(() => MyRoom(
-                            propertyListing: _getCurrentProperty()),
+                            propertyListing: currentListing),
                             transition: Transition.circularReveal,
                             duration: const Duration(seconds: 1));
                       } else {
@@ -418,8 +423,8 @@ class HomePage extends StatelessWidget {
         },
       )],
     );
-  } // end of appBar method
-
+  }
+ // end of appBar method
   Container searchBar() {
     return Container(
       margin: EdgeInsets.fromLTRB(30, 30, 30, 30),
@@ -441,7 +446,7 @@ class HomePage extends StatelessWidget {
         decoration: InputDecoration(
           filled: true,
           fillColor: Colors.white,
-          hintText: "Search Here",
+          hintText: "Enter Location",
           hintStyle: TextStyle(
             color: Colors.grey,
           ),
@@ -481,5 +486,4 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
-
 }

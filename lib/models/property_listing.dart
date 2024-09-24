@@ -304,686 +304,107 @@ class PropertyListing {
         imageUrl: "https://via.placeholder.com/150", lat: 0, long: 0);
   }
 
-  static List<PropertyListing> getTopRatedListing() {
-    List<PropertyListing> topRatedList = [];
+  static Future<PropertyListing?> getCurrentProperty(String? listing_id) async {
 
-    topRatedList.add(PropertyListing(
-      listing_id: "randomid",
-      listing_title: "property2",
-      rating: 5.0,
-      image_url: ["image_url"],
-      price: 1000,
-      deposit: 100,
-      description:
-          "placeholder description placeholder description placeholder description placeholder description ",
-      sex_preference: "all",
-      nationality_preference: "malaysian",
-      amenities: [
-        BooleanVariable(
-          name: "isWifiAccess",
-          value: false,
-        ),
-        BooleanVariable(name: "isAirCon", value: false),
-        BooleanVariable(name: "isNearMarket", value: false),
-        BooleanVariable(name: "isCarPark", value: false),
-        BooleanVariable(name: "isNearMRT", value: false),
-        BooleanVariable(name: "isNearLRT", value: false),
-        BooleanVariable(name: "isPrivateBathroom", value: false),
-        BooleanVariable(name: "isGymnasium", value: false),
-        BooleanVariable(name: "isCookingAllowed", value: false),
-        BooleanVariable(name: "isWashingMachine", value: false),
-        BooleanVariable(name: "isNearBusStop", value: false),
-      ],
-      reviews: [
-        Review(
-          rating: 5,
-          comment:
-              "comment placeholder comment placeholder comment placeholder",
-          review_id: '',
-          user_id: '',
-          listing_id: '',
-        ),
-        Review(
-          rating: 4,
-          comment:
-              "comment placeholder comment placeholder comment placeholder",
-          review_id: '',
-          user_id: '',
-          listing_id: '',
-        ),
-        Review(
-          rating: 3,
-          comment:
-              "comment placeholder comment placeholder comment placeholder",
-          review_id: '',
-          user_id: '',
-          listing_id: '',
-        ),
-      ],
-      tenant: User(
-        username: "username",
-        profilePic: "profilePic",
-        contactDetails: "contactDetails",
-        sex: "sex",
-        nationality: "nationality",
-        isAccommodating: false,
-        id: "1",
-      ),
-      property_id: "1",
-      room_type: "single",
-      isPublished: true,
-      isVerified: false, view_count: 0,
-    ));
-    topRatedList.add(PropertyListing(
-      listing_id: "randomid",
-      listing_title: "property2",
-      rating: 5.0,
-      image_url: ["image_url"],
-      price: 1000,
-      deposit: 100,
-      description:
-          "placeholder description placeholder description placeholder description placeholder description ",
-      sex_preference: "all",
-      nationality_preference: "malaysian",
-      amenities: [
-        BooleanVariable(
-          name: "isWifiAccess",
-          value: false,
-        ),
-        BooleanVariable(name: "isAirCon", value: false),
-        BooleanVariable(name: "isNearMarket", value: false),
-        BooleanVariable(name: "isCarPark", value: false),
-        BooleanVariable(name: "isNearMRT", value: false),
-        BooleanVariable(name: "isNearLRT", value: false),
-        BooleanVariable(name: "isPrivateBathroom", value: false),
-        BooleanVariable(name: "isGymnasium", value: false),
-        BooleanVariable(name: "isCookingAllowed", value: false),
-        BooleanVariable(name: "isWashingMachine", value: false),
-        BooleanVariable(name: "isNearBusStop", value: false),
-      ],
-      reviews: [
-        Review(
-          rating: 5,
-          comment:
-              "comment placeholder comment placeholder comment placeholder",
-          review_id: '',
-          user_id: '',
-          listing_id: '',
-        ),
-        Review(
-          rating: 4,
-          comment:
-              "comment placeholder comment placeholder comment placeholder",
-          review_id: '',
-          user_id: '',
-          listing_id: '',
-        ),
-        Review(
-          rating: 3,
-          comment:
-              "comment placeholder comment placeholder comment placeholder",
-          review_id: '',
-          user_id: '',
-          listing_id: '',
-        ),
-      ],
-      tenant: User(
-        username: "username",
-        profilePic: "profilePic",
-        contactDetails: "contactDetails",
-        sex: "sex",
-        nationality: "nationality",
-        isAccommodating: false,
-        id: "1",
-      ),
-      property_id: "1",
-      room_type: "single",
-      isPublished: true,
-      isVerified: false, view_count: 0,
-    ));
-    topRatedList.add(PropertyListing(
-      listing_id: "randomid",
-      listing_title: "property2",
-      rating: 5.0,
-      image_url: ["image_url"],
-      price: 1000,
-      deposit: 100,
-      description:
-          "placeholder description placeholder description placeholder description placeholder description ",
-      sex_preference: "all",
-      nationality_preference: "malaysian",
-      amenities: [
-        BooleanVariable(
-          name: "isWifiAccess",
-          value: false,
-        ),
-        BooleanVariable(name: "isAirCon", value: false),
-        BooleanVariable(name: "isNearMarket", value: false),
-        BooleanVariable(name: "isCarPark", value: false),
-        BooleanVariable(name: "isNearMRT", value: false),
-        BooleanVariable(name: "isNearLRT", value: false),
-        BooleanVariable(name: "isPrivateBathroom", value: false),
-        BooleanVariable(name: "isGymnasium", value: false),
-        BooleanVariable(name: "isCookingAllowed", value: false),
-        BooleanVariable(name: "isWashingMachine", value: false),
-        BooleanVariable(name: "isNearBusStop", value: false),
-      ],
-      reviews: [
-        Review(
-          rating: 5,
-          comment:
-              "comment placeholder comment placeholder comment placeholder",
-          review_id: '',
-          user_id: '',
-          listing_id: '',
-        ),
-        Review(
-          rating: 4,
-          comment:
-              "comment placeholder comment placeholder comment placeholder",
-          review_id: '',
-          user_id: '',
-          listing_id: '',
-        ),
-        Review(
-          rating: 3,
-          comment:
-              "comment placeholder comment placeholder comment placeholder",
-          review_id: '',
-          user_id: '',
-          listing_id: '',
-        ),
-      ],
-      tenant: User(
-        username: "username",
-        profilePic: "profilePic",
-        contactDetails: "contactDetails",
-        sex: "sex",
-        nationality: "nationality",
-        isAccommodating: false,
-        id: "1",
-      ),
-      property_id: "1",
-      room_type: "single",
-      isPublished: true,
-      isVerified: false, view_count: 0,
-    ));
-    topRatedList.add(PropertyListing(
-      listing_id: "randomid",
-      listing_title: "property2",
-      rating: 5.0,
-      image_url: ["image_url"],
-      price: 1000,
-      deposit: 100,
-      description:
-          "placeholder description placeholder description placeholder description placeholder description ",
-      sex_preference: "all",
-      nationality_preference: "malaysian",
-      amenities: [
-        BooleanVariable(
-          name: "isWifiAccess",
-          value: false,
-        ),
-        BooleanVariable(name: "isAirCon", value: false),
-        BooleanVariable(name: "isNearMarket", value: false),
-        BooleanVariable(name: "isCarPark", value: false),
-        BooleanVariable(name: "isNearMRT", value: false),
-        BooleanVariable(name: "isNearLRT", value: false),
-        BooleanVariable(name: "isPrivateBathroom", value: false),
-        BooleanVariable(name: "isGymnasium", value: false),
-        BooleanVariable(name: "isCookingAllowed", value: false),
-        BooleanVariable(name: "isWashingMachine", value: false),
-        BooleanVariable(name: "isNearBusStop", value: false),
-      ],
-      reviews: [
-        Review(
-          rating: 5,
-          comment:
-              "comment placeholder comment placeholder comment placeholder",
-          review_id: '',
-          user_id: '',
-          listing_id: '',
-        ),
-        Review(
-          rating: 4,
-          comment:
-              "comment placeholder comment placeholder comment placeholder",
-          review_id: '',
-          user_id: '',
-          listing_id: '',
-        ),
-        Review(
-          rating: 3,
-          comment:
-              "comment placeholder comment placeholder comment placeholder",
-          review_id: '',
-          user_id: '',
-          listing_id: '',
-        ),
-      ],
-      tenant: User(
-        username: "username",
-        profilePic: "profilePic",
-        contactDetails: "contactDetails",
-        sex: "sex",
-        nationality: "nationality",
-        isAccommodating: false,
-        id: "1",
-      ),
-      property_id: "1",
-      room_type: "single",
-      isPublished: true,
-      isVerified: false, view_count: 0,
-    ));
-    topRatedList.add(PropertyListing(
-      listing_id: "randomid",
-      listing_title: "property2",
-      rating: 5.0,
-      image_url: ["image_url"],
-      price: 1000,
-      deposit: 100,
-      description:
-          "placeholder description placeholder description placeholder description placeholder description ",
-      sex_preference: "all",
-      nationality_preference: "malaysian",
-      amenities: [
-        BooleanVariable(
-          name: "isWifiAccess",
-          value: false,
-        ),
-        BooleanVariable(name: "isAirCon", value: false),
-        BooleanVariable(name: "isNearMarket", value: false),
-        BooleanVariable(name: "isCarPark", value: false),
-        BooleanVariable(name: "isNearMRT", value: false),
-        BooleanVariable(name: "isNearLRT", value: false),
-        BooleanVariable(name: "isPrivateBathroom", value: false),
-        BooleanVariable(name: "isGymnasium", value: false),
-        BooleanVariable(name: "isCookingAllowed", value: false),
-        BooleanVariable(name: "isWashingMachine", value: false),
-        BooleanVariable(name: "isNearBusStop", value: false),
-      ],
-      reviews: [
-        Review(
-          rating: 5,
-          comment:
-              "comment placeholder comment placeholder comment placeholder",
-          review_id: '',
-          user_id: '',
-          listing_id: '',
-        ),
-        Review(
-          rating: 4,
-          comment:
-              "comment placeholder comment placeholder comment placeholder",
-          review_id: '',
-          user_id: '',
-          listing_id: '',
-        ),
-        Review(
-          rating: 3,
-          comment:
-              "comment placeholder comment placeholder comment placeholder",
-          review_id: '',
-          user_id: '',
-          listing_id: '',
-        ),
-      ],
-      tenant: User(
-        username: "username",
-        profilePic: "profilePic",
-        contactDetails: "contactDetails",
-        sex: "sex",
-        nationality: "nationality",
-        isAccommodating: false,
-        id: "1",
-      ),
-      property_id: "1",
-      room_type: "single",
-      isPublished: true,
-      isVerified: false, view_count: 0,
-    ));
-    return topRatedList;
+    final url = Uri.parse("http://10.0.2.2:2000/api/get-listing-with-id/$listing_id");
+    try {
+      final response = await http.get(url);
+      developer.log(response.statusCode.toString());
+
+      if (response.statusCode == 200) {
+        final List<dynamic> listings = jsonDecode(response.body)["data"];
+        developer.log("Listings Data: ${listings.runtimeType}");
+
+        developer.log(listings.toString());
+
+        final List<Future<PropertyListing>> futures = listings
+            .map((listingJson) => _processListing(listingJson, listingJson["property_id"]))
+            .toList();
+
+        final propertyListings = await Future.wait(futures);
+
+        return propertyListings[0];
+
+      } else {
+        developer.log("Failed to load current listing: ${response.statusCode}");
+        return null;
+      }
+    } catch (e) {
+      developer.log("Error fetching current listing: $e");
+      return null;
+    }
   }
 
-  static List<PropertyListing> getMostViewedListing() {
+  static Future<List<PropertyListing>> getTopRatedListing() async {
+    List<PropertyListing> topRatedList = [];
+
+    final url = Uri.parse("http://10.0.2.2:2000/api/get-top-rated-listing");
+    try {
+      final response = await http.get(url);
+      developer.log(response.statusCode.toString());
+
+      developer.log(response.body);
+
+      if (response.statusCode == 200) {
+        final List<dynamic> listings = jsonDecode(response.body)["data"];
+        developer.log("Listings Data: ${listings.runtimeType}");
+
+        developer.log(listings.toString());
+
+        final List<Future<PropertyListing>> futures = listings
+            .map((listingJson) => _processListing(listingJson, listingJson["property_id"]))
+            .toList();
+
+        topRatedList = await Future.wait(futures);
+
+        developer.log("top rated list length: ${topRatedList.length}");
+
+        return topRatedList;
+
+      } else {
+        developer.log("Failed to load top rated listings: ${response.statusCode}");
+        return [];
+      }
+    } catch (e) {
+      developer.log("Error fetching top rated listings: $e");
+      return [];
+    }
+  }
+
+  static Future<List<PropertyListing>> getMostViewedListing() async {
     List<PropertyListing> mostViewedListing = [];
 
-    mostViewedListing.add(PropertyListing(
-      listing_id: "randomid",
-      listing_title: "property2",
-      rating: 5.0,
-      image_url: ["image_url"],
-      price: 1000,
-      deposit: 100,
-      description:
-          "placeholder description placeholder description placeholder description placeholder description ",
-      sex_preference: "all",
-      nationality_preference: "malaysian",
-      amenities: [
-        BooleanVariable(
-          name: "isWifiAccess",
-          value: false,
-        ),
-        BooleanVariable(name: "isAirCon", value: false),
-        BooleanVariable(name: "isNearMarket", value: false),
-        BooleanVariable(name: "isCarPark", value: false),
-        BooleanVariable(name: "isNearMRT", value: false),
-        BooleanVariable(name: "isNearLRT", value: false),
-        BooleanVariable(name: "isPrivateBathroom", value: false),
-        BooleanVariable(name: "isGymnasium", value: false),
-        BooleanVariable(name: "isCookingAllowed", value: false),
-        BooleanVariable(name: "isWashingMachine", value: false),
-        BooleanVariable(name: "isNearBusStop", value: false),
-      ],
-      reviews: [
-        Review(
-          rating: 5,
-          comment:
-              "comment placeholder comment placeholder comment placeholder",
-          review_id: '',
-          user_id: '',
-          listing_id: '',
-        ),
-        Review(
-          rating: 4,
-          comment:
-              "comment placeholder comment placeholder comment placeholder",
-          review_id: '',
-          user_id: '',
-          listing_id: '',
-        ),
-        Review(
-          rating: 3,
-          comment:
-              "comment placeholder comment placeholder comment placeholder",
-          review_id: '',
-          user_id: '',
-          listing_id: '',
-        ),
-      ],
-      tenant: User(
-        username: "username",
-        profilePic: "profilePic",
-        contactDetails: "contactDetails",
-        sex: "sex",
-        nationality: "nationality",
-        isAccommodating: false,
-        id: "1",
-      ),
-      property_id: "1",
-      room_type: "single",
-      isPublished: true,
-      isVerified: false, view_count: 0,
-    ));
-    mostViewedListing.add(PropertyListing(
-      listing_id: "randomid",
-      listing_title: "property2",
-      rating: 5.0,
-      image_url: ["image_url"],
-      price: 1000,
-      deposit: 100,
-      description:
-          "placeholder description placeholder description placeholder description placeholder description ",
-      sex_preference: "all",
-      nationality_preference: "malaysian",
-      amenities: [
-        BooleanVariable(
-          name: "isWifiAccess",
-          value: false,
-        ),
-        BooleanVariable(name: "isAirCon", value: false),
-        BooleanVariable(name: "isNearMarket", value: false),
-        BooleanVariable(name: "isCarPark", value: false),
-        BooleanVariable(name: "isNearMRT", value: false),
-        BooleanVariable(name: "isNearLRT", value: false),
-        BooleanVariable(name: "isPrivateBathroom", value: false),
-        BooleanVariable(name: "isGymnasium", value: false),
-        BooleanVariable(name: "isCookingAllowed", value: false),
-        BooleanVariable(name: "isWashingMachine", value: false),
-        BooleanVariable(name: "isNearBusStop", value: false),
-      ],
-      reviews: [
-        Review(
-          rating: 5,
-          comment:
-              "comment placeholder comment placeholder comment placeholder",
-          review_id: '',
-          user_id: '',
-          listing_id: '',
-        ),
-        Review(
-          rating: 4,
-          comment:
-              "comment placeholder comment placeholder comment placeholder",
-          review_id: '',
-          user_id: '',
-          listing_id: '',
-        ),
-        Review(
-          rating: 3,
-          comment:
-              "comment placeholder comment placeholder comment placeholder",
-          review_id: '',
-          user_id: '',
-          listing_id: '',
-        ),
-      ],
-      tenant: User(
-        username: "username",
-        profilePic: "profilePic",
-        contactDetails: "contactDetails",
-        sex: "sex",
-        nationality: "nationality",
-        isAccommodating: false,
-        id: "1",
-      ),
-      property_id: "1",
-      room_type: "single",
-      isPublished: true,
-      isVerified: false, view_count: 0,
-    ));
-    mostViewedListing.add(PropertyListing(
-      listing_id: "randomid",
-      listing_title: "property2",
-      rating: 5.0,
-      image_url: ["image_url"],
-      price: 1000,
-      deposit: 100,
-      description:
-          "placeholder description placeholder description placeholder description placeholder description ",
-      sex_preference: "all",
-      nationality_preference: "malaysian",
-      amenities: [
-        BooleanVariable(
-          name: "isWifiAccess",
-          value: false,
-        ),
-        BooleanVariable(name: "isAirCon", value: false),
-        BooleanVariable(name: "isNearMarket", value: false),
-        BooleanVariable(name: "isCarPark", value: false),
-        BooleanVariable(name: "isNearMRT", value: false),
-        BooleanVariable(name: "isNearLRT", value: false),
-        BooleanVariable(name: "isPrivateBathroom", value: false),
-        BooleanVariable(name: "isGymnasium", value: false),
-        BooleanVariable(name: "isCookingAllowed", value: false),
-        BooleanVariable(name: "isWashingMachine", value: false),
-        BooleanVariable(name: "isNearBusStop", value: false),
-      ],
-      reviews: [
-        Review(
-          rating: 5,
-          comment:
-              "comment placeholder comment placeholder comment placeholder",
-          review_id: '',
-          user_id: '',
-          listing_id: '',
-        ),
-        Review(
-          rating: 4,
-          comment:
-              "comment placeholder comment placeholder comment placeholder",
-          review_id: '',
-          user_id: '',
-          listing_id: '',
-        ),
-        Review(
-          rating: 3,
-          comment:
-              "comment placeholder comment placeholder comment placeholder",
-          review_id: '',
-          user_id: '',
-          listing_id: '',
-        ),
-      ],
-      tenant: User(
-        username: "username",
-        profilePic: "profilePic",
-        contactDetails: "contactDetails",
-        sex: "sex",
-        nationality: "nationality",
-        isAccommodating: false,
-        id: "1",
-      ),
-      property_id: "1",
-      room_type: "single",
-      isPublished: true,
-      isVerified: false, view_count: 0,
-    ));
-    mostViewedListing.add(PropertyListing(
-      listing_id: "randomid",
-      listing_title: "property2",
-      rating: 5.0,
-      image_url: ["image_url"],
-      price: 1000,
-      deposit: 100,
-      description:
-          "placeholder description placeholder description placeholder description placeholder description ",
-      sex_preference: "all",
-      nationality_preference: "malaysian",
-      amenities: [
-        BooleanVariable(
-          name: "isWifiAccess",
-          value: false,
-        ),
-        BooleanVariable(name: "isAirCon", value: false),
-        BooleanVariable(name: "isNearMarket", value: false),
-        BooleanVariable(name: "isCarPark", value: false),
-        BooleanVariable(name: "isNearMRT", value: false),
-        BooleanVariable(name: "isNearLRT", value: false),
-        BooleanVariable(name: "isPrivateBathroom", value: false),
-        BooleanVariable(name: "isGymnasium", value: false),
-        BooleanVariable(name: "isCookingAllowed", value: false),
-        BooleanVariable(name: "isWashingMachine", value: false),
-        BooleanVariable(name: "isNearBusStop", value: false),
-      ],
-      reviews: [
-        Review(
-          rating: 5,
-          comment:
-              "comment placeholder comment placeholder comment placeholder",
-          review_id: '',
-          user_id: '',
-          listing_id: '',
-        ),
-        Review(
-          rating: 4,
-          comment:
-              "comment placeholder comment placeholder comment placeholder",
-          review_id: '',
-          user_id: '',
-          listing_id: '',
-        ),
-        Review(
-          rating: 3,
-          comment:
-              "comment placeholder comment placeholder comment placeholder",
-          review_id: '',
-          user_id: '',
-          listing_id: '',
-        ),
-      ],
-      tenant: User(
-        username: "username",
-        profilePic: "profilePic",
-        contactDetails: "contactDetails",
-        sex: "sex",
-        nationality: "nationality",
-        isAccommodating: false,
-        id: "1",
-      ),
-      property_id: "1",
-      room_type: "single",
-      isPublished: true,
-      isVerified: false, view_count: 0,
-    ));
-    mostViewedListing.add(PropertyListing(
-      listing_id: "randomid",
-      listing_title: "property2",
-      rating: 5.0,
-      image_url: ["image_url"],
-      price: 1000,
-      deposit: 100,
-      description:
-          "placeholder description placeholder description placeholder description placeholder description ",
-      sex_preference: "all",
-      nationality_preference: "malaysian",
-      amenities: [
-        BooleanVariable(
-          name: "isWifiAccess",
-          value: false,
-        ),
-        BooleanVariable(name: "isAirCon", value: false),
-        BooleanVariable(name: "isNearMarket", value: false),
-        BooleanVariable(name: "isCarPark", value: false),
-        BooleanVariable(name: "isNearMRT", value: false),
-        BooleanVariable(name: "isNearLRT", value: false),
-        BooleanVariable(name: "isPrivateBathroom", value: false),
-        BooleanVariable(name: "isGymnasium", value: false),
-        BooleanVariable(name: "isCookingAllowed", value: false),
-        BooleanVariable(name: "isWashingMachine", value: false),
-        BooleanVariable(name: "isNearBusStop", value: false),
-      ],
-      reviews: [
-        Review(
-          rating: 5,
-          comment:
-              "comment placeholder comment placeholder comment placeholder",
-          review_id: '',
-          user_id: '',
-          listing_id: '',
-        ),
-        Review(
-          rating: 4,
-          comment:
-              "comment placeholder comment placeholder comment placeholder",
-          review_id: '',
-          user_id: '',
-          listing_id: '',
-        ),
-        Review(
-          rating: 3,
-          comment:
-              "comment placeholder comment placeholder comment placeholder",
-          review_id: '',
-          user_id: '',
-          listing_id: '',
-        ),
-      ],
-      tenant: User(
-        username: "username",
-        profilePic: "profilePic",
-        contactDetails: "contactDetails",
-        sex: "sex",
-        nationality: "nationality",
-        isAccommodating: false,
-        id: "1",
-      ),
-      property_id: "1",
-      room_type: "single",
-      isPublished: true,
-      isVerified: false, view_count: 0,
-    ));
-    return mostViewedListing;
+    final url = Uri.parse("http://10.0.2.2:2000/api/get-most-viewed-listing");
+    try {
+      final response = await http.get(url);
+      developer.log(response.statusCode.toString());
+
+      developer.log(response.body);
+
+      if (response.statusCode == 200) {
+        final List<dynamic> listings = jsonDecode(response.body)["data"];
+        developer.log("Listings Data: ${listings.runtimeType}");
+
+        developer.log(listings.toString());
+
+        final List<Future<PropertyListing>> futures = listings
+            .map((listingJson) => _processListing(listingJson, listingJson["property_id"]))
+            .toList();
+
+        mostViewedListing = await Future.wait(futures);
+
+        developer.log("most viewed list length: ${mostViewedListing.length}");
+
+        return mostViewedListing;
+
+      } else {
+        developer.log("Failed to load most viewed listings: ${response.statusCode}");
+        return [];
+      }
+    } catch (e) {
+      developer.log("Error fetching most viewed listings: $e");
+      return [];
+    }
   }
 
   static List<PropertyListing> getSearchResult() {
