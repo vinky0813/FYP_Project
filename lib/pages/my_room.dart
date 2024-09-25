@@ -189,7 +189,7 @@ class MyroomState extends State<MyRoom> {
             Wrap(
                 spacing: 8.0,
                 runSpacing: 4.0,
-                children: widget.propertyListing!.amenities.map((amenity) {
+                children: trueAmenities.map((amenity) {
                   return Chip(
                     label: Text(amenity.name),
                     backgroundColor: Colors.grey[200],

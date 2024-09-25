@@ -71,7 +71,7 @@ class _AppDrawerState extends State<AppDrawer> {
 
     if (userId != null) {
       try {
-        _getUser(userId!);
+        await _getUser(userId!);
         currentListing = await _getCurrentProperty();
       } catch (e) {
         print('Error: $e');

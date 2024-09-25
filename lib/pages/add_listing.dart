@@ -606,10 +606,11 @@ class _AddListingState extends State<AddListing> {
             Expanded(
               child: DropdownButtonFormField<String>(
                 value: widget.isEditing
-                    ? widget.propertyListing?.sex_preference ?? sex_preference
+                    ? widget.propertyListing?.sex_preference ??
+                    sex_preference
                     : sex_preference.isNotEmpty
-                        ? sex_preference
-                        : null,
+                    ? sex_preference
+                    : null,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),

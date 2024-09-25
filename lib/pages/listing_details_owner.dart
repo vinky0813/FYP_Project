@@ -634,7 +634,9 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
                             ),
                             actions: [
                               TextButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
                                 child: Text("Cancel"),
                               ),
                               TextButton(

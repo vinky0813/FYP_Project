@@ -887,16 +887,16 @@ app.get("/api/get-tenants/:property_id", async (req, res) => {
 });
 
 app.put("/api/remove-tenant-part-1", async (req, res) => {
-  const { listing_id, renter_id } = req.body;
+  const { listing_id } = req.body;
 
   try {
     const { data, error } = await supabase
     .from("Listing")
-    .upsert({ 
-      listing_id: listing_id,
+    .update({
       isPublished: true,
-      tenant: renter_id,
-     });
+      tenant: null,
+    })
+    .eq("listing_id", listing_id);
 
     res.status(200).json({ message: 'Tenant removed and listing published.' });
   } catch (error) {
@@ -911,11 +911,11 @@ app.put("/api/remove-tenant-part-2", async (req, res) => {
   try {
     const { data, error } = await supabase
     .from("Renters")
-    .upsert({ 
-      user_id: renter_id,
+    .update({
       isAccommodating: false,
       listing_id: null,
-     });
+    })
+    .eq("user_id", renter_id);
 
     res.status(200).json({ message: 'renter row updated.' });
   } catch (error) {
