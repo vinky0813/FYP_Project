@@ -4,13 +4,14 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:fyp_project/models/boolean_variable.dart';
 import 'package:fyp_project/models/property.dart';
+import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:developer' as developer;
 
 import '../models/property_listing.dart';
 
 class Listingdetails extends StatefulWidget {
-
   final PropertyListing propertyListing;
   Listingdetails({super.key, required this.propertyListing});
 
@@ -18,31 +19,59 @@ class Listingdetails extends StatefulWidget {
   ListingdetailsState createState() => ListingdetailsState();
 }
 
-  class ListingdetailsState extends State<Listingdetails> {
+class ListingdetailsState extends State<Listingdetails> {
+  Property? property;
+  bool isLoading = true;
+  bool _isShortlisted = false;
+  late List<BooleanVariable> trueAmenities;
+  String? userId;
 
-    Property? property;
-    bool isLoading = true;
-    late List<BooleanVariable> trueAmenities;
+  void initState() {
+    super.initState();
+    _initialize();
+  }
 
-    void initState() {
-      super.initState();
-      _initialize();
+  Future<void> _initialize() async {
+    final user = Supabase.instance.client.auth.currentUser;
+    userId = user?.id;
+    PropertyListing.incrementView(widget.propertyListing.listing_id);
+    developer.log("property id: ${widget.propertyListing.property_id}");
+    property =
+        await Property.getPropertyWithId(widget.propertyListing.property_id);
+
+    developer.log("property: ${property.toString()}");
+
+    trueAmenities =
+        widget.propertyListing.amenities.where((b) => b.value).toList();
+    trueAmenities.removeAt(0);
+
+    developer.log("userid: $userId");
+
+    List<PropertyListing> shortlists = await PropertyListing.getShortlist(userId!);
+
+    for (PropertyListing shortlist in shortlists) {
+      if (shortlist.listing_id == widget.propertyListing.listing_id) {
+        _isShortlisted = true;
+        break;
+      }
     }
+    setState(() {
+      isLoading = false;
+      _isShortlisted;
+    });
+  }
 
-    Future<void> _initialize() async {
-      PropertyListing.incrementView(widget.propertyListing.listing_id);
-      developer.log("property id: ${widget.propertyListing.property_id}");
-      property = await Property.getPropertyWithId(widget.propertyListing.property_id);
+  void _deleteShortlist(String user_id, String listing_id) {
+    PropertyListing.deleteShortlist(user_id, listing_id);
 
-      developer.log("property: ${property.toString()}");
+    Get.back(result: false);
+  }
 
-      trueAmenities = widget.propertyListing.amenities.where((b) => b.value).toList();
-      trueAmenities.removeAt(0);
+  void _addShortlist(String user_id, String listing_id) {
+    PropertyListing.addShortlist(user_id, listing_id);
 
-      setState(() {
-        isLoading = false;
-      });
-    }
+    Get.back();
+  }
 
   int _currentIndex = 0;
   List<Widget> body = [];
@@ -54,19 +83,22 @@ class Listingdetails extends StatefulWidget {
       body: _getBody(),
       bottomNavigationBar: bottomNavigationBar(),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-        },
-        child: Icon(Icons.chat,
-          color: Colors.white,),
+        onPressed: () {},
+        child: Icon(
+          Icons.chat,
+          color: Colors.white,
+        ),
         backgroundColor: Colors.black,
       ),
     );
   }
+
   //https://youtu.be/VfUUOI6BUtE?si=yAhaupWJhH8CTQeU
   Widget _getBody() {
-
     if (isLoading) {
-      return Center(child: CircularProgressIndicator(),);
+      return Center(
+        child: CircularProgressIndicator(),
+      );
     }
 
     switch (_currentIndex) {
@@ -75,10 +107,12 @@ class Listingdetails extends StatefulWidget {
           padding: EdgeInsets.all(16),
           children: [
             ImageCarousel(),
-            SizedBox(height:16),
-            Text(widget.propertyListing.listing_title,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-            SizedBox(height:16),
+            SizedBox(height: 16),
+            Text(
+              widget.propertyListing.listing_title,
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 16),
             Row(
               children: [
                 Icon(
@@ -86,7 +120,9 @@ class Listingdetails extends StatefulWidget {
                   color: Colors.yellow,
                   size: 30,
                 ),
-                SizedBox(width: 8,),
+                SizedBox(
+                  width: 8,
+                ),
                 Text(
                   "${widget.propertyListing.rating}/5",
                   style: TextStyle(
@@ -96,47 +132,65 @@ class Listingdetails extends StatefulWidget {
                 ),
               ],
             ),
-            SizedBox(height: 16,),
-            Row(
-              children: [Text("Price: RM${widget.propertyListing.price}"),
-                SizedBox(width: 16,),
-                Text("Deposit: RM${widget.propertyListing.deposit}"),],
+            SizedBox(
+              height: 16,
             ),
-            SizedBox(height: 16,),
+            Row(
+              children: [
+                Text("Price: RM${widget.propertyListing.price}"),
+                SizedBox(
+                  width: 16,
+                ),
+                Text("Deposit: RM${widget.propertyListing.deposit}"),
+              ],
+            ),
+            SizedBox(
+              height: 16,
+            ),
             Text(
               "Room Type: ${widget.propertyListing.room_type}",
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
-            SizedBox(height: 16,),
+            SizedBox(
+              height: 16,
+            ),
             Text(
               "Description",
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16),
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
-            SizedBox(height: 8,),
-            Text('${widget.propertyListing.description}\n\n${property!.address}'),
+            SizedBox(
+              height: 8,
+            ),
+            Text(
+                '${widget.propertyListing.description}\n\n${property!.address}'),
             SizedBox(height: 16),
             Text(
               "Preference",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
-            SizedBox(height: 8,),
+            SizedBox(
+              height: 8,
+            ),
             Row(
               children: [
                 Text("Sex: ${widget.propertyListing.sex_preference}"),
-                SizedBox(width: 16,),
-                Text("Nationality: ${widget.propertyListing.nationality_preference}"),
+                SizedBox(
+                  width: 16,
+                ),
+                Text(
+                    "Nationality: ${widget.propertyListing.nationality_preference}"),
               ],
             ),
-            SizedBox(height: 16,),
+            SizedBox(
+              height: 16,
+            ),
             Text(
               "Ammenities",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
-            SizedBox(height: 8,),
+            SizedBox(
+              height: 8,
+            ),
             Wrap(
                 spacing: 8.0,
                 runSpacing: 4.0,
@@ -151,32 +205,33 @@ class Listingdetails extends StatefulWidget {
               children: [
                 CircleAvatar(
                   radius: 40,
-                  backgroundImage: NetworkImage(property!.owner.profile_pic), // Load the image
+                  backgroundImage: NetworkImage(
+                      property!.owner.profile_pic), // Load the image
                 ),
                 SizedBox(width: 16),
                 Expanded(
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Owner Details",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        SizedBox(height: 4),
-                        Text(
-                          "Owner Name: ${property!.owner.username}",
-                          style: TextStyle(fontSize: 14),
-                        ),
-                        SizedBox(height: 4),
-                        Text(
-                          "Contact Details: ${property!.owner.contact_no}",
-                          style: TextStyle(fontSize: 14),
-                        ),
-                      ],
-                    ))
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Owner Details",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      "Owner Name: ${property!.owner.username}",
+                      style: TextStyle(fontSize: 14),
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      "Contact Details: ${property!.owner.contact_no}",
+                      style: TextStyle(fontSize: 14),
+                    ),
+                  ],
+                ))
               ],
             )
           ],
@@ -187,7 +242,11 @@ class Listingdetails extends StatefulWidget {
             Container(
               padding: EdgeInsets.only(left: 20),
               child: Align(
-                child: Text("Review", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,)),
+                child: Text("Review",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    )),
                 alignment: Alignment.centerLeft,
               ),
             ),
@@ -210,8 +269,12 @@ class Listingdetails extends StatefulWidget {
                         children: [
                           Row(
                             children: [
-                              Icon(Icons.star, color: Colors.yellow,),
-                              Text("${widget.propertyListing.reviews[index].rating}/5")
+                              Icon(
+                                Icons.star,
+                                color: Colors.yellow,
+                              ),
+                              Text(
+                                  "${widget.propertyListing.reviews[index].rating}/5")
                             ],
                           ),
                           Container(
@@ -225,8 +288,7 @@ class Listingdetails extends StatefulWidget {
                             ),
                           ),
                         ],
-                      )
-                  );
+                      ));
                 },
               ),
             )
@@ -258,7 +320,8 @@ class Listingdetails extends StatefulWidget {
                 ),
                 children: [
                   TileLayer(
-                    urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                    urlTemplate:
+                        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
                     subdomains: ['a', 'b', 'c'],
                   ),
                   MarkerLayer(
@@ -296,48 +359,48 @@ class Listingdetails extends StatefulWidget {
 
   CarouselSlider ImageCarousel() {
     return CarouselSlider(
-          options: CarouselOptions(height: 200),
-          items: widget.propertyListing.image_url.map((imageUrl) {
-            return Builder(
-              builder: (BuildContext context) {
-                return Container(
-                  width: MediaQuery.of(context).size.width,
-                  margin: EdgeInsets.symmetric(horizontal: 5.0),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                  ),
-                  child: Image.network(
-                    imageUrl,
-                    fit: BoxFit.cover,
-                  ),
-                );
-              },
+      options: CarouselOptions(height: 200),
+      items: widget.propertyListing.image_url.map((imageUrl) {
+        return Builder(
+          builder: (BuildContext context) {
+            return Container(
+              width: MediaQuery.of(context).size.width,
+              margin: EdgeInsets.symmetric(horizontal: 5.0),
+              decoration: BoxDecoration(
+                color: Colors.white,
+              ),
+              child: Image.network(
+                imageUrl,
+                fit: BoxFit.cover,
+              ),
             );
-          }).toList(),
+          },
         );
+      }).toList(),
+    );
   }
 
   BottomNavigationBar bottomNavigationBar() {
     return BottomNavigationBar(
-        currentIndex: _currentIndex,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: "Details",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.star),
-            label: "Review",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.map),
-            label: "Map",
-          ),
-        ],
+      currentIndex: _currentIndex,
+      items: [
+        BottomNavigationBarItem(
+          icon: Icon(Icons.home),
+          label: "Details",
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.star),
+          label: "Review",
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.map),
+          label: "Map",
+        ),
+      ],
       onTap: (int newIndex) {
-          setState(() {
-            _currentIndex = newIndex;
-          });
+        setState(() {
+          _currentIndex = newIndex;
+        });
       },
       selectedItemColor: Colors.black,
       unselectedItemColor: Colors.grey,
@@ -347,7 +410,8 @@ class Listingdetails extends StatefulWidget {
   AppBar appBar() {
     return AppBar(
       // App bar title
-      title: const Text("Listing Details",
+      title: const Text(
+        "Listing Details",
         style: TextStyle(
           color: Colors.black,
           fontSize: 20,
@@ -358,12 +422,40 @@ class Listingdetails extends StatefulWidget {
       elevation: 0,
 
       // action is right side of the app bar
-      actions: [IconButton(
-        // placeholder icon fix later
-        icon: const Icon(Icons.view_list),
-        // same thing here
-        onPressed: () => {},
-      )],
+      actions: [
+        IconButton(
+          // placeholder icon fix later
+          icon: const Icon(Icons.view_list),
+          onPressed: () => {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text("Shortlist"),
+                  content: _isShortlisted
+                      ? Text("Remove Shortlist")
+                      : Text("Shortlist this listing"),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: const Text("Cancel"),
+                    ),
+                    TextButton(
+                      onPressed: () async {
+                        Navigator.of(context).pop();
+                        _isShortlisted ? _deleteShortlist(userId!, widget.propertyListing.listing_id)
+                            : _addShortlist(userId!, widget.propertyListing.listing_id);
+                        _isShortlisted = _isShortlisted!;
+                      },
+                      child: const Text("Confirm"),
+                    ),
+                  ],
+                );
+              },
+            )
+          },
+        )
+      ],
     );
   } // end of appBar method
 }

@@ -663,6 +663,69 @@ app.put("/api/increment-view/:listing_id", async (req, res) => {
   }
 });
 
+app.post("/api/add-shortlist", async (req, res) => {
+  const { user_id, listing_id } = req.body;
+  
+  if (!user_id || !listing_id) {
+    return res.status(400).json({ error: 'Missing user_id or property_id' });
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from("Shortlists")
+      .insert({
+        "user_id": user_id,
+        "listing_id": listing_id,
+      });
+
+    res.status(200).json({ message: 'Property added to shortlist', data });
+  } catch (error) {
+    console.error('Error adding to shortlist:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+app.delete("/api/remove-shortlist", async (req, res) => {
+  const { user_id, listing_id } = req.body;
+  
+  if (!user_id || !listing_id) {
+    return res.status(400).json({ error: 'Missing user_id or property_id' });
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from("Shortlists")
+      .delete()
+      .eq("user_id", user_id)
+      .eq("listing_id", listing_id);
+
+    res.status(200).json({ message: 'Property removed shortlist', data });
+  } catch (error) {
+    console.error('Error removing shortlist:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+app.get("/api/get-shortlists-with-userid/:user_id", async (req, res) => {
+  const { user_id } = req.params;
+  
+  if (!user_id) {
+    return res.status(400).json({ error: 'Missing user_id' });
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from("Shortlists")
+      .select("*")
+      .eq("user_id", user_id);
+
+    res.status(200).json({ message: "Success, get all shorlists", data });
+  } catch (error) {
+    console.error('Error getting shortlist:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 app.listen(2000, () => {
   console.log("connected at server port 2000");
 });

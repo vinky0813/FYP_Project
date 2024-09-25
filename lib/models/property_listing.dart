@@ -440,345 +440,108 @@ class PropertyListing {
     }
   }
 
-  static List<PropertyListing> getShortlist() {
+  static Future<List<PropertyListing>> getShortlist(String user_id) async {
     List<PropertyListing> shortlist = [];
 
-    shortlist.add(PropertyListing(
-      listing_id: "randomid",
-      listing_title: "property2",
-      rating: 5.0,
-      image_url: ["image_url"],
-      price: 1000,
-      deposit: 100,
-      description:
-          "placeholder description placeholder description placeholder description placeholder description ",
-      sex_preference: "all",
-      nationality_preference: "malaysian",
-      amenities: [
-        BooleanVariable(
-          name: "isWifiAccess",
-          value: false,
-        ),
-        BooleanVariable(name: "isAirCon", value: false),
-        BooleanVariable(name: "isNearMarket", value: false),
-        BooleanVariable(name: "isCarPark", value: false),
-        BooleanVariable(name: "isNearMRT", value: false),
-        BooleanVariable(name: "isNearLRT", value: false),
-        BooleanVariable(name: "isPrivateBathroom", value: false),
-        BooleanVariable(name: "isGymnasium", value: false),
-        BooleanVariable(name: "isCookingAllowed", value: false),
-        BooleanVariable(name: "isWashingMachine", value: false),
-        BooleanVariable(name: "isNearBusStop", value: false),
-      ],
-      reviews: [
-        Review(
-          rating: 5,
-          comment:
-              "comment placeholder comment placeholder comment placeholder",
-          review_id: '',
-          user_id: '',
-          listing_id: '',
-        ),
-        Review(
-          rating: 4,
-          comment:
-              "comment placeholder comment placeholder comment placeholder",
-          review_id: '',
-          user_id: '',
-          listing_id: '',
-        ),
-        Review(
-          rating: 3,
-          comment:
-              "comment placeholder comment placeholder comment placeholder",
-          review_id: '',
-          user_id: '',
-          listing_id: '',
-        ),
-      ],
-      tenant: User(
-        username: "username",
-        profilePic: "profilePic",
-        contactDetails: "contactDetails",
-        sex: "sex",
-        nationality: "nationality",
-        isAccommodating: false,
-        id: "1",
-      ),
-      property_id: "1",
-      room_type: "single",
-      isPublished: true,
-      isVerified: false, view_count: 0,
-    ));
-    shortlist.add(PropertyListing(
-      listing_id: "randomid",
-      listing_title: "property2",
-      rating: 5.0,
-      image_url: ["image_url"],
-      price: 1000,
-      deposit: 100,
-      description:
-          "placeholder description placeholder description placeholder description placeholder description ",
-      sex_preference: "all",
-      nationality_preference: "malaysian",
-      amenities: [
-        BooleanVariable(
-          name: "isWifiAccess",
-          value: false,
-        ),
-        BooleanVariable(name: "isAirCon", value: false),
-        BooleanVariable(name: "isNearMarket", value: false),
-        BooleanVariable(name: "isCarPark", value: false),
-        BooleanVariable(name: "isNearMRT", value: false),
-        BooleanVariable(name: "isNearLRT", value: false),
-        BooleanVariable(name: "isPrivateBathroom", value: false),
-        BooleanVariable(name: "isGymnasium", value: false),
-        BooleanVariable(name: "isCookingAllowed", value: false),
-        BooleanVariable(name: "isWashingMachine", value: false),
-        BooleanVariable(name: "isNearBusStop", value: false),
-      ],
-      reviews: [
-        Review(
-          rating: 5,
-          comment:
-              "comment placeholder comment placeholder comment placeholder",
-          review_id: '',
-          user_id: '',
-          listing_id: '',
-        ),
-        Review(
-          rating: 4,
-          comment:
-              "comment placeholder comment placeholder comment placeholder",
-          review_id: '',
-          user_id: '',
-          listing_id: '',
-        ),
-        Review(
-          rating: 3,
-          comment:
-              "comment placeholder comment placeholder comment placeholder",
-          review_id: '',
-          user_id: '',
-          listing_id: '',
-        ),
-      ],
-      tenant: User(
-        username: "username",
-        profilePic: "profilePic",
-        contactDetails: "contactDetails",
-        sex: "sex",
-        nationality: "nationality",
-        isAccommodating: false,
-        id: "1",
-      ),
-      property_id: "1",
-      room_type: "single",
-      isPublished: true,
-      isVerified: false, view_count: 0,
-    ));
-    shortlist.add(PropertyListing(
-      listing_id: "randomid",
-      listing_title: "property2",
-      rating: 5.0,
-      image_url: ["image_url"],
-      price: 1000,
-      deposit: 100,
-      description:
-          "placeholder description placeholder description placeholder description placeholder description ",
-      sex_preference: "all",
-      nationality_preference: "malaysian",
-      amenities: [
-        BooleanVariable(
-          name: "isWifiAccess",
-          value: false,
-        ),
-        BooleanVariable(name: "isAirCon", value: false),
-        BooleanVariable(name: "isNearMarket", value: false),
-        BooleanVariable(name: "isCarPark", value: false),
-        BooleanVariable(name: "isNearMRT", value: false),
-        BooleanVariable(name: "isNearLRT", value: false),
-        BooleanVariable(name: "isPrivateBathroom", value: false),
-        BooleanVariable(name: "isGymnasium", value: false),
-        BooleanVariable(name: "isCookingAllowed", value: false),
-        BooleanVariable(name: "isWashingMachine", value: false),
-        BooleanVariable(name: "isNearBusStop", value: false),
-      ],
-      reviews: [
-        Review(
-          rating: 5,
-          comment:
-              "comment placeholder comment placeholder comment placeholder",
-          review_id: '',
-          user_id: '',
-          listing_id: '',
-        ),
-        Review(
-          rating: 4,
-          comment:
-              "comment placeholder comment placeholder comment placeholder",
-          review_id: '',
-          user_id: '',
-          listing_id: '',
-        ),
-        Review(
-          rating: 3,
-          comment:
-              "comment placeholder comment placeholder comment placeholder",
-          review_id: '',
-          user_id: '',
-          listing_id: '',
-        ),
-      ],
-      tenant: User(
-        username: "username",
-        profilePic: "profilePic",
-        contactDetails: "contactDetails",
-        sex: "sex",
-        nationality: "nationality",
-        isAccommodating: false,
-        id: "1",
-      ),
-      property_id: "1",
-      room_type: "single",
-      isPublished: true,
-      isVerified: false, view_count: 0,
-    ));
-    shortlist.add(PropertyListing(
-      listing_id: "randomid",
-      listing_title: "property2",
-      rating: 5.0,
-      image_url: ["image_url"],
-      price: 1000,
-      deposit: 100,
-      description:
-          "placeholder description placeholder description placeholder description placeholder description ",
-      sex_preference: "all",
-      nationality_preference: "malaysian",
-      amenities: [
-        BooleanVariable(
-          name: "isWifiAccess",
-          value: false,
-        ),
-        BooleanVariable(name: "isAirCon", value: false),
-        BooleanVariable(name: "isNearMarket", value: false),
-        BooleanVariable(name: "isCarPark", value: false),
-        BooleanVariable(name: "isNearMRT", value: false),
-        BooleanVariable(name: "isNearLRT", value: false),
-        BooleanVariable(name: "isPrivateBathroom", value: false),
-        BooleanVariable(name: "isGymnasium", value: false),
-        BooleanVariable(name: "isCookingAllowed", value: false),
-        BooleanVariable(name: "isWashingMachine", value: false),
-        BooleanVariable(name: "isNearBusStop", value: false),
-      ],
-      reviews: [
-        Review(
-          rating: 5,
-          comment:
-              "comment placeholder comment placeholder comment placeholder",
-          review_id: '',
-          user_id: '',
-          listing_id: '',
-        ),
-        Review(
-          rating: 4,
-          comment:
-              "comment placeholder comment placeholder comment placeholder",
-          review_id: '',
-          user_id: '',
-          listing_id: '',
-        ),
-        Review(
-          rating: 3,
-          comment:
-              "comment placeholder comment placeholder comment placeholder",
-          review_id: '',
-          user_id: '',
-          listing_id: '',
-        ),
-      ],
-      tenant: User(
-        username: "username",
-        profilePic: "profilePic",
-        contactDetails: "contactDetails",
-        sex: "sex",
-        nationality: "nationality",
-        isAccommodating: false,
-        id: "1",
-      ),
-      property_id: "1",
-      room_type: "single",
-      isPublished: true,
-      isVerified: false, view_count: 0,
-    ));
-    shortlist.add(PropertyListing(
-      listing_id: "randomid",
-      listing_title: "property2",
-      rating: 5.0,
-      image_url: ["image_url"],
-      price: 1000,
-      deposit: 100,
-      description:
-          "placeholder description placeholder description placeholder description placeholder description ",
-      sex_preference: "all",
-      nationality_preference: "malaysian",
-      amenities: [
-        BooleanVariable(
-          name: "isWifiAccess",
-          value: false,
-        ),
-        BooleanVariable(name: "isAirCon", value: false),
-        BooleanVariable(name: "isNearMarket", value: false),
-        BooleanVariable(name: "isCarPark", value: false),
-        BooleanVariable(name: "isNearMRT", value: false),
-        BooleanVariable(name: "isNearLRT", value: false),
-        BooleanVariable(name: "isPrivateBathroom", value: false),
-        BooleanVariable(name: "isGymnasium", value: false),
-        BooleanVariable(name: "isCookingAllowed", value: false),
-        BooleanVariable(name: "isWashingMachine", value: false),
-        BooleanVariable(name: "isNearBusStop", value: false),
-      ],
-      reviews: [
-        Review(
-          rating: 5,
-          comment:
-              "comment placeholder comment placeholder comment placeholder",
-          review_id: '',
-          user_id: '',
-          listing_id: '',
-        ),
-        Review(
-          rating: 4,
-          comment:
-              "comment placeholder comment placeholder comment placeholder",
-          review_id: '',
-          user_id: '',
-          listing_id: '',
-        ),
-        Review(
-          rating: 3,
-          comment:
-              "comment placeholder comment placeholder comment placeholder",
-          review_id: '',
-          user_id: '',
-          listing_id: '',
-        ),
-      ],
-      tenant: User(
-        username: "username",
-        profilePic: "profilePic",
-        contactDetails: "contactDetails",
-        sex: "sex",
-        nationality: "nationality",
-        isAccommodating: false,
-        id: "1",
-      ),
-      property_id: "1",
-      room_type: "single",
-      isPublished: true,
-      isVerified: false, view_count: 0,
-    ));
-    return shortlist;
+    final url = Uri.parse("http://10.0.2.2:2000/api/get-shortlists-with-userid/$user_id");
+
+    final response = await http.get(
+      url,
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode == 200) {
+      final jsonResponse = jsonDecode(response.body)["data"];
+
+      developer.log("shortlist json: $jsonResponse");
+
+      for (var item in jsonResponse) {
+        String listingId = item["listing_id"];
+        developer.log("Listing ID: $listingId");
+
+        final url = Uri.parse("http://10.0.2.2:2000/api/get-listing-with-id/$listingId");
+
+        try {
+          final response = await http.get(url);
+          developer.log(response.statusCode.toString());
+
+          developer.log("response body: ${response.body}");
+
+          if (response.statusCode == 200) {
+            final listings = jsonDecode(response.body)["data"];
+            developer.log("Listings Data: ${listings}");
+
+            developer.log(listings.toString());
+
+            PropertyListing propertyListing = await _processListing(listings, listings["property_id"]);
+
+            shortlist.add(propertyListing);
+
+          } else {
+            developer.log("Failed to load listing: ${response.statusCode}");
+            return [];
+          }
+        } catch (e) {
+          developer.log("error, $e");
+        }
+      }
+      return shortlist;
+    } else {
+      print("Failed to fetch shortlist: ${response.body}");
+      return [];
+    }
+  }
+
+  static Future<bool> deleteShortlist(String user_id, String listing_id) async {
+    final url = Uri.parse("http://10.0.2.2:2000/api/remove-shortlist");
+
+    try {
+      final response = await http.delete(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          "user_id": user_id,
+          "listing_id": listing_id,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        developer.log("Successfully removed listing from shortlist");
+        return true;
+      } else {
+        developer.log("Failed to remove shortlist: ${response.body}");
+        return false;
+      }
+    } catch (error) {
+      developer.log("Error removing from shortlist: $error");
+      return false;
+    }
+  }
+
+  static Future<bool> addShortlist(String user_id, String listing_id) async {
+    final url = Uri.parse("http://10.0.2.2:2000/api/add-shortlist");
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          "user_id": user_id,
+          "listing_id": listing_id,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        developer.log("Successfully added listing into shortlist");
+        return true;
+      } else {
+        developer.log("Failed to add shortlist: ${response.body}");
+        return false;
+      }
+    } catch (error) {
+      developer.log("Error adding shortlist: $error");
+      return false;
+    }
   }
 
   static List<PropertyListing> getInvitation() {

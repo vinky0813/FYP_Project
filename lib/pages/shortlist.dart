@@ -3,21 +3,55 @@ import 'package:flutter/rendering.dart';
 import 'package:fyp_project/pages/listing_details.dart';
 import 'package:fyp_project/widgets/AppDrawer.dart';
 import 'package:get/get.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'dart:developer' as developer;
 
 import '../models/property_listing.dart';
 
-class Shortlist extends StatelessWidget {
+class Shortlist extends StatefulWidget {
   Shortlist({super.key});
 
-  List<PropertyListing> shortlist = [];
+  @override
+  State<Shortlist> createState() => _ShortlistState();
+}
 
-  void _getShortlist() {
-    shortlist = PropertyListing.getShortlist();
+class _ShortlistState extends State<Shortlist> {
+  List<PropertyListing> shortlist = [];
+  String? userId;
+
+  void initState() {
+    super.initState();
+    _initialize();
+  }
+
+  Future<void> _initialize() async {
+    final user = Supabase.instance.client.auth.currentUser;
+    userId = user?.id;
+
+    developer.log('User: $user');
+    developer.log('User ID: $userId');
+
+    if (userId != null) {
+      try {
+        shortlist = await PropertyListing.getShortlist(userId!);
+
+        setState(() {
+          shortlist;
+        });
+
+        developer.log('shortlists: $shortlist');
+      } catch (e) {
+        print('Error: $e');
+      }
+    }
+  }
+
+  void _deleteShortlist(String user_id, String listing_id) {
+    PropertyListing.deleteShortlist(user_id, listing_id);
   }
 
   @override
   Widget build(BuildContext context) {
-    _getShortlist();
     return Scaffold(
       appBar: appBar(),
       drawer: AppDrawer(),
@@ -57,7 +91,7 @@ class Shortlist extends StatelessWidget {
                           color: Colors.green,
                         ),
                         child: Image.network(
-                          "https://via.placeholder.com/150",
+                          shortlist[index].image_url[0],
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -90,10 +124,18 @@ class Shortlist extends StatelessWidget {
                                             content: Text("Are you sure you want to remove this shortlist?"),
                                             actions: [
                                               TextButton(
-                                                  onPressed: () => {},
+                                                  onPressed: () => {
+                                                    Navigator.of(context).pop(),
+                                                  },
                                                   child: Text("Cancel")),
                                               TextButton(
-                                                  onPressed: () => {},
+                                                  onPressed: () => {
+                                                    Navigator.of(context).pop(),
+                                                    _deleteShortlist(userId!, shortlist[index].listing_id),
+                                                    setState(() {
+                                                      shortlist.removeAt(index);
+                                                    })
+                                                  },
                                                   child: Text("Remove"))
                                             ],
                                           );
@@ -108,12 +150,21 @@ class Shortlist extends StatelessWidget {
                   ],
                 ),
               ),
-              onTap: () {
-                Get.to(() => Listingdetails(propertyListing: shortlist[index]),
+              onTap: () async {
+                final result = await Get.to(() => Listingdetails(propertyListing: shortlist[index]),
                 transition: Transition.circularReveal,
                 duration: const Duration(seconds: 1));
+
+                developer.log(result.toString());
+                if (result != null) {
+                  if (result == false) {
+                    setState(() {
+                      shortlist.removeAt(index);
+                    });
+                  }
+                }
               },);
-              
+
             },
               childCount: shortlist.length,
             ),
@@ -135,14 +186,5 @@ class Shortlist extends StatelessWidget {
       ),
       centerTitle: true,
       elevation: 0,
-
-      // action is right side of the app bar
-      actions: [IconButton(
-        // placeholder icon fix later
-        icon: const Icon(Icons.account_tree_outlined),
-        // same thing here
-        onPressed: () => {},
-      )],
     );
-  } // end of appBar method
-}
+  } }
