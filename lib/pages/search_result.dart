@@ -7,9 +7,6 @@ import 'package:fyp_project/widgets/SearchBarLocation.dart';
 import 'package:get/get.dart';
 import 'dart:developer' as developer;
 
-
-import '../models/property_listing.dart';
-
 class SearchResult extends StatefulWidget {
 
   final SearchResultController searchResultController = Get.find<SearchResultController>();

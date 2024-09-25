@@ -79,6 +79,10 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
     });
   }
 
+  void _removeTenant() {
+    PropertyListing.removeTenant(widget.propertyListing.listing_id, widget.propertyListing.tenant!.id, widget.propertyListing.property_id);
+  }
+
   Future<void> _pasteFromClipboard() async {
     final data = await Clipboard.getData(Clipboard.kTextPlain);
     if (data != null && data.text != null) {
@@ -424,7 +428,38 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
                           padding: EdgeInsets.symmetric(
                               horizontal: 16, vertical: 12),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text("Remove Tenant"),
+                                content: Text("Remove Current tenant?"),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Text("Cancel"),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                      _removeTenant();
+
+                                      setState(() {
+                                        _invitationSent = false;
+                                        invitedTenant = null;
+                                        widget.propertyListing.tenant = null;
+                                      });
+                                    },
+                                    child: Text("Confirm"),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
                         child: Text(
                           "Remove Tenant",
                           style: TextStyle(color: Colors.white),

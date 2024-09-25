@@ -72,10 +72,16 @@ class _AppDrawerState extends State<AppDrawer> {
     if (userId != null) {
       try {
         _getUser(userId!);
-        currentListing = (await _getCurrentProperty())!;
+        currentListing = await _getCurrentProperty();
       } catch (e) {
         print('Error: $e');
       }
+
+      setState(() {
+        currentListing;
+      });
+
+      developer.log("currentlisting: ${currentListing!.listing_id}");
     }
   }
 

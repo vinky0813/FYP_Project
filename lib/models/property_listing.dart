@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:ffi';
 
 import 'package:fyp_project/models/owner.dart';
 import 'package:fyp_project/models/property.dart';
@@ -65,6 +64,7 @@ class PropertyListing {
         final List<dynamic> listings = jsonDecode(response.body)["data"];
         developer.log("Listings Data: ${listings.runtimeType}");
 
+        developer.log(listings.toString());
         developer.log(listings.toString());
 
         final List<Future<PropertyListing>> futures = listings
@@ -291,19 +291,6 @@ class PropertyListing {
     }
   }
 
-  static Property getProperty() {
-    return Property(
-        property_id: "1",
-        property_title: "property title",
-        owner: Owner(
-            username: "name",
-            contact_no: "contact_no",
-            profile_pic: "profile_pic",
-            id: "1"),
-        address: "ADDRESS ADDRESS ADDRESS ADDRESS ADDRESS",
-        imageUrl: "https://via.placeholder.com/150", lat: 0, long: 0);
-  }
-
   static Future<PropertyListing?> getCurrentProperty(String? listing_id) async {
 
     final url = Uri.parse("http://10.0.2.2:2000/api/get-listing-with-id/$listing_id");
@@ -312,18 +299,13 @@ class PropertyListing {
       developer.log(response.statusCode.toString());
 
       if (response.statusCode == 200) {
-        final List<dynamic> listings = jsonDecode(response.body)["data"];
-        developer.log("Listings Data: ${listings.runtimeType}");
+        final listings = jsonDecode(response.body)["data"];
 
         developer.log(listings.toString());
 
-        final List<Future<PropertyListing>> futures = listings
-            .map((listingJson) => _processListing(listingJson, listingJson["property_id"]))
-            .toList();
+        PropertyListing propertyListing = await _processListing(listings, listings["property_id"]);
 
-        final propertyListings = await Future.wait(futures);
-
-        return propertyListings[0];
+        return propertyListing;
 
       } else {
         developer.log("Failed to load current listing: ${response.statusCode}");
@@ -544,76 +526,170 @@ class PropertyListing {
     }
   }
 
-  static List<PropertyListing> getInvitation() {
-    List<PropertyListing> invitations = [];
+  static Future<List<PropertyListing>> getInvitations(String renter_id) async {
 
-    invitations.add(PropertyListing(
-      listing_id: "randomid",
-      listing_title: "property2",
-      rating: 5.0,
-      image_url: ["image_url"],
-      price: 1000,
-      deposit: 100,
-      description:
-          "placeholder description placeholder description placeholder description placeholder description ",
-      sex_preference: "all",
-      nationality_preference: "malaysian",
-      amenities: [
-        BooleanVariable(
-          name: "isWifiAccess",
-          value: false,
-        ),
-        BooleanVariable(name: "isAirCon", value: false),
-        BooleanVariable(name: "isNearMarket", value: false),
-        BooleanVariable(name: "isCarPark", value: false),
-        BooleanVariable(name: "isNearMRT", value: false),
-        BooleanVariable(name: "isNearLRT", value: false),
-        BooleanVariable(name: "isPrivateBathroom", value: false),
-        BooleanVariable(name: "isGymnasium", value: false),
-        BooleanVariable(name: "isCookingAllowed", value: false),
-        BooleanVariable(name: "isWashingMachine", value: false),
-        BooleanVariable(name: "isNearBusStop", value: false),
-      ],
-      reviews: [
-        Review(
-          rating: 5,
-          comment:
-              "comment placeholder comment placeholder comment placeholder",
-          review_id: '',
-          user_id: '',
-          listing_id: '',
-        ),
-        Review(
-          rating: 4,
-          comment:
-              "comment placeholder comment placeholder comment placeholder",
-          review_id: '',
-          user_id: '',
-          listing_id: '',
-        ),
-        Review(
-          rating: 3,
-          comment:
-              "comment placeholder comment placeholder comment placeholder",
-          review_id: '',
-          user_id: '',
-          listing_id: '',
-        ),
-      ],
-      tenant: User(
-        username: "username",
-        profilePic: "profilePic",
-        contactDetails: "contactDetails",
-        sex: "sex",
-        nationality: "nationality",
-        isAccommodating: false,
-        id: "1",
-      ),
-      property_id: "1",
-      room_type: "single",
-      isPublished: true,
-      isVerified: false, view_count: 0,
-    ));
-    return invitations;
+    List<PropertyListing> propertyListings = [];
+
+    developer.log("renter id: ${renter_id}");
+
+    final url = Uri.parse("http://10.0.2.2:2000/api/get-invitations-with-renter-id/$renter_id");
+    try {
+      final response = await http.get(url);
+      developer.log(response.statusCode.toString());
+
+      if (response.statusCode == 200) {
+        final invitations = jsonDecode(response.body)["data"];
+
+        for (var invitation in invitations) {
+          String listing_id = invitation["listing_id"];
+          developer.log("listing id: $listing_id");
+
+          final url = Uri.parse("http://10.0.2.2:2000/api/get-listing-with-id/$listing_id");
+          final response = await http.get(url);
+
+          if (response.statusCode == 200) {
+            final listings = jsonDecode(response.body)["data"];
+            developer.log("Listings Data: ${listings}");
+
+            developer.log(listings.toString());
+
+            PropertyListing propertyListing = await _processListing(listings, listings["property_id"]);
+
+            developer.log("get invitation returned length before adding: ${propertyListings.length}");
+            propertyListings.add(propertyListing);
+
+          } else {
+            developer.log("Failed to load listing: ${response.statusCode}");
+            return [];
+          }
+        }
+        developer.log("get invitation returned length after adding : ${propertyListings.length}");
+        return propertyListings;
+
+      } else {
+        developer.log("Failed to load listings: ${response.statusCode}");
+        return [];
+      }
+    } catch (e) {
+      developer.log("Error fetching listings: $e");
+      return [];
+    }
+  }
+
+  static Future<void> acceptInvitation(String renter_id, String listing_id, String property_id) async {
+    developer.log("renter id: $renter_id");
+    developer.log("listing id: $listing_id");
+    developer.log("property id: $property_id");
+      try {
+        final responsePart1 = await http.put(
+          Uri.parse("http://10.0.2.2:2000/api/accept-invitation-part-1"),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode({
+            "listing_id": listing_id,
+            "renter_id": renter_id,
+          }),
+        );
+        if (responsePart1.statusCode != 200) {
+          throw Exception("Failed at part 1: ${jsonDecode(responsePart1.body)}");
+        }
+
+        final responsePart2 = await http.delete(
+          Uri.parse("http://10.0.2.2:2000/api/accept-invitation-part-2"),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode({"renter_id": renter_id}),
+        );
+        if (responsePart2.statusCode != 200) {
+          throw Exception("Failed at part 2: ${jsonDecode(responsePart2.body)}");
+        }
+
+        final responsePart3 = await http.put(
+          Uri.parse("http://10.0.2.2:2000/api/accept-invitation-part-3"),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode({
+            "renter_id": renter_id,
+            "property_id": property_id,
+          }),
+        );
+        if (responsePart3.statusCode != 200) {
+          throw Exception("Failed at part 3: ${jsonDecode(responsePart3.body)}");
+        }
+
+        final responsePart4 = await http.put(
+          Uri.parse("http://10.0.2.2:2000/api/accept-invitation-part-4"),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode({
+            "renter_id": renter_id,
+            "listing_id": listing_id,
+          }),
+        );
+        if (responsePart4.statusCode != 200) {
+          throw Exception("Failed at part 4: ${jsonDecode(responsePart4.body)}");
+        }
+        developer.log("Invitation accepted successfully!");
+
+      } catch (e) {
+        print('Error accepting invitation: $e');
+      }
+  }
+
+  static Future<void> rejectInvitation(String listing_id, String renter_id) async {
+    try {
+      final response = await http.delete(
+        Uri.parse("http://10.0.2.2:2000/api/delete-invitations/$listing_id"),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          "renter_id": renter_id,
+        }),
+      );
+      if (response.statusCode != 200) {
+        throw Exception("Failed: ${jsonDecode(response.body)["message"]}");
+      }
+      developer.log("Success, rejecting invite");
+    } catch (e) {
+      print('Error accepting invitation: $e');
+    }
+  }
+
+  static Future<void> removeTenant(String listing_id, String renter_id, String property_id) async {
+    try {
+      final response1 = await http.put(
+        Uri.parse("http://10.0.2.2:2000/api/remove-tenant-part-1"),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          "listing_id": listing_id,
+          "renter_id": renter_id,
+        }),
+      );
+      if (response1.statusCode != 200) {
+        throw Exception("Failed: ${jsonDecode(response1.body)["message"]}");
+      }
+
+      final response2 = await http.put(
+        Uri.parse("http://10.0.2.2:2000/api/remove-tenant-part-2"),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          "renter_id": renter_id
+        }),
+      );
+      if (response1.statusCode != 200) {
+        throw Exception("Failed: ${jsonDecode(response2.body)["message"]}");
+      }
+
+      final response3 = await http.delete(
+        Uri.parse("http://10.0.2.2:2000/api/remove-tenant-part-3"),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          "property_id": property_id,
+          "renter_id": renter_id,
+        }),
+      );
+      if (response1.statusCode != 200) {
+        throw Exception("Failed: ${jsonDecode(response3.body)["message"]}");
+      }
+
+      developer.log("Success, removed tenant");
+    } catch (e) {
+      print('Error accepting invitation: $e');
+    }
   }
 }

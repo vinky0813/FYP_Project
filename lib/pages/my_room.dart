@@ -1,13 +1,18 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:fyp_project/models/owner.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:fyp_project/models/property.dart';
-import 'package:fyp_project/models/user.dart';
 import 'package:fyp_project/pages/user_info_page.dart';
+import 'package:fyp_project/widgets/AppDrawer.dart';
 import 'package:get/get.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../models/boolean_variable.dart';
 import '../models/property_listing.dart';
+import '../models/user.dart' as project_user;
+import 'dart:developer' as developer;
 
 class MyRoom extends StatefulWidget {
 
@@ -18,29 +23,82 @@ class MyRoom extends StatefulWidget {
   MyroomState createState() => MyroomState();
 }
 
-final Property property = Property(
-    property_id: "1",
-    property_title: "PLACEHOLDER",
-    owner: Owner(
-        username: "name",
-        contact_no: "contact_no",
-        profile_pic: "profile_pic",
-        id: "1"),
-    address: "ADDRESS ADDRESS ADDRESS ADDRESS ADDRESS ADDRESS",
-    imageUrl: "https://via.placeholder.com/150", lat: 0, long: 0);
-
-_getTenants() {
-  return User.getTenants();
-}
-
 class MyroomState extends State<MyRoom> {
   int _currentIndex = 0;
   List<Widget> body = [];
-  List<User> tenantList = _getTenants();
+  List<project_user.User> tenantList = [];
+  late List<BooleanVariable> trueAmenities;
+  Property? property;
+  bool _isLoading = true;
+  String? userId;
+  project_user.User? renter = null;
+
+  Future<void> _getTenants() async {
+    tenantList = await project_user.User.getTenants(property!.property_id);
+  }
+
+  void initState() {
+    super.initState();
+    _initialize();
+  }
+
+  Future<void> _initialize() async {
+
+    final user = Supabase.instance.client.auth.currentUser;
+    userId = user?.id;
+
+    developer.log('User: $user');
+    developer.log('User ID: $userId');
+
+    developer.log("property id: ${widget.propertyListing!.property_id}");
+    property = await Property.getPropertyWithId(widget.propertyListing!.property_id);
+
+    trueAmenities = widget.propertyListing!.amenities.where((b) => b.value).toList();
+    trueAmenities.removeAt(0);
+
+    await _getTenants();
+
+    List<project_user.User> tenantsToRemove = [];
+
+    for (project_user.User t in tenantList) {
+      if (t.id == userId) {
+        tenantsToRemove.add(t);
+      }
+    }
+
+    for (var t in tenantsToRemove) {
+      tenantList.remove(t);
+    }
+
+    setState(() {
+      tenantList;
+      property;
+      trueAmenities;
+      _isLoading = false;
+    });
+
+    if (userId != null) {
+      try {
+        _getUser(userId!);
+      } catch (e) {
+        print('Error: $e');
+      }
+    }
+  }
+
+  Future<void> _getUser(String user_id) async {
+    try {
+      renter = await project_user.User.getUserById(user_id);
+    } catch (e) {
+      developer.log("Error fetching user: $e");
+      renter = null;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: AppDrawer(),
       appBar: appBar(),
       body: _getBody(),
       bottomNavigationBar: bottomNavigationBar(),
@@ -55,6 +113,11 @@ class MyroomState extends State<MyRoom> {
   }
   //https://youtu.be/VfUUOI6BUtE?si=yAhaupWJhH8CTQeU
   Widget _getBody() {
+    if (_isLoading) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
     switch (_currentIndex) {
       case 0:
         return ListView(
@@ -103,7 +166,7 @@ class MyroomState extends State<MyRoom> {
                 fontSize: 16),
             ),
             SizedBox(height: 8,),
-            Text('${widget.propertyListing!.description}\n\n${property.address}'),
+            Text('${widget.propertyListing!.description}\n\n${property!.address}'),
             SizedBox(height: 16),
             Text(
               "Preference",
@@ -137,7 +200,7 @@ class MyroomState extends State<MyRoom> {
               children: [
                 CircleAvatar(
                   radius: 40,
-                  backgroundImage: NetworkImage(property.owner.profile_pic), // Load the image
+                  backgroundImage: NetworkImage(property!.owner.profile_pic), // Load the image
                 ),
                 SizedBox(width: 16),
                 Expanded(
@@ -153,12 +216,12 @@ class MyroomState extends State<MyRoom> {
                         ),
                         SizedBox(height: 4),
                         Text(
-                          "Owner Name: ${property.owner.username}",
+                          "Owner Name: ${property!.owner.username}",
                           style: TextStyle(fontSize: 14),
                         ),
                         SizedBox(height: 4),
                         Text(
-                          "Contact Details: ${property.owner.contact_no}",
+                          "Contact Details: ${property!.owner.contact_no}",
                           style: TextStyle(fontSize: 14),
                         ),
                       ],
@@ -232,14 +295,52 @@ class MyroomState extends State<MyRoom> {
           ],
         );
       case 2:
-        return ListView(
+        return Column(
           children: [
-            Center(
-              child: Icon(Icons.account_tree_outlined),
+            Container(
+              padding: EdgeInsets.only(left: 20),
+              child: Row(
+                children: [
+                  Align(
+                    child: Text("Map",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        )),
+                    alignment: Alignment.centerLeft,
+                  ),
+                ],
+              ),
             ),
-            Center(
-              child: Text("MAP PART"),
-            )
+            SizedBox(height: 16),
+            Expanded(
+              child: FlutterMap(
+                options: MapOptions(
+                  initialCenter: LatLng(property!.lat, property!.long),
+                ),
+                children: [
+                  TileLayer(
+                    urlTemplate:
+                    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                    subdomains: ['a', 'b', 'c'],
+                  ),
+                  MarkerLayer(
+                    markers: [
+                      Marker(
+                        point: LatLng(property!.lat, property!.long),
+                        child: Container(
+                          child: Icon(
+                            Icons.location_on,
+                            color: Colors.red,
+                            size: 30,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
           ],
         );
       case 3:
@@ -260,7 +361,22 @@ class MyroomState extends State<MyRoom> {
             SliverToBoxAdapter(
                 child: SizedBox(height: 16,)
             ),
-            SliverList(
+            tenantList.isEmpty
+                ? SliverToBoxAdapter(
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    "No Tenants",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ),
+              ),
+            ) : SliverList(
               delegate: SliverChildBuilderDelegate((context, index) {
                 return Container(
                   margin: EdgeInsets.only(left: 20, right: 20, bottom: 20),

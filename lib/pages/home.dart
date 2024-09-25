@@ -58,6 +58,8 @@ class _HomePageState extends State<HomePage> {
       developer.log("Error fetching user: $e");
       renter = null;
     }
+
+    developer.log("renter id in get user ${renter!.id}");
   }
 
   Future<PropertyListing?> _getCurrentProperty() async {
@@ -83,15 +85,19 @@ class _HomePageState extends State<HomePage> {
 
     if (userId != null) {
       try {
-        _getUser(userId!);
-        _getTopRatedListing();
-        _getMostViewedPropertyListing();
+        await _getUser(userId!);
+        await _getTopRatedListing();
+        await _getMostViewedPropertyListing();
 
-        if(renter?.isAccommodating == true) {
+        developer.log("is renter accommodating: ${renter!.isAccommodating}");
+
+        if(renter!.isAccommodating == true) {
           currentListing = await _getCurrentProperty();
         }
 
-        developer.log("top rated listing length: ${topRatedPropertyListing.length}");
+        developer.log("current listing: ${currentListing!.listing_id}");
+
+        developer.log("top rated listing length in initalizer: ${topRatedPropertyListing.length}");
         developer.log("top rated listing: ${topRatedPropertyListing}");
 
       } catch (e) {

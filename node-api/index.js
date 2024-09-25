@@ -580,11 +580,11 @@ app.get("/api/get-listing-with-id/:listing_id", async (req, res) => {
       throw error;
     }
     res.status(200).json({
-      message: "Successfully fetched top-rated listing",
+      message: "Successfully fetched listing with id",
       data,
     });
   } catch (error) {
-    console.error("Error fetching top-rated listing:", error.message);
+    console.error("Error fetching listing with id:", error.message);
     res.status(500).json({ message: error.message });
   }
 });
@@ -775,11 +775,13 @@ app.get("/api/get-invitations-with-renter-id/:renter_id", async (req, res) => {
 
 app.delete("/api/delete-invitations/:listing_id", async (req, res) => {
   const { listing_id } = req.params;
+  const { renter_id } = req.body;
 
   const { data, error } = await supabase
       .from("Invitations")
       .delete()
-      .eq("listing_id", listing_id);
+      .eq("listing_id", listing_id)
+      .eq("renter_id", renter_id);
 
   if (error) {
       return res.status(404).json({ message: 'Invitation not found' });
@@ -802,6 +804,141 @@ app.get("/api/get-invitation-with-listing_id/:listing_id", async (req, res) => {
   }
 
   return res.status(200).json({ message: "Success, invitation found", data });
+});
+
+app.put("/api/accept-invitation-part-1", async (req, res) => {
+  const { listing_id, renter_id } = req.body;
+
+  const { data, error } = await supabase
+      .from("Listing")
+      .upsert({
+        listing_id: listing_id,
+        tenant: renter_id,
+        isPublished: false,
+      });
+
+  if (error) {
+      return res.status(400).json({ message: "Failed, update listing tenant", error });
+  }
+
+  return res.status(200).json({ message: "Success, update listing tenant", data });
+});
+
+app.delete("/api/accept-invitation-part-2", async (req, res) => {
+  const { renter_id } = req.body;
+
+  const { data, error } = await supabase
+      .from("Invitations")
+      .delete()
+      .eq("renter_id", renter_id);
+
+  if (error) {
+      return res.status(400).json({ message: "Failed, delete invitation", error });
+  }
+
+  return res.status(200).json({ message: "Success, delete invitation", data });
+});
+
+app.put("/api/accept-invitation-part-3", async (req, res) => {
+  const { renter_id , property_id } = req.body;
+
+  const { data, error } = await supabase
+      .from("Property_Renter_JoinTable")
+      .upsert({
+        renter_id: renter_id,
+        property_id: property_id,
+      });
+
+  if (error) {
+      return res.status(400).json({ message: "Failed, inserted joint table", error });
+  }
+  return res.status(200).json({ message: "Success, inserted joint table", data });
+});
+
+app.put("/api/accept-invitation-part-4", async (req, res) => {
+  const { renter_id , listing_id } = req.body;
+
+  const { data, error } = await supabase
+      .from("Renters")
+      .upsert({
+        user_id: renter_id,
+        listing_id: listing_id,
+        isAccommodating: true,
+      });
+
+  if (error) {
+      return res.status(400).json({ message: "Failed, inserted joint table", error });
+  }
+  return res.status(200).json({ message: "Success, inserted joint table", data });
+});
+
+app.get("/api/get-tenants/:property_id", async (req, res) => {
+  const { property_id } = req.params;
+
+  const { data, error } = await supabase
+      .from("Property_Renter_JoinTable")
+      .select("renter_id")
+      .eq("property_id", property_id);
+
+  if (error) {
+      return res.status(400).json({ message: "Failed, get tenants", error });
+  }
+  return res.status(200).json({ message: "Success, get tenants", data });
+});
+
+app.put("/api/remove-tenant-part-1", async (req, res) => {
+  const { listing_id, renter_id } = req.body;
+
+  try {
+    const { data, error } = await supabase
+    .from("Listing")
+    .upsert({ 
+      listing_id: listing_id,
+      isPublished: true,
+      tenant: renter_id,
+     });
+
+    res.status(200).json({ message: 'Tenant removed and listing published.' });
+  } catch (error) {
+    console.error('Error removing tenant:', error);
+    res.status(500).json({ message: 'Error removing tenant', error });
+  }
+});
+
+app.put("/api/remove-tenant-part-2", async (req, res) => {
+  const { renter_id } = req.body;
+
+  try {
+    const { data, error } = await supabase
+    .from("Renters")
+    .upsert({ 
+      user_id: renter_id,
+      isAccommodating: false,
+      listing_id: null,
+     });
+
+    res.status(200).json({ message: 'renter row updated.' });
+  } catch (error) {
+    console.error('Error removing tenant:', error);
+    res.status(500).json({ message: 'Error removing tenant', error });
+  }
+});
+
+app.delete("/api/remove-tenant-part-3", async (req, res) => {
+  const { property_id, renter_id } = req.body;
+
+  try {
+    const { data, error } = await supabase
+    .from("Property_Renter_JoinTable")
+    .delete()
+    .eq("property_id", property_id)
+    .eq("renter_id", renter_id);
+
+    res.status(200).json({ message: 'Tenant in Property_Renter_JoinTable.' });
+  } catch (error) {
+    console.error('Error removing tenant:', error);
+    res.status(500).json({ message: 'Error removing tenant', error });
+  }
 });
 
 app.listen(2000, () => {
