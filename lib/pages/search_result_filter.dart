@@ -1,19 +1,93 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
+import 'dart:developer' as developer;
 
-import '../models/property_listing.dart';
+import '../models/boolean_variable.dart';
 
 class SearchResultFilter extends StatefulWidget {
+
+  Map<String, dynamic>? filterData;
+
+  SearchResultFilter({super.key, required this.filterData});
   @override
   _SearchResultFilterState createState() => _SearchResultFilterState();
 }
-  class _SearchResultFilterState extends State<SearchResultFilter> {
-  List<PropertyListing> searchResult = [];
 
-  void _getSearchResult() {
-    searchResult = PropertyListing.getSearchResult();
+class _SearchResultFilterState extends State<SearchResultFilter> {
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.filterData != null && widget.filterData!.isNotEmpty) {
+      final data = widget.filterData!;
+
+      _minPriceController.text = data['min_price']?.toString() ?? '';
+      _maxPriceController.text = data['max_price']?.toString() ?? '';
+
+      gender = (data['sex_preference'] == "male" || data['sex_preference'] == "female")
+          ? data['sex_preference']
+          : "no preference";
+      _genderController.text = gender;
+
+      nationality = (data['nationality_preference'] == "malaysian" || data['nationality_preference'] == "non-malaysian")
+          ? data['nationality_preference']
+          : "no preference";
+      _nationalityController.text = nationality;
+
+      room_type = data['room_type'] ?? '';
+      isMasterRoom = room_type == 'master';
+      isSingleRoom = room_type == 'single';
+      isSharedRoom = room_type == 'shared';
+      isSuite = room_type == 'suite';
+
+      List<BooleanVariable> amenities = data['amenities'] ?? [];
+      for (var amenity in amenities) {
+        switch (amenity.name) {
+          case 'isWifiAccess':
+            isWifiAccess = amenity.value;
+            break;
+          case 'isAirCon':
+            isAirCon = amenity.value;
+            break;
+          case 'isNearMarket':
+            isNearMarket = amenity.value;
+            break;
+          case 'isCarPark':
+            isCarPark = amenity.value;
+            break;
+          case 'isNearMRT':
+            isNearMRT = amenity.value;
+            break;
+          case 'isNearLRT':
+            isNearLRT = amenity.value;
+            break;
+          case 'isPrivateBathroom':
+            isPrivateBathroom = amenity.value;
+            break;
+          case 'isGymnasium':
+            isGymnasium = amenity.value;
+            break;
+          case 'isCookingAllowed':
+            isCookingAllowed = amenity.value;
+            break;
+          case 'isWashingMachine':
+            isWashingMachine = amenity.value;
+            break;
+          case 'isNearBusStop':
+            isNearBusStop = amenity.value;
+            break;
+        }
+      }
+    }
   }
+
+  String room_type = "";
+  String gender = "no preference";
+  String nationality = "no preference";
+  final GlobalKey<FormFieldState> _genderKey = GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> _nationalityKey = GlobalKey<FormFieldState>();
 
   // room type
   bool isMasterRoom = false;
@@ -34,9 +108,13 @@ class SearchResultFilter extends StatefulWidget {
   bool isWashingMachine = false;
   bool isNearBusStop = false;
 
+  final TextEditingController _minPriceController = TextEditingController();
+  final TextEditingController _maxPriceController = TextEditingController();
+  final TextEditingController _genderController = TextEditingController();
+  final TextEditingController _nationalityController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
-    _getSearchResult();
     return Scaffold(
       appBar: appBar(),
       body: ListView(
@@ -50,7 +128,6 @@ class SearchResultFilter extends StatefulWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           setState(() {
-            // Reset all filters
             isMasterRoom = false;
             isSingleRoom = false;
             isSharedRoom = false;
@@ -66,10 +143,22 @@ class SearchResultFilter extends StatefulWidget {
             isCookingAllowed = false;
             isWashingMachine = false;
             isNearBusStop = false;
+            _minPriceController.clear();
+            _maxPriceController.clear();
+            _genderController.text = "no preference";
+            _nationalityController.text = "no preference";
+            room_type="";
+            gender = "no preference";
+            nationality = "no preference";
+            _genderKey.currentState?.reset();
+            _nationalityKey.currentState?.reset();
+
           });
         },
-        child: Icon(Icons.refresh,
-        color: Colors.white,),
+        child: Icon(
+          Icons.refresh,
+          color: Colors.white,
+        ),
         backgroundColor: Colors.black,
       ),
     );
@@ -81,13 +170,15 @@ class SearchResultFilter extends StatefulWidget {
       children: [
         const Padding(
           padding: EdgeInsets.only(left: 20),
-          child: Text("Amenities",
+          child: Text(
+            "Amenities",
             textAlign: TextAlign.left,
             style: TextStyle(
               color: Colors.black,
               fontSize: 18,
               fontWeight: FontWeight.bold,
-            ),),
+            ),
+          ),
         ),
         Row(
           children: [
@@ -95,7 +186,7 @@ class SearchResultFilter extends StatefulWidget {
               child: CheckboxListTile(
                 title: Text("Wifi Access"),
                 value: isWifiAccess,
-                onChanged: (bool? value) {
+                onChanged: (value) {
                   setState(() {
                     isWifiAccess = value!;
                   });
@@ -106,7 +197,7 @@ class SearchResultFilter extends StatefulWidget {
               child: CheckboxListTile(
                 title: Text("Private Bathroom"),
                 value: isPrivateBathroom,
-                onChanged: (bool? value) {
+                onChanged: (value) {
                   setState(() {
                     isPrivateBathroom = value!;
                   });
@@ -121,7 +212,7 @@ class SearchResultFilter extends StatefulWidget {
               child: CheckboxListTile(
                 title: Text("Gymnasium"),
                 value: isGymnasium,
-                onChanged: (bool? value) {
+                onChanged: (value) {
                   setState(() {
                     isGymnasium = value!;
                   });
@@ -132,7 +223,7 @@ class SearchResultFilter extends StatefulWidget {
               child: CheckboxListTile(
                 title: Text("Air Con"),
                 value: isAirCon,
-                onChanged: (bool? value) {
+                onChanged: (value) {
                   setState(() {
                     isAirCon = value!;
                   });
@@ -147,7 +238,7 @@ class SearchResultFilter extends StatefulWidget {
               child: CheckboxListTile(
                 title: Text("Near Market"),
                 value: isNearMarket,
-                onChanged: (bool? value) {
+                onChanged: (value) {
                   setState(() {
                     isNearMarket = value!;
                   });
@@ -158,7 +249,7 @@ class SearchResultFilter extends StatefulWidget {
               child: CheckboxListTile(
                 title: Text("Cooking Allowed"),
                 value: isCookingAllowed,
-                onChanged: (bool? value) {
+                onChanged: (value) {
                   setState(() {
                     isCookingAllowed = value!;
                   });
@@ -173,7 +264,7 @@ class SearchResultFilter extends StatefulWidget {
               child: CheckboxListTile(
                 title: Text("Near Train Station"),
                 value: isNearMRT,
-                onChanged: (bool? value) {
+                onChanged: (value) {
                   setState(() {
                     isNearMRT = value!;
                   });
@@ -184,7 +275,7 @@ class SearchResultFilter extends StatefulWidget {
               child: CheckboxListTile(
                 title: Text("Near Bus Stop"),
                 value: isNearBusStop,
-                onChanged: (bool? value) {
+                onChanged: (value) {
                   setState(() {
                     isNearBusStop = value!;
                   });
@@ -199,7 +290,7 @@ class SearchResultFilter extends StatefulWidget {
               child: CheckboxListTile(
                 title: Text("Car Park"),
                 value: isCarPark,
-                onChanged: (bool? value) {
+                onChanged: (value) {
                   setState(() {
                     isCarPark = value!;
                   });
@@ -210,7 +301,7 @@ class SearchResultFilter extends StatefulWidget {
               child: CheckboxListTile(
                 title: Text("Washing Machine"),
                 value: isWashingMachine,
-                onChanged: (bool? value) {
+                onChanged: (value) {
                   setState(() {
                     isWashingMachine = value!;
                   });
@@ -229,21 +320,28 @@ class SearchResultFilter extends StatefulWidget {
       children: [
         const Padding(
           padding: EdgeInsets.only(left: 20, bottom: 5),
-          child: Text("Preference",
+          child: Text(
+            "Preference",
             textAlign: TextAlign.left,
             style: TextStyle(
               color: Colors.black,
               fontSize: 18,
               fontWeight: FontWeight.bold,
-            ),),
+            ),
+          ),
         ),
-        SizedBox(height: 5,),
+        SizedBox(
+          height: 5,
+        ),
         Padding(
-          padding: const EdgeInsets.only(left: 20, right:20, bottom: 20, top:5),
+          padding:
+              const EdgeInsets.only(left: 20, right: 20, bottom: 20, top: 5),
           child: Row(
             children: [
               Expanded(
                 child: DropdownButtonFormField<String>(
+                  key: _genderKey,
+                  value: gender,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -254,15 +352,21 @@ class SearchResultFilter extends StatefulWidget {
                   items: const [
                     DropdownMenuItem(value: "male", child: Text("Male")),
                     DropdownMenuItem(value: "female", child: Text("Female")),
+                    DropdownMenuItem(value: "no preference", child: Text("No Preference")),
                   ],
-                  onChanged: (gender) {
-                    print(gender);
+                  onChanged: (selectedGender) {
+                    gender = selectedGender ?? "no preference";
+                    _genderController.text = selectedGender ?? "no preference";
                   },
                 ),
               ),
-              SizedBox(width: 20,),
+              SizedBox(
+                width: 20,
+              ),
               Expanded(
                 child: DropdownButtonFormField<String>(
+                  key: _nationalityKey,
+                  value: nationality,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -271,11 +375,15 @@ class SearchResultFilter extends StatefulWidget {
                     contentPadding: EdgeInsets.symmetric(horizontal: 10),
                   ),
                   items: const [
-                    DropdownMenuItem(value: "malaysian", child: Text("Malaysian")),
-                    DropdownMenuItem(value: "non-malaysian", child: Text("Non Malaysian")),
+                    DropdownMenuItem(
+                        value: "malaysian", child: Text("Malaysian")),
+                    DropdownMenuItem(
+                        value: "non-malaysian", child: Text("Non Malaysian")),
+                    DropdownMenuItem(value: "no preference", child: Text("No Preference")),
                   ],
-                  onChanged: (nationality) {
-                    print(nationality);
+                  onChanged: (selectedNationality) {
+                    nationality = selectedNationality ?? "no preference";
+                    _nationalityController.text = selectedNationality ?? "no preference";
                   },
                 ),
               ),
@@ -288,64 +396,91 @@ class SearchResultFilter extends StatefulWidget {
 
   Column RoomTypeFilter() {
     return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Padding(
+          padding: EdgeInsets.only(left: 20),
+          child: Text(
+            "Room Type",
+            textAlign: TextAlign.left,
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+        Row(
           children: [
-            const Padding(
-              padding: EdgeInsets.only(left: 20),
-              child: Text("Room Type",
-                textAlign: TextAlign.left,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),),
+            Expanded(
+              child: CheckboxListTile(
+                title: Text("Master Room"),
+                value: isMasterRoom,
+                onChanged: (value) {
+                  setState(() {
+                    isMasterRoom = value!;
+                    room_type = "master";
+                    isSingleRoom = false;
+                    isSuite = false;
+                    isSharedRoom = false;
+                  });
+                },
+              ),
             ),
-            Row(
-              children: [
-                Expanded(
-                  child: CheckboxListTile(
-                    title: Text("Master Room"),
-                    value: isMasterRoom,
-                    onChanged: (bool? value) {
-                      isMasterRoom = value!;
-                    },
-                  ),
-                ),
-                Expanded(
-                  child: CheckboxListTile(
-                    title: Text("Single Room"),
-                    value: isSingleRoom,
-                    onChanged: (bool? value) {
-                      isSingleRoom = value!;
-                    },
-                  ),
-                )
-              ],
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: CheckboxListTile(
-                    title: Text("Shared Room"),
-                    value: isSharedRoom,
-                    onChanged: (bool? value) {
-                      isSharedRoom = value!;
-                    },
-                  ),
-                ),
-                Expanded(
-                  child: CheckboxListTile(
-                    title: Text("Suite"),
-                    value: isSuite,
-                    onChanged: (bool? value) {
-                      isSuite = value!;
-                    },
-                  ),
-                )
-              ],
-            ),
+            Expanded(
+              child: CheckboxListTile(
+                title: Text("Single Room"),
+                value: isSingleRoom,
+                onChanged: (value) {
+                  setState(() {
+                    isSingleRoom = value!;
+                    room_type = "single";
+                    isMasterRoom = false;
+                    isSharedRoom = false;
+                    isSuite = false;
+
+                  });
+                },
+              ),
+            )
           ],
-        );
+        ),
+        Row(
+          children: [
+            Expanded(
+              child: CheckboxListTile(
+                title: Text("Shared Room"),
+                value: isSharedRoom,
+                onChanged: (value) {
+                  setState(() {
+                    isSharedRoom = value!;
+                    room_type = "shared";
+                    isMasterRoom = false;
+                    isSingleRoom = false;
+                    isSuite = false;
+                  });
+                },
+              ),
+            ),
+            Expanded(
+              child: CheckboxListTile(
+                title: Text("Suite"),
+                value: isSuite,
+                onChanged: (value) {
+                  setState(() {
+                    isSuite = value!;
+                    room_type = "suite";
+                    isMasterRoom = false;
+                    isSingleRoom = false;
+                    isSharedRoom = false;
+                  });
+                },
+              ),
+            )
+          ],
+        ),
+      ],
+    );
   }
 
   Column PriceFilter() {
@@ -354,21 +489,27 @@ class SearchResultFilter extends StatefulWidget {
       children: [
         const Padding(
           padding: EdgeInsets.only(left: 20, bottom: 5),
-          child: Text("Price",
+          child: Text(
+            "Price",
             textAlign: TextAlign.left,
             style: TextStyle(
               color: Colors.black,
               fontSize: 18,
               fontWeight: FontWeight.bold,
-            ),),
+            ),
+          ),
         ),
-        SizedBox(height: 5,),
+        SizedBox(
+          height: 5,
+        ),
         Padding(
-          padding: const EdgeInsets.only(left: 20, right:20, bottom: 20, top:5),
+          padding:
+              const EdgeInsets.only(left: 20, right: 20, bottom: 20, top: 5),
           child: Row(
             children: [
               Expanded(
                 child: TextField(
+                  controller: _minPriceController,
                   decoration: InputDecoration(
                     labelText: "Min Price",
                     border: OutlineInputBorder(
@@ -379,9 +520,12 @@ class SearchResultFilter extends StatefulWidget {
                   keyboardType: TextInputType.number,
                 ),
               ),
-              SizedBox(width: 20,),
+              SizedBox(
+                width: 20,
+              ),
               Expanded(
                 child: TextField(
+                  controller: _maxPriceController,
                   decoration: InputDecoration(
                     labelText: "Max Price",
                     border: OutlineInputBorder(
@@ -401,8 +545,8 @@ class SearchResultFilter extends StatefulWidget {
 
   AppBar appBar() {
     return AppBar(
-      // App bar title
-      title: const Text("Filter",
+      title: const Text(
+        "Filter",
         style: TextStyle(
           color: Colors.black,
           fontSize: 20,
@@ -411,14 +555,38 @@ class SearchResultFilter extends StatefulWidget {
       ),
       centerTitle: true,
       elevation: 0,
-
-      // action is right side of the app bar
-      actions: [TextButton(onPressed: () => {
-        Get.back()
-      },
-          child: Text("Confirm"),)
+      actions: [
+        TextButton(
+          onPressed: () {
+            final filterData = {
+              "min_price": double.tryParse(_minPriceController.text) ?? 0.0,
+              "max_price": double.tryParse(_maxPriceController.text) ?? double.infinity,
+              "sex_preference": _genderController.text,
+              "nationality_preference": _nationalityController.text,
+              "room_type": room_type,
+              "amenities": [
+                BooleanVariable(name: "isWifiAccess", value: isWifiAccess),
+                BooleanVariable(name: "isAirCon", value: isAirCon),
+                BooleanVariable(name: "isNearMarket", value: isNearMarket),
+                BooleanVariable(name: "isCarPark", value: isCarPark),
+                BooleanVariable(name: "isNearMRT", value: isNearMRT),
+                BooleanVariable(name: "isNearLRT", value: isNearLRT),
+                BooleanVariable(
+                    name: "isPrivateBathroom", value: isPrivateBathroom),
+                BooleanVariable(name: "isGymnasium", value: isGymnasium),
+                BooleanVariable(
+                    name: "isCookingAllowed", value: isCookingAllowed),
+                BooleanVariable(
+                    name: "isWashingMachine", value: isWashingMachine),
+                BooleanVariable(name: "isNearBusStop", value: isNearBusStop),
+              ]
+            };
+            developer.log("${filterData["sex_preference"]}, ${filterData["nationality_preference"]}");
+            Get.back(result: filterData);
+          },
+          child: Text("Confirm"),
+        )
       ],
     );
-  }// end of appBar method
-
+  }
 }

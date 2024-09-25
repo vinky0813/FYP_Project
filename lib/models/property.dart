@@ -1,7 +1,4 @@
-import 'package:fyp_project/models/boolean_variable.dart';
 import 'package:fyp_project/models/owner.dart';
-import 'package:fyp_project/models/property_listing.dart';
-import 'package:fyp_project/models/review.dart';
 import 'package:fyp_project/models/user.dart' as my_user;
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -62,6 +59,60 @@ class Property {
       developer.log("value: ${value}");
 
       return value;
+    } else {
+      throw Exception("Failed to load properties");
+    }
+  }
+
+  static Future<List<Property>> getSearchedProperty(double lat, double long) async {
+
+    final url = Uri.parse("http://10.0.2.2:2000/api/search-properties-by-location")
+        .replace(queryParameters: {
+      "lat": lat.toString(),
+      "long": long.toString(),
+      "radius" : "100000",
+    });
+
+    final response = await http.get(url, headers: {"Accept": "application/json"});
+
+    developer.log("Response body: ${response.body}");
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = jsonDecode(response.body)["data"];
+      developer.log("Data: $data");
+
+      final List<Property> properties = await Future.wait(data.map((json) async {
+        String propertyId = json["property_id"];
+        return await getPropertyWithId(propertyId);
+      }));
+
+      developer.log("Properties: $properties");
+      return properties;
+    } else {
+      throw Exception("Failed to load properties");
+    }
+  }
+
+  static Future<Property> getPropertyWithId(String property_id) async {
+
+    final url = Uri.parse("http://10.0.2.2:2000/api/get-property-with-id/$property_id");
+
+    final response = await http.get(url, headers: {"Accept": "application/json"});
+
+    developer.log("status code: ${response.statusCode}");
+
+    developer.log("response: ${response.body}");
+
+    if (response.statusCode == 200) {
+
+      final data = jsonDecode(response.body)["property"];
+
+      developer.log("getpropertywithid: $data");
+
+      final Owner owner = await Owner.getOwnerWithId(data["owner_id"]);
+
+      return Property.fromJson(data, owner);
+
     } else {
       throw Exception("Failed to load properties");
     }

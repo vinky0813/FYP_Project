@@ -1,86 +1,125 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:fyp_project/SearchController.dart';
+import 'package:fyp_project/pages/home.dart';
 import 'package:fyp_project/pages/listing_details.dart';
-import 'package:fyp_project/pages/search_result_filter.dart';
-import 'package:fyp_project/widgets/AppDrawer.dart';
+import 'package:fyp_project/widgets/SearchBarLocation.dart';
 import 'package:get/get.dart';
+import 'dart:developer' as developer;
+
 
 import '../models/property_listing.dart';
 
-class SearchResult extends StatelessWidget {
+class SearchResult extends StatefulWidget {
+
+  final SearchResultController searchResultController = Get.find<SearchResultController>();
   SearchResult({super.key});
 
-  List<PropertyListing> searchResult = [];
+  @override
+  State<SearchResult> createState() => _SearchResultState();
+}
 
-  void _getSearchResult() {
-    searchResult = PropertyListing.getSearchResult();
-  }
+class _SearchResultState extends State<SearchResult> {
 
   @override
   Widget build(BuildContext context) {
-    _getSearchResult();
+    developer.log("search result length: ${widget.searchResultController.searchResult.length}");
     return Scaffold(
       appBar: appBar(),
       body: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(
-            child: searchBar(),
+            child: SearchBarLocation(),
           ),
+          SliverToBoxAdapter(
+              child: Row(
+                  children: [
+                    SizedBox(width: 30,),
+                    IconButton(
+                      icon: const Icon(Icons.sort),
+                      onPressed: () => {},
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.saved_search),
+                      onPressed: () => {},
+                    ),]
+              )),
           SliverToBoxAdapter(
             child: SizedBox(height: 10),
           ),
-          SliverList(
-            delegate: SliverChildBuilderDelegate((context, index) {
-                return GestureDetector(child: Container(
-                  height: 140,
-                  margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Color(0xffE5E4E2),
-                  ),
-                  child: Row(
-                    children: [
-                      ClipRRect(child: AspectRatio(
-                        aspectRatio: 1.0,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.green,
-                          ),
-                          child: Image.network(
-                            "https://via.placeholder.com/150",
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      SizedBox(width: 10),
-                      Expanded(
-                        child: Container(
-                          padding: EdgeInsets.all(8),
-                          child: Text(
-                            searchResult[index].listing_title,
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            textAlign: TextAlign.left,
-                          ),
-                        ),
-                      ),
-                    ],
+          Obx(() {
+            // Check if search results are empty
+            if (widget.searchResultController.searchResult.isEmpty) {
+              return SliverToBoxAdapter(
+                child: Center(
+                  child: Text(
+                    "No results found.",
+                    style: TextStyle(fontSize: 18, color: Colors.grey),
                   ),
                 ),
-                onTap: () {
-                  Get.to(() => Listingdetails(propertyListing: searchResult[index]),
-                  transition: Transition.circularReveal,
-                  duration: const Duration(seconds: 1));
-                },);
-              },
-              childCount: searchResult.length,
-            ),
-          ),
+              );
+            } else {
+              // Return the SliverList if results are available
+              return SliverList(
+                delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                    return GestureDetector(
+                      child: Container(
+                        height: 140,
+                        margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Color(0xffE5E4E2),
+                        ),
+                        child: Row(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: AspectRatio(
+                                aspectRatio: 1.0,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: Colors.green,
+                                  ),
+                                  child: Image.network(
+                                    widget.searchResultController.searchResult[index].image_url[0],
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 10),
+                            Expanded(
+                              child: Container(
+                                padding: EdgeInsets.all(8),
+                                child: Text(
+                                  widget.searchResultController.searchResult[index].listing_title,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  textAlign: TextAlign.left,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      onTap: () {
+                        Get.to(
+                              () => Listingdetails(propertyListing: widget.searchResultController.searchResult[index]),
+                          transition: Transition.circularReveal,
+                          duration: const Duration(seconds: 1),
+                        );
+                      },
+                    );
+                  },
+                  childCount: widget.searchResultController.searchResult.length,
+                ),
+              );
+            }
+          }),
         ],
       ),
     );
@@ -98,95 +137,7 @@ class SearchResult extends StatelessWidget {
       ),
       centerTitle: true,
       elevation: 0,
-
-      // action is right side of the app bar
-      actions: [IconButton(
-        // placeholder icon fix later
-        icon: const Icon(Icons.account_tree_outlined),
-        // same thing here
-        onPressed: () => {},
-      )
-      ],
-    );
-  } // end of appBar method
-
-  Container searchBar() {
-    return Container(
-      child: Column(
-        children: [
-          Container(
-            margin: EdgeInsets.fromLTRB(30, 30, 30, 10),
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                      color: Color(0xff000000),
-                      blurRadius: 2
-                  )
-                ]
-            ),
-            child: TextField(
-              onSubmitted: (value) {
-                print("update listview for search result");
-              },
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Colors.white,
-                hintText: "Search Here",
-                hintStyle: TextStyle(
-                  color: Colors.grey,
-                ),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(3),
-                    borderSide: BorderSide.none
-                ),
-                prefixIcon: Icon(Icons.search),
-                suffixIcon: Container(
-                  width: 100,
-                  child: Padding(
-                    padding: EdgeInsets.only(right: 7),
-                    child: IntrinsicHeight(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          const VerticalDivider(
-                            color: Colors.grey,
-                            thickness: 0.5,
-                          ),
-                          IconButton(
-                            // placeholder icon fix later
-                            icon: const Icon(Icons.filter_alt),
-                            // same thing here
-                            onPressed: () => {
-                              Get.to(() => SearchResultFilter(),
-                              transition: Transition.circularReveal,
-                              duration: const Duration(seconds: 1))
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Row(
-            children: [
-              SizedBox(width: 30,),
-              IconButton(
-                icon: const Icon(Icons.sort),
-                onPressed: () => {},
-              ),
-              IconButton(
-                icon: const Icon(Icons.saved_search),
-                onPressed: () => {},
-              ),
-            ],
-          ),
-        ],
-      ),
     );
   }
-
+ // end of appBar method
 }

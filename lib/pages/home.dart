@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:fyp_project/SearchController.dart';
 import 'package:fyp_project/models/user.dart' as project_user;
 import 'package:fyp_project/pages/account_page.dart';
 import 'package:fyp_project/pages/listing_details.dart';
@@ -13,7 +14,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:developer' as developer;
 
 import '../models/property_listing.dart';
-import '../widgets/SearchBarLocation.dart';
+import 'package:fyp_project/widgets/SearchBarLocation.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({super.key});
@@ -29,6 +30,8 @@ class _HomePageState extends State<HomePage> {
   List<PropertyListing> mostViewedPropertyListing = [];
   String? userId;
   PropertyListing? currentListing = null;
+
+  final searchResultController = Get.put<SearchResultController>(SearchResultController());
 
   Future<void> _getTopRatedListing() async {
     topRatedPropertyListing = await PropertyListing.getTopRatedListing();
@@ -424,65 +427,4 @@ class _HomePageState extends State<HomePage> {
     );
   }
  // end of appBar method
-  /*Container searchBar() {
-    return Container(
-      margin: EdgeInsets.fromLTRB(30, 30, 30, 30),
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-                color: Color(0xff000000),
-                blurRadius: 2
-            )
-          ]
-      ),
-      child: TextField(
-        onSubmitted: (value) {
-          Get.to(() => SearchResult(),
-          transition: Transition.circularReveal,
-          duration: const Duration(seconds: 1));
-        },
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: Colors.white,
-          hintText: "Enter Location",
-          hintStyle: TextStyle(
-            color: Colors.grey,
-          ),
-          border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(3),
-              borderSide: BorderSide.none
-          ),
-          prefixIcon: Icon(Icons.search),
-          suffixIcon: Container(
-            width: 100,
-            child: Padding(
-              padding: EdgeInsets.only(right: 7),
-              child: IntrinsicHeight(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    const VerticalDivider(
-                      color: Colors.grey,
-                      thickness: 0.5,
-                    ),
-                    IconButton(
-                      // placeholder icon fix later
-                      icon: const Icon(Icons.filter_alt),
-                      // same thing here
-                      onPressed: () => {
-                        Get.to(() => SearchResultFilter(),
-                        transition: Transition.circularReveal,
-                        duration: const Duration(seconds: 1))
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );*/
-  //}
 }

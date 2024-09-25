@@ -1,8 +1,11 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:fyp_project/models/owner.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:fyp_project/models/boolean_variable.dart';
 import 'package:fyp_project/models/property.dart';
+import 'package:latlong2/latlong.dart';
+import 'dart:developer' as developer;
 
 import '../models/property_listing.dart';
 
@@ -15,18 +18,32 @@ class Listingdetails extends StatefulWidget {
   ListingdetailsState createState() => ListingdetailsState();
 }
 
-final Property property = Property(
-    property_id: "1",
-    property_title: "PLACEHOLDER",
-    owner: Owner(
-        username: "name",
-        contact_no: "contact_no",
-        profile_pic: "profile_pic",
-        id: "1"),
-    address: "ADDRESS ADDRESS ADDRESS ADDRESS ADDRESS ADDRESS",
-    imageUrl: "https://via.placeholder.com/150", lat: 0, long: 0);
-
   class ListingdetailsState extends State<Listingdetails> {
+
+    Property? property;
+    bool isLoading = true;
+    late List<BooleanVariable> trueAmenities;
+
+    void initState() {
+      super.initState();
+      _initialize();
+    }
+
+    Future<void> _initialize() async {
+      PropertyListing.incrementView(widget.propertyListing.listing_id);
+      developer.log("property id: ${widget.propertyListing.property_id}");
+      property = await Property.getPropertyWithId(widget.propertyListing.property_id);
+
+      developer.log("property: ${property.toString()}");
+
+      trueAmenities = widget.propertyListing.amenities.where((b) => b.value).toList();
+      trueAmenities.removeAt(0);
+
+      setState(() {
+        isLoading = false;
+      });
+    }
+
   int _currentIndex = 0;
   List<Widget> body = [];
 
@@ -47,6 +64,11 @@ final Property property = Property(
   }
   //https://youtu.be/VfUUOI6BUtE?si=yAhaupWJhH8CTQeU
   Widget _getBody() {
+
+    if (isLoading) {
+      return Center(child: CircularProgressIndicator(),);
+    }
+
     switch (_currentIndex) {
       case 0:
         return ListView(
@@ -95,7 +117,7 @@ final Property property = Property(
                   fontSize: 16),
             ),
             SizedBox(height: 8,),
-            Text('${widget.propertyListing.description}\n\n${property.address}'),
+            Text('${widget.propertyListing.description}\n\n${property!.address}'),
             SizedBox(height: 16),
             Text(
               "Preference",
@@ -118,7 +140,7 @@ final Property property = Property(
             Wrap(
                 spacing: 8.0,
                 runSpacing: 4.0,
-                children: widget.propertyListing.amenities.map((amenity) {
+                children: trueAmenities.map((amenity) {
                   return Chip(
                     label: Text(amenity.name),
                     backgroundColor: Colors.grey[200],
@@ -129,7 +151,7 @@ final Property property = Property(
               children: [
                 CircleAvatar(
                   radius: 40,
-                  backgroundImage: NetworkImage(property.owner.profile_pic), // Load the image
+                  backgroundImage: NetworkImage(property!.owner.profile_pic), // Load the image
                 ),
                 SizedBox(width: 16),
                 Expanded(
@@ -145,12 +167,12 @@ final Property property = Property(
                         ),
                         SizedBox(height: 4),
                         Text(
-                          "Owner Name: ${property.owner.username}",
+                          "Owner Name: ${property!.owner.username}",
                           style: TextStyle(fontSize: 14),
                         ),
                         SizedBox(height: 4),
                         Text(
-                          "Contact Details: ${property.owner.contact_no}",
+                          "Contact Details: ${property!.owner.contact_no}",
                           style: TextStyle(fontSize: 14),
                         ),
                       ],
@@ -211,14 +233,51 @@ final Property property = Property(
           ],
         );
       case 2:
-        return ListView(
+        return Column(
           children: [
-            Center(
-              child: Icon(Icons.account_tree_outlined),
+            Container(
+              padding: EdgeInsets.only(left: 20),
+              child: Row(
+                children: [
+                  Align(
+                    child: Text("Map",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        )),
+                    alignment: Alignment.centerLeft,
+                  ),
+                ],
+              ),
             ),
-            Center(
-              child: Text("MAP PART"),
-            )
+            SizedBox(height: 16),
+            Expanded(
+              child: FlutterMap(
+                options: MapOptions(
+                  initialCenter: LatLng(property!.lat, property!.long),
+                ),
+                children: [
+                  TileLayer(
+                    urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                    subdomains: ['a', 'b', 'c'],
+                  ),
+                  MarkerLayer(
+                    markers: [
+                      Marker(
+                        point: LatLng(property!.lat, property!.long),
+                        child: Container(
+                          child: Icon(
+                            Icons.location_on,
+                            color: Colors.red,
+                            size: 30,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
           ],
         );
       default:

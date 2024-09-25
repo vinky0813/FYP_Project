@@ -527,6 +527,7 @@ app.get("/api/get-most-viewed-listing", async (req, res) => {
     const { data, error } = await supabase
       .from("Listing")
       .select("")
+      .eq("isPublished", true)
       .order("view_count", { ascending: false })
       .limit(5);
 
@@ -548,6 +549,7 @@ app.get("/api/get-top-rated-listing", async (req, res) => {
     const { data, error } = await supabase
       .from("Listing")
       .select("")
+      .eq("isPublished", true)
       .order("rating", { ascending: false })
       .limit(5);
 
@@ -584,6 +586,80 @@ app.get("/api/get-listing-with-id/:listing_id", async (req, res) => {
   } catch (error) {
     console.error("Error fetching top-rated listing:", error.message);
     res.status(500).json({ message: error.message });
+  }
+});
+
+app.get("/api/search-properties-by-location", async (req, res) => {
+  const { lat, long, radius } = req.query;
+
+  try {
+
+    const { data, error } = await supabase
+      .rpc("get_properties_within_radius", {
+        longitude: parseFloat(long),
+        latitude: parseFloat(lat),
+        radius: parseFloat(radius)
+      });
+
+    if (error) {
+      throw error;
+    }
+
+    res.status(200).json({ message: "Properties fetched successfully", data });
+  } catch (error) {
+    console.error("Error fetching properties:", error.message);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.get("/api/get-property-with-id/:property_id", async (req, res) => {
+  const { property_id } = req.params;
+
+  try {
+    const { data, error } = await supabase
+      .from("Property")
+      .select("*")
+      .eq("property_id", property_id)
+      .single();
+
+    if (error) {
+      return res.status(500).json({ message: error.message });
+    }
+
+    if (!data) {
+      return res.status(404).json({ message: "Property not found" });
+    }
+
+    res.status(200).json({ message: "Property fetched successfully", property: data });
+  } catch (error) {
+    console.error("Error fetching property:", error.message);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+app.put("/api/increment-view/:listing_id", async (req, res) => {
+  const { listing_id } = req.params;
+
+  try {
+
+    const { data: listing, error: fetchError } = await supabase
+      .from("Listing")
+      .select("view_count")
+      .eq("listing_id", listing_id)
+      .single();
+    
+    currentViews = listing.view_count;
+      
+    const { data, error } = await supabase
+      .from("Listing")
+      .update({ view_count: currentViews + 1 })
+      .eq("listing_id", listing_id);
+
+    res.status(200).json({ message: 'View count incremented successfully', data });
+
+  } catch (error) {
+    console.error('Error incrementing view count:', error);
+    res.status(500).json({ message: 'Server error' });
   }
 });
 

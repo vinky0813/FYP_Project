@@ -6,6 +6,8 @@ import 'package:fyp_project/pages/owner_home.dart';
 import 'package:fyp_project/pages/splash_page.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../widgets/SearchBarLocation.dart';
+
 
 
 void main() async {
