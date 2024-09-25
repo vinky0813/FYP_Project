@@ -27,7 +27,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
-  project_user.User? user = null;
+  project_user.User? renter = null;
   List<PropertyListing> topRatedPropertyListing = [];
   List<PropertyListing> mostViewedPropertyListing = [];
   String? userId;
@@ -53,19 +53,19 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _getUser(String user_id) async {
     try {
-      user = await project_user.User.getUserById(user_id);
+      renter = await project_user.User.getUserById(user_id);
     } catch (e) {
       developer.log("Error fetching user: $e");
-      user = null;
+      renter = null;
     }
   }
 
   Future<PropertyListing?> _getCurrentProperty() async {
 
-    developer.log("listing id: ${user!.listing_id}");
-    if (user!.listing_id!=null) {
-      developer.log("listing id: ${user!.listing_id}");
-      return await PropertyListing.getCurrentProperty(user!.listing_id);
+    developer.log("listing id: ${renter!.listing_id}");
+    if (renter!.listing_id!=null) {
+      developer.log("listing id: ${renter!.listing_id}");
+      return await PropertyListing.getCurrentProperty(renter!.listing_id);
     }
   }
 
@@ -86,7 +86,10 @@ class _HomePageState extends State<HomePage> {
         _getUser(userId!);
         _getTopRatedListing();
         _getMostViewedPropertyListing();
-        currentListing = await _getCurrentProperty();
+
+        if(renter?.isAccommodating == true) {
+          currentListing = await _getCurrentProperty();
+        }
 
         developer.log("top rated listing length: ${topRatedPropertyListing.length}");
         developer.log("top rated listing: ${topRatedPropertyListing}");
@@ -383,7 +386,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     onTap: () {
-                      if (user!.isAccommodating) {
+                      if (renter!.isAccommodating) {
                         Get.to(() => MyRoom(
                             propertyListing: currentListing),
                             transition: Transition.circularReveal,

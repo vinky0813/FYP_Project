@@ -22,16 +22,16 @@ class AppDrawer extends StatefulWidget {
 }
 
 class _AppDrawerState extends State<AppDrawer> {
-  project_user.User? user = null;
+  project_user.User? renter = null;
   PropertyListing? currentListing = null;
   String? userId;
 
   Future<void> _getUser(String user_id) async {
     try {
-      user = await project_user.User.getUserById(user_id);
+      renter = await project_user.User.getUserById(user_id);
     } catch (e) {
       developer.log("Error fetching user: $e");
-      user = null;
+      renter = null;
     }
   }
 
@@ -54,7 +54,7 @@ class _AppDrawerState extends State<AppDrawer> {
   }
 
   Future<PropertyListing?> _getCurrentProperty() {
-    return PropertyListing.getCurrentProperty(user!.listing_id);
+    return PropertyListing.getCurrentProperty(renter!.listing_id);
   }
 
   void initState() {
@@ -194,7 +194,7 @@ class _AppDrawerState extends State<AppDrawer> {
                 ListTile(
                   title: Text("My Room"),
                   onTap: () {
-                    if (user!.isAccommodating) {
+                    if (renter!.isAccommodating) {
                       Get.to(() => MyRoom(
                           propertyListing: currentListing),
                           transition: Transition.circularReveal,

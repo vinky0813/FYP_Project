@@ -5,11 +5,15 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:fyp_project/models/boolean_variable.dart';
 import 'package:fyp_project/models/owner.dart';
 import 'package:fyp_project/models/property.dart';
+import 'package:fyp_project/models/user.dart' as project_user;
 import 'package:fyp_project/pages/add_listing.dart';
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../models/property_listing.dart';
+import 'dart:developer' as developer;
+import 'package:flutter/services.dart';
 
 class ListingDetailsOwner extends StatefulWidget {
   PropertyListing propertyListing;
@@ -23,10 +27,75 @@ class ListingDetailsOwner extends StatefulWidget {
 class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
   int _currentIndex = 0;
   List<Widget> body = [];
+  bool _invitationSent = false;
+  project_user.User? invitedTenant = null;
+  String? userId;
+  Owner? owner;
+  TextEditingController _tenantIdController = TextEditingController();
+
+  void initState() {
+    super.initState();
+    _initialize();
+  }
+
+  Future<void> _initialize() async {
+
+    final user = Supabase.instance.client.auth.currentUser;
+    userId = user?.id;
+
+    developer.log('User: $user');
+    developer.log('User ID: $userId');
+
+    if (userId != null) {
+      try {
+        final fetchedOwner = await Owner.getOwnerWithId(userId!);
+
+        developer.log("fetched owner ${fetchedOwner.toString()}");
+
+        setState(() {
+          owner = fetchedOwner;
+        });
+
+        developer.log(owner!.username);
+      } catch (e) {
+        print('Error: $e');
+      }
+    }
+    if (widget.propertyListing.tenant == null) {
+      invitedTenant = await project_user.User.checkInvitation(widget.propertyListing.listing_id);
+      _invitationSent = true;
+
+      if (invitedTenant == null) {
+        _invitationSent = false;
+      }
+    } else {
+      _invitationSent = false;
+      invitedTenant = null;
+    }
+
+    setState(() {
+      invitedTenant;
+      _invitationSent;
+    });
+  }
+
+  Future<void> _pasteFromClipboard() async {
+    final data = await Clipboard.getData(Clipboard.kTextPlain);
+    if (data != null && data.text != null) {
+      setState(() {
+        _tenantIdController.text = data.text!;
+      });
+    }
+  }
 
   void _deleteListing(String listing_id) {
     PropertyListing.deleteListing(listing_id);
     Get.back(result: false);
+  }
+
+  void _sendInvitation(String listing_id, String owner_id, String renter_id) {
+    project_user.User.sendInvitation(listing_id, owner_id, renter_id);
+    Navigator.of(context).pop();
   }
 
   @override
@@ -346,33 +415,147 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
                   ),
                   SizedBox(height: 16),
                   // Buttons Section
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black,
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 12),
-                    ),
-                    onPressed: () {},
-                    child: Text(
-                      "Chat",
-                      style: TextStyle(color: Colors.white),
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.black,
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 12),
+                        ),
+                        onPressed: () {},
+                        child: Text(
+                          "Remove Tenant",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                      SizedBox(width: 16,),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.black,
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 12),
+                        ),
+                        onPressed: () {},
+                        child: Text(
+                          "Chat",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
             ),
           );
         } else {
-          return Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              children: [
-                SizedBox(height: 50,),
-                Center(
-                  child: Text("No Tenants", style: TextStyle(color: Colors.grey, fontSize: 24),),
+          if (_invitationSent == true) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    CircleAvatar(
+                      radius: 40,
+                      backgroundImage: NetworkImage(invitedTenant!.profilePic),
+                    ),
+                    SizedBox(height: 16),
+                    // Username
+                    Text(
+                      invitedTenant!.username,
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    // Contact Details
+                    Text(
+                      "Contact: ${invitedTenant!.contactDetails}",
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey[700],
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    // Buttons Section
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.black,
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 12),
+                          ),
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text("Remove Invitation"),
+                                  content: Text("Remove Pending Invitation?"),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Text("Cancel"),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                        project_user.User.removeInvitation(widget.propertyListing.listing_id);
+
+                                        setState(() {
+                                          _invitationSent = false;
+                                          invitedTenant = null;
+                                        });
+                                      },
+                                      child: Text("Delete Invitation"),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          child: Text(
+                            "Remove Invitation",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                        SizedBox(width: 16,),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.black,
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 12),
+                          ),
+                          onPressed: () {},
+                          child: Text(
+                            "Chat",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-                SizedBox(height: 50,),
-                TextButton(
+              ),
+            );
+          } else {
+            return Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  SizedBox(height: 50,),
+                  Center(
+                    child: Text("No Tenants", style: TextStyle(color: Colors.grey, fontSize: 24),),
+                  ),
+                  SizedBox(height: 50,),
+                  TextButton(
                     onPressed: () {
                       showDialog(
                         context: context,
@@ -383,9 +566,33 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 TextField(
+                                  controller: _tenantIdController,
                                   decoration: InputDecoration(
-                                    labelText: "Enter Tenant's Student ID",
+                                    labelText: "Enter Tenant's id",
                                     border: OutlineInputBorder(),
+                                    suffixIcon: Container(
+                                      width: 100,
+                                      child: Padding(
+                                        padding: EdgeInsets.only(right: 7),
+                                        child: IntrinsicHeight(
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.end,
+                                            children: [
+                                              const VerticalDivider(
+                                                color: Colors.grey,
+                                                thickness: 0.5,
+                                              ),
+                                              IconButton(
+                                                icon: const Icon(Icons.paste),
+                                                onPressed: () async {
+                                                  await _pasteFromClipboard(); // Call the function to paste
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ],
@@ -396,7 +603,22 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
                                 child: Text("Cancel"),
                               ),
                               TextButton(
-                                onPressed: () {},
+                                onPressed: () async {
+                                  bool proceed = false;
+                                  proceed = await project_user.User.checkRenterId(_tenantIdController.text);
+                                  developer.log("proceed: $proceed");
+                                  if (proceed) {
+                                    _sendInvitation(widget.propertyListing.listing_id, owner!.id, _tenantIdController.text);
+                                    project_user.User newInvitedTenant = await project_user.User.getUserById(_tenantIdController.text);
+                                    setState(() {
+                                      _invitationSent = true;
+                                      invitedTenant = newInvitedTenant;
+                                    });
+                                  } else {
+                                    Get.snackbar("Error", "Check ID to make sure it is correct");
+                                    developer.log("cant send invitation");
+                                  }
+                                },
                                 child: Text("Add Tenant"),
                               ),
                             ],
@@ -406,9 +628,10 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
                     },
                     child: Text("Add Tenant", style: TextStyle(color: Colors.white),),
                     style: TextButton.styleFrom(backgroundColor: Colors.black),)
-              ],
-            ),
-          );
+                ],
+              ),
+            );
+          }
         }
       default:
         return ListView(

@@ -726,6 +726,84 @@ app.get("/api/get-shortlists-with-userid/:user_id", async (req, res) => {
   }
 });
 
+app.get("/api/check-renter/:renter_id", async (req, res) => {
+  const { renter_id } = req.params;
+
+  const { data, error } = await supabase
+        .from("Renters")
+        .select("*")
+        .eq("user_id", renter_id)
+        .eq("isAccommodating", false)
+        .single()
+  
+  if (error) {
+        return res.status(404).json({ exists: false });
+    }
+    return res.status(200).json({ exists: true });
+});
+
+app.post("/api/add-invitation", async (req, res) => {
+  const { listing_id, owner_id, renter_id } = req.body;
+
+  const { data, error } = await supabase
+      .from("Invitations")
+      .insert([
+          { listing_id, owner_id, renter_id },
+      ]);
+
+  if (error) {
+      return res.status(400).json({ message: "Failed, add invitation", error });
+  }
+
+  return res.status(200).json({ message: "Success, add invitation", data });
+});
+
+app.get("/api/get-invitations-with-renter-id/:renter_id", async (req, res) => {
+  const { renter_id } = req.params;
+
+  const { data, error } = await supabase
+      .from("Invitations")
+      .select("*")
+      .eq("renter_id", renter_id);
+
+  if (error) {
+      return res.status(400).json({ error: error.message });
+  }
+
+  return res.status(200).json({ message: "Success, get all invitations", data });
+});
+
+app.delete("/api/delete-invitations/:listing_id", async (req, res) => {
+  const { listing_id } = req.params;
+
+  const { data, error } = await supabase
+      .from("Invitations")
+      .delete()
+      .eq("listing_id", listing_id);
+
+  if (error) {
+      return res.status(404).json({ message: 'Invitation not found' });
+  }
+
+  return res.status(200).json({ message: "Success, invitations deleted", data });
+});
+
+app.get("/api/get-invitation-with-listing_id/:listing_id", async (req, res) => {
+  const { listing_id } = req.params;
+
+  const { data, error } = await supabase  
+      .from("Invitations")
+      .select("*")
+      .eq("listing_id", listing_id)
+      .single();
+
+  if (error) {
+      return res.status(404).json({ message: 'Invitation not found' });
+  }
+
+  return res.status(200).json({ message: "Success, invitation found", data });
+});
+
 app.listen(2000, () => {
   console.log("connected at server port 2000");
 });

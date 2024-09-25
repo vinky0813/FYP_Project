@@ -1,9 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-
-import 'package:fyp_project/models/boolean_variable.dart';
-import 'package:fyp_project/models/property_listing.dart';
-import 'package:fyp_project/models/review.dart';
+import 'dart:developer' as developer;
 
 class User {
   String id;
@@ -53,6 +50,111 @@ class User {
       }
     } else {
       throw Exception('Failed to load user');
+    }
+  }
+
+  static Future<User?> checkInvitation(String listing_id) async {
+    final url = Uri.parse("http://10.0.2.2:2000/api/get-invitation-with-listing_id/$listing_id");
+
+    try {
+      final response = await http.get(
+        url,
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        developer.log("Successfully invitation found");
+
+        final jsonResponse = jsonDecode(response.body)["data"];
+
+        developer.log("check invitation : $jsonResponse");
+
+        if (jsonResponse == null) {
+          return null;
+        }
+
+        final user_id = jsonResponse["renter_id"];
+
+        User user = await getUserById(user_id);
+        return user;
+      } else {
+        developer.log("Failed, cannot decode user: ${response.body}");
+        return null;
+      }
+    } catch (error) {
+      developer.log("Error user not found: $error");
+      return null;
+    }
+  }
+
+  static Future<bool> removeInvitation(String listing_id) async {
+    final url = Uri.parse("http://10.0.2.2:2000/api/delete-invitations/$listing_id");
+
+    try {
+      final response = await http.delete(
+        url,
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        developer.log("Successfully invitation deleted");
+        return true;
+      } else {
+        developer.log("Failed : ${response.body}");
+        return false;
+      }
+    } catch (error) {
+      developer.log("Error invitation not found: $error");
+      return false;
+    }
+  }
+
+  static Future<bool> sendInvitation(String listing_id, String owner_id, String renter_id) async {
+    final url = Uri.parse("http://10.0.2.2:2000/api/add-invitation");
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          "listing_id": listing_id,
+          "owner_id": owner_id,
+          "renter_id": renter_id,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        developer.log("Successfully invitation sent");
+        return true;
+      } else {
+        developer.log("Failed to send invitation: ${response.body}");
+        return false;
+      }
+    } catch (error) {
+      developer.log("Error : $error");
+      return false;
+    }
+  }
+
+  static Future<bool> checkRenterId(String renter_id) async {
+    final url = Uri.parse("http://10.0.2.2:2000/api/check-renter/$renter_id");
+
+    try {
+      final response = await http.get(
+        url,
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        developer.log("Successfully, renter is ok: ${response.body}");
+        return true;
+      } else {
+        developer.log("Failed , renter is not ok: ${response.body}");
+        return false;
+      }
+    } catch (error) {
+      developer.log("Error renter not found: $error");
+      return false;
     }
   }
 
