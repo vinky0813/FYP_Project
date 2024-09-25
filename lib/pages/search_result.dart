@@ -20,6 +20,7 @@ class SearchResult extends StatefulWidget {
 }
 
 class _SearchResultState extends State<SearchResult> {
+  bool _isAscending = true;
 
   @override
   Widget build(BuildContext context) {
@@ -29,15 +30,30 @@ class _SearchResultState extends State<SearchResult> {
       body: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(
-            child: SearchBarLocation(),
+            child: SearchBarLocation(key: searchBarKey),
           ),
           SliverToBoxAdapter(
               child: Row(
                   children: [
                     SizedBox(width: 30,),
                     IconButton(
-                      icon: const Icon(Icons.sort),
-                      onPressed: () => {},
+
+                      icon: Icon(
+                        _isAscending
+                            ? Icons.arrow_upward
+                            : Icons.arrow_downward,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          if (_isAscending) {
+                            _isAscending = !_isAscending;
+                            widget.searchResultController.searchResult.sort((a, b) => a.price.compareTo(b.price));
+                          } else {
+                            _isAscending = !_isAscending;
+                            widget.searchResultController.searchResult.sort((a, b) => b.price.compareTo(a.price));
+                          }
+                        });
+                      },
                     ),
                     IconButton(
                       icon: const Icon(Icons.saved_search),

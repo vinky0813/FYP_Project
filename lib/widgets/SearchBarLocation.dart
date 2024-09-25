@@ -15,7 +15,7 @@ class SearchBarLocation extends StatefulWidget {
 
   static final SearchBarLocation _instance = SearchBarLocation._internal();
 
-  factory SearchBarLocation() {
+  factory SearchBarLocation({required GlobalKey<SearchBarLocationState> key}) {
     return _instance;
   }
 
@@ -65,7 +65,7 @@ class SearchBarLocationState extends State<SearchBarLocation> {
           long = double.tryParse(results[0]["lon"]);
           List<PropertyListing> searchResult = await PropertyListing.getSearchResult(lat!, long!);
 
-          developer.log("search result length: ${searchResult.length}");
+          developer.log("search result length 2: ${searchResult.length}");
 
           List<PropertyListing> filteredResults = [];
 
@@ -266,6 +266,7 @@ class SearchBarLocationState extends State<SearchBarLocation> {
                         }
                         filteredResults.add(listing);
                       }
+                      developer.log("search filteredResults length: ${filteredResults.length}");
                       searchResultController.updateSearchResult(filteredResults);
 
                       Get.to(() => SearchResult(),

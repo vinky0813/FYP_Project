@@ -16,6 +16,8 @@ import 'dart:developer' as developer;
 import '../models/property_listing.dart';
 import 'package:fyp_project/widgets/SearchBarLocation.dart';
 
+final GlobalKey<SearchBarLocationState> searchBarKey = GlobalKey<SearchBarLocationState>();
+
 class HomePage extends StatefulWidget {
   HomePage({super.key});
 
@@ -102,7 +104,7 @@ class _HomePageState extends State<HomePage> {
       drawer: AppDrawer(),
       body: ListView(
         children: [
-          SearchBarLocation(),
+          SearchBarLocation(key: searchBarKey),
           quickAccess(),
           topRatedListView(),
           mostViewedListView(),
