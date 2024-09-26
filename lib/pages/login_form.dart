@@ -119,7 +119,7 @@ class _LoginFormState extends State<LoginForm> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
-                        keyboardType: TextInputType.visiblePassword,
+                        keyboardType: TextInputType.visiblePassword, obscureText: true
                       ),
                       SizedBox(height: 20,),
                       TextButton(
