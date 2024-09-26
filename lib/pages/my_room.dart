@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_pannable_rating_bar/flutter_pannable_rating_bar.dart';
 import 'package:fyp_project/models/property.dart';
 import 'package:fyp_project/pages/user_info_page.dart';
 import 'package:fyp_project/widgets/AppDrawer.dart';
@@ -11,6 +12,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../models/boolean_variable.dart';
 import '../models/property_listing.dart';
+import '../models/review.dart';
 import '../models/user.dart' as project_user;
 import 'dart:developer' as developer;
 
@@ -32,6 +34,7 @@ class MyroomState extends State<MyRoom> {
   bool _isLoading = true;
   String? userId;
   project_user.User? renter = null;
+  bool isReviewed = false;
 
   Future<void> _getTenants() async {
     tenantList = await project_user.User.getTenants(property!.property_id);
@@ -56,6 +59,8 @@ class MyroomState extends State<MyRoom> {
     trueAmenities = widget.propertyListing!.amenities.where((b) => b.value).toList();
     trueAmenities.removeAt(0);
 
+    isReviewed = await Review.checkUserReview(widget.propertyListing!.listing_id, userId!);
+
     await _getTenants();
 
     List<project_user.User> tenantsToRemove = [];
@@ -75,6 +80,7 @@ class MyroomState extends State<MyRoom> {
       property;
       trueAmenities;
       _isLoading = false;
+      isReviewed;
     });
 
     if (userId != null) {
@@ -93,6 +99,22 @@ class MyroomState extends State<MyRoom> {
       developer.log("Error fetching user: $e");
       renter = null;
     }
+  }
+
+  void _submitReview(double rating, String comment) async {
+
+    final newReview = Review(
+        rating: rating,
+        comment: comment,
+        user_id: widget.propertyListing!.tenant!.id,
+        listing_id: widget.propertyListing!.listing_id);
+
+    await Review.uploadReview(newReview);
+
+    setState(() {
+      widget.propertyListing!.reviews.add(newReview);
+      isReviewed = true;
+    });
   }
 
   @override
@@ -231,6 +253,9 @@ class MyroomState extends State<MyRoom> {
           ],
         );
       case 1:
+        double rating = 0;
+        TextEditingController _commentController = TextEditingController();
+
         return Column(
           children: [
             Container(
@@ -242,8 +267,65 @@ class MyroomState extends State<MyRoom> {
                     alignment: Alignment.centerLeft,
                   ),
                   Spacer(),
+                  isReviewed ? SizedBox(width: 0,):
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text("Leave a Review"),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                PannableRatingBar(
+                                  rate: rating,
+                                  items: List.generate(5, (index) =>
+                                  const RatingWidget(
+                                    selectedColor: Colors.yellow,
+                                    unSelectedColor: Colors.grey,
+                                    child: Icon(
+                                      Icons.star,
+                                      size: 30,
+                                    ),
+                                  )),
+                                  onChanged: (value) {
+                                    developer.log("test");
+                                    setState(() {
+                                      rating = value;
+                                    });
+                                  },
+                                ),
+                                SizedBox(height: 10),
+                                TextField(
+                                  controller: _commentController,
+                                  decoration: InputDecoration(
+                                    hintText: "Write your review here",
+                                    border: OutlineInputBorder(),
+                                  ),
+                                  maxLines: 3,
+                                ),
+                              ],
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text("Cancel"),
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  _submitReview(rating, _commentController.text);
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text("Submit"),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
                     child: Text("Leave a Review",
                       style: TextStyle(color: Colors.white),),
                     style: TextButton.styleFrom(
@@ -279,7 +361,7 @@ class MyroomState extends State<MyRoom> {
                           Container(
                             padding: EdgeInsets.all(8),
                             child: Text(
-                              "${widget.propertyListing!.reviews[index].comment}/5",
+                              "${widget.propertyListing!.reviews[index].comment}",
                               style: TextStyle(
                                 fontSize: 12,
                               ),

@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:fyp_project/models/owner.dart';
 import 'package:fyp_project/models/property.dart';
 import 'package:fyp_project/models/review.dart';
 import 'package:fyp_project/models/user.dart';

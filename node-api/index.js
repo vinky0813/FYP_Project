@@ -941,6 +941,58 @@ app.delete("/api/remove-tenant-part-3", async (req, res) => {
   }
 });
 
+app.post("/api/upload-review", async (req, res) => {
+  const { rating, comment, listing_id, user_id } = req.body;
+
+  try {
+    const { data, error } = await supabase
+      .from("Reviews")
+      .insert([
+        {
+          rating: rating,
+          comment: comment,
+          listing_id: listing_id,
+          user_id: user_id,
+        },
+      ]);
+
+    if (error) {
+      throw error;
+    }
+
+    res.status(200).json({ message: "Review uploaded successfully", data });
+  } catch (error) {
+    console.error("Error uploading review:", error);
+    res.status(500).json({ message: "Error uploading review", error });
+  }
+});
+
+app.get("/api/check-user-review/:listing_id/:user_id", async (req, res) => {
+  const { listing_id, user_id } = req.params;
+
+  try {
+    const { data, error } = await supabase
+      .from("Reviews")
+      .select("*")
+      .eq("listing_id", listing_id)
+      .eq("user_id", user_id)
+
+    if (error) {
+      throw error;
+    }
+
+    if (data.length > 0) {
+      res.status(200).json({ message: "User has already reviewed this listing", data });
+    } else {
+      res.status(404).json({ message: "User has not reviewed this listing" });
+    }
+  } catch (error) {
+    console.error("Error checking review:", error);
+    res.status(500).json({ message: "Error checking review", error });
+  }
+});
+
+
 app.listen(2000, () => {
   console.log("connected at server port 2000");
 });

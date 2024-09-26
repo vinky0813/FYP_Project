@@ -47,6 +47,7 @@ dependencies:
   location_picker_flutter_map: ^3.0.0
   flutter_map: ^6.2.1
   latlong2: ^0.9.1
+  flutter_pannable_rating_bar: ^2.7.2+1
 
 dev_dependencies:
   flutter_test:
