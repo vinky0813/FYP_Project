@@ -1066,6 +1066,53 @@ app.get("/api/get-saved-searches-with-userid/:user_id", async (req, res) => {
   }
 }); 
 
+app.post("/api/add-saved-search", async (req, res) => {
+  const { user_id, search_criteria, title, lat, long } = req.body;
+
+  const location = `POINT(${long} ${lat})`;
+
+  try {
+    const { data, error } = await supabase
+      .from("Saved_Searches")
+      .insert([{ 
+        search_criteria: search_criteria,
+        user_id: user_id,
+        title: title,
+        location: location,
+      }]);
+
+    if (error) {
+      throw error;
+    }
+
+  } catch (error) {
+    console.error("Error adding saved search:", error);
+    res.status(500).json({ message: "Error adding saved search: ", error });
+  }
+});
+
+app.delete("/api/delete-saved-search", async (req, res) => {
+  const { id } = req.body;
+
+  try {
+    const { data, error } = await supabase
+      .from("Saved_Searches")
+      .delete()
+      .eq("id", id);
+
+    if (error) {
+      console.error('Error deleting saved search:', error);
+      return res.status(500).json({ message: 'Internal server error' });
+    }
+
+    res.status(200).json({ message: 'Saved Search deleted successfully' });
+
+  } catch (error) {
+    console.error("Error deleting saved search:", error);
+    res.status(500).json({ message: "Error deleting saved search: ", error });
+  }
+}); 
+
 app.listen(2000, () => {
   console.log("connected at server port 2000");
 });

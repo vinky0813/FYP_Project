@@ -71,6 +71,8 @@ class SearchBarLocationState extends State<SearchBarLocation> {
           lat = double.tryParse(results[0]["lat"]);
           long = double.tryParse(results[0]["lon"]);
           List<PropertyListing> searchResult = await PropertyListing.getSearchResult(lat!, long!);
+          searchResultController.updateLocationLat(lat!);
+          searchResultController.updateLocationLong(long!);
 
           developer.log("search result length 2: ${searchResult.length}");
 
@@ -221,6 +223,8 @@ class SearchBarLocationState extends State<SearchBarLocation> {
                         suggestions = [];
                       });
                       List<PropertyListing> searchResult = await PropertyListing.getSearchResult(lat!, long!);
+                      searchResultController.updateLocationLat(lat!);
+                      searchResultController.updateLocationLong(long!);
 
                       developer.log("search result length: ${searchResult.length}");
                       List<PropertyListing> filteredResults = [];

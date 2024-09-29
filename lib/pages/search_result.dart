@@ -1,15 +1,20 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:fyp_project/SearchController.dart';
-import 'package:fyp_project/pages/home.dart';
 import 'package:fyp_project/pages/listing_details.dart';
 import 'package:fyp_project/widgets/SearchBarLocation.dart';
 import 'package:get/get.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:developer' as developer;
 
-class SearchResult extends StatefulWidget {
+import '../models/boolean_variable.dart';
+import '../models/property_listing.dart';
 
-  final SearchResultController searchResultController = Get.find<SearchResultController>();
+class SearchResult extends StatefulWidget {
+  final SearchResultController searchResultController =
+      Get.find<SearchResultController>();
   SearchResult({super.key});
 
   @override
@@ -18,10 +23,46 @@ class SearchResult extends StatefulWidget {
 
 class _SearchResultState extends State<SearchResult> {
   bool _isAscending = true;
+  TextEditingController titleController = TextEditingController();
+  String? userId;
+
+  void initState() {
+    super.initState();
+    final user = Supabase.instance.client.auth.currentUser;
+    userId = user?.id;
+
+    developer.log('User: $user');
+    developer.log('User ID: $userId');
+  }
+
+  String? convertFilterDataToJson() {
+    final Map<String, dynamic>? filterDataValue = widget.searchResultController.filterData.value;
+
+    if (filterDataValue == null) {
+      return null;
+    }
+
+    final Map<String, dynamic> processedData = Map.from(filterDataValue);
+
+    if (processedData.containsKey("max_price") &&
+        processedData["max_price"] is double &&
+        !processedData["max_price"].isFinite) {
+      processedData["max_price"] = null;
+    }
+
+    if (processedData.containsKey("amenities")) {
+      processedData["amenities"] = (processedData["amenities"] as List)
+          .map((item) => item is BooleanVariable ? item.toJson() : item)
+          .toList();
+    }
+    developer.log("encoding json:  ${jsonEncode(processedData)}");
+    return jsonEncode(processedData);
+  }
 
   @override
   Widget build(BuildContext context) {
-    developer.log("search result length: ${widget.searchResultController.searchResult.length}");
+    developer.log(
+        "search result length: ${widget.searchResultController.searchResult.length}");
     return Scaffold(
       appBar: appBar(),
       body: CustomScrollView(
@@ -30,34 +71,65 @@ class _SearchResultState extends State<SearchResult> {
             child: SearchBarLocation(),
           ),
           SliverToBoxAdapter(
-              child: Row(
-                  children: [
-                    SizedBox(width: 30,),
-                    IconButton(
-                      icon: Icon(
-                        _isAscending
-                            ? Icons.arrow_upward
-                            : Icons.arrow_downward,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          if (_isAscending) {
-                            _isAscending = !_isAscending;
-                            widget.searchResultController.searchResult.sort((a, b) => a.price.compareTo(b.price));
-                          } else {
-                            _isAscending = !_isAscending;
-                            widget.searchResultController.searchResult.sort((a, b) => b.price.compareTo(a.price));
-                          }
-                        });
-                      },
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.saved_search),
-                      onPressed: () => {
-
-                      },
-                    ),]
-              )),
+              child: Row(children: [
+            SizedBox(
+              width: 30,
+            ),
+            IconButton(
+              icon: Icon(
+                _isAscending ? Icons.arrow_upward : Icons.arrow_downward,
+              ),
+              onPressed: () {
+                setState(() {
+                  if (_isAscending) {
+                    _isAscending = !_isAscending;
+                    widget.searchResultController.searchResult
+                        .sort((a, b) => a.price.compareTo(b.price));
+                  } else {
+                    _isAscending = !_isAscending;
+                    widget.searchResultController.searchResult
+                        .sort((a, b) => b.price.compareTo(a.price));
+                  }
+                });
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.saved_search),
+              onPressed: () => {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text("Saved Search"),
+                        content:
+                          TextField(
+                            controller: titleController,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: "Title",
+                            ),
+                          ),
+                        actions: [
+                          TextButton(
+                              onPressed: () => {
+                                    Navigator.of(context).pop(),
+                                  },
+                              child: Text("Cancel")),
+                          TextButton(
+                              onPressed: () async => {
+                                Navigator.of(context).pop(),
+                                PropertyListing.addSavedSearch(
+                                  userId!, convertFilterDataToJson(),
+                                    titleController.text, widget.searchResultController.locationLat.value,
+                                    widget.searchResultController.locationLong.value),
+                                },
+                              child: Text("Confirm"))
+                        ],
+                      );
+                    })
+              },
+            ),
+          ])),
           SliverToBoxAdapter(
             child: SizedBox(height: 10),
           ),
@@ -76,11 +148,12 @@ class _SearchResultState extends State<SearchResult> {
               // Return the SliverList if results are available
               return SliverList(
                 delegate: SliverChildBuilderDelegate(
-                      (context, index) {
+                  (context, index) {
                     return GestureDetector(
                       child: Container(
                         height: 140,
-                        margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
+                        margin:
+                            EdgeInsets.only(left: 20, right: 20, bottom: 10),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
                           color: Color(0xffE5E4E2),
@@ -97,7 +170,8 @@ class _SearchResultState extends State<SearchResult> {
                                     color: Colors.green,
                                   ),
                                   child: Image.network(
-                                    widget.searchResultController.searchResult[index].image_url[0],
+                                    widget.searchResultController
+                                        .searchResult[index].image_url[0],
                                     fit: BoxFit.cover,
                                   ),
                                 ),
@@ -108,7 +182,8 @@ class _SearchResultState extends State<SearchResult> {
                               child: Container(
                                 padding: EdgeInsets.all(8),
                                 child: Text(
-                                  widget.searchResultController.searchResult[index].listing_title,
+                                  widget.searchResultController
+                                      .searchResult[index].listing_title,
                                   style: TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.bold,
@@ -122,7 +197,9 @@ class _SearchResultState extends State<SearchResult> {
                       ),
                       onTap: () {
                         Get.to(
-                              () => Listingdetails(propertyListing: widget.searchResultController.searchResult[index]),
+                          () => Listingdetails(
+                              propertyListing: widget
+                                  .searchResultController.searchResult[index]),
                           transition: Transition.circularReveal,
                           duration: const Duration(seconds: 1),
                         );
@@ -142,7 +219,8 @@ class _SearchResultState extends State<SearchResult> {
   AppBar appBar() {
     return AppBar(
       // App bar title
-      title: const Text("Search Result",
+      title: const Text(
+        "Search Result",
         style: TextStyle(
           color: Colors.black,
           fontSize: 20,
@@ -153,5 +231,5 @@ class _SearchResultState extends State<SearchResult> {
       elevation: 0,
     );
   }
- // end of appBar method
+  // end of appBar method
 }

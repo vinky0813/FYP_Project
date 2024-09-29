@@ -691,4 +691,26 @@ class PropertyListing {
       print('Error accepting invitation: $e');
     }
   }
+
+  static Future<void> addSavedSearch(String user_id, String? search_criteria, String title, double? lat, double? long) async {
+    try {
+      final response = await http.post(
+        Uri.parse("http://10.0.2.2:2000/api/add-saved-search"),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          "user_id": user_id,
+          "search_criteria": search_criteria,
+          "title": title,
+          "lat": lat,
+          "long": long,
+        }),
+      );
+      if (response.statusCode != 200) {
+        throw Exception("Failed: ${jsonDecode(response.body)["message"]}");
+      }
+      developer.log("Success, saved search added");
+    } catch (e) {
+      print('Error adding saved search: $e');
+    }
+  }
 }
