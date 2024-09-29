@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:fyp_project/models/property.dart';
 import 'package:fyp_project/models/review.dart';
+import 'package:fyp_project/models/saved_search.dart';
 import 'package:fyp_project/models/user.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase_project;
 
@@ -711,6 +712,49 @@ class PropertyListing {
       developer.log("Success, saved search added");
     } catch (e) {
       print('Error adding saved search: $e');
+    }
+  }
+
+  static Future<List<SavedSearch>> getSavedSearches(String userId) async {
+    final response = await http.get(
+        Uri.parse("http://10.0.2.2:2000/api/get-saved-searches-with-userid/$userId"),
+    );
+
+    developer.log(response.body);
+
+    if (response.statusCode == 200) {
+      final jsonResponse = jsonDecode(response.body)["data"];
+
+      return (jsonResponse as List<dynamic>)
+          .map((item) => SavedSearch.fromJson(item))
+          .toList();
+    } else {
+      throw Exception('Failed to load saved searches: ${response.body}');
+    }
+  }
+
+  static Future<bool> deleteSavedSearch(String id) async {
+    final url = Uri.parse("http://10.0.2.2:2000/api/delete-saved-search");
+
+    try {
+      final response = await http.delete(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          "id": id,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        developer.log("Successfully removed saved search");
+        return true;
+      } else {
+        developer.log("Failed to remove saved search: ${response.body}");
+        return false;
+      }
+    } catch (error) {
+      developer.log("Error removing from saved search: $error");
+      return false;
     }
   }
 }
