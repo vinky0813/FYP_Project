@@ -13,14 +13,6 @@ import 'dart:developer' as developer;
 
 class SearchBarLocation extends StatefulWidget {
 
-  static final SearchBarLocation _instance = SearchBarLocation._internal();
-
-  factory SearchBarLocation({required GlobalKey<SearchBarLocationState> key}) {
-    return _instance;
-  }
-
-  SearchBarLocation._internal();
-
   @override
   SearchBarLocationState createState() => SearchBarLocationState();
 }
@@ -32,6 +24,21 @@ class SearchBarLocationState extends State<SearchBarLocation> {
   double? long = 0;
   final SearchResultController searchResultController = Get.find<SearchResultController>();
   Map<String, dynamic>? filterData;
+
+  @override
+  void initState() {
+    super.initState();
+
+    ever(searchResultController.location, (value) {
+      developer.log("update location in controller, $value");
+      _searchBarController.text = value;
+    });
+
+    ever(searchResultController.filterData, (value) {
+      developer.log("filter data in controller, $value");
+      filterData = value;
+    });
+  }
 
   void _onSearchChanged(String value) async {
     if (value.isNotEmpty) {
@@ -121,6 +128,7 @@ class SearchBarLocationState extends State<SearchBarLocation> {
           }
 
           searchResultController.updateSearchResult(filteredResults);
+          searchResultController.updateLocation(value);
 
           Get.to(() => SearchResult(),
               transition: Transition.circularReveal,
@@ -179,11 +187,12 @@ class SearchBarLocationState extends State<SearchBarLocation> {
                           icon: const Icon(Icons.filter_alt),
                           onPressed: () async {
                             final data = await Get.to(() =>
-                                SearchResultFilter(filterData: filterData),
+                                SearchResultFilter(filterData: searchResultController.filterData.value),
                                 transition: Transition.circularReveal,
                                 duration: const Duration(seconds: 1));
                             setState(() {
                               filterData = data;
+                              searchResultController.updateFilterData(filterData);
                             });
                           }
                         ),
@@ -264,10 +273,12 @@ class SearchBarLocationState extends State<SearchBarLocation> {
                             }
                           }
                         }
+
                         filteredResults.add(listing);
                       }
                       developer.log("search filteredResults length: ${filteredResults.length}");
                       searchResultController.updateSearchResult(filteredResults);
+                      searchResultController.updateLocation(_searchBarController.text);
 
                       Get.to(() => SearchResult(),
                       transition: Transition.circularReveal,

@@ -27,14 +27,13 @@ class _SearchResultState extends State<SearchResult> {
       body: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(
-            child: SearchBarLocation(key: searchBarKey),
+            child: SearchBarLocation(),
           ),
           SliverToBoxAdapter(
               child: Row(
                   children: [
                     SizedBox(width: 30,),
                     IconButton(
-
                       icon: Icon(
                         _isAscending
                             ? Icons.arrow_upward
@@ -54,7 +53,9 @@ class _SearchResultState extends State<SearchResult> {
                     ),
                     IconButton(
                       icon: const Icon(Icons.saved_search),
-                      onPressed: () => {},
+                      onPressed: () => {
+
+                      },
                     ),]
               )),
           SliverToBoxAdapter(

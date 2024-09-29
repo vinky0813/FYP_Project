@@ -1042,6 +1042,30 @@ app.put("/api/update-owner-information/:user_id", async (req, res) => {
   }
 });
 
+app.get("/api/get-saved-searches-with-userid/:user_id", async (req, res) => {
+  const { user_id } = req.params;
+
+  try {
+    const { data, error } = await supabase
+      .from("Saved_Searches")
+      .select("*")
+      .eq("user_id", user_id)
+
+    if (error) {
+      throw error;
+    }
+
+    if (data.length > 0) {
+      res.status(200).json({ message: "Fetched User saved searches", data });
+    } else {
+      res.status(404).json({ message: "User has no saved searches" });
+    }
+  } catch (error) {
+    console.error("Error fetching saved searches:", error);
+    res.status(500).json({ message: "Error fetching saved searches: ", error });
+  }
+}); 
+
 app.listen(2000, () => {
   console.log("connected at server port 2000");
 });

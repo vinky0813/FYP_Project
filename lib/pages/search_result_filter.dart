@@ -581,8 +581,19 @@ class _SearchResultFilterState extends State<SearchResultFilter> {
                 BooleanVariable(name: "isNearBusStop", value: isNearBusStop),
               ]
             };
-            developer.log("${filterData["sex_preference"]}, ${filterData["nationality_preference"]}");
-            Get.back(result: filterData);
+
+            bool isFilterEmpty =
+                (filterData["min_price"] == 0.0 && filterData["max_price"] == double.infinity) &&
+                    (filterData["sex_preference"] == "no preference" || filterData["sex_preference"] == "") &&
+                    (filterData["nationality_preference"] == "no preference" || filterData["nationality_preference"] == "") &&
+                    (room_type == null || room_type.isEmpty) &&
+                    (filterData["amenities"] as List<BooleanVariable>).every((amenity) => !amenity.value);
+
+            if (isFilterEmpty) {
+              Get.back(result: null);
+            } else {
+              Get.back(result: filterData);
+            }
           },
           child: Text("Confirm"),
         )

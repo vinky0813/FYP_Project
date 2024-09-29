@@ -113,7 +113,7 @@ class _HomePageState extends State<HomePage> {
       drawer: AppDrawer(),
       body: ListView(
         children: [
-          SearchBarLocation(key: searchBarKey),
+          SearchBarLocation(),
           quickAccess(),
           topRatedListView(),
           mostViewedListView(),
