@@ -120,7 +120,7 @@ class _DashboardOwnerState extends State<DashboardOwner> {
           icon: const Icon(Icons.account_box),
           // same thing here
           onPressed: () => {
-            Get.to(() => AccountPage(),
+            Get.to(() => AccountPage(userType: "owner",),
             transition: Transition.circularReveal,
             duration: const Duration(seconds: 1))
           },

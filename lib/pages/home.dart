@@ -427,10 +427,10 @@ class _HomePageState extends State<HomePage> {
       // action is right side of the app bar
       actions: [IconButton(
         // placeholder icon fix later
-        icon: const Icon(Icons.account_tree_outlined),
+        icon: const Icon(Icons.account_box),
         // same thing here
         onPressed: () => {
-          Get.to(() => AccountPage(),
+          Get.to(() => AccountPage(userType: "renter",),
           transition: Transition.circularReveal,
           duration: const Duration(seconds: 1))
         },

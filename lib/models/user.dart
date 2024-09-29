@@ -204,4 +204,27 @@ class User {
       return [];
     }
   }
+
+  static Future<void> updateUser(String user_id, String username, String contactNo, String profilePic) async {
+    final url = Uri.parse("http://10.0.2.2:2000/api/update-renter-information/$user_id");
+
+    developer.log("${user_id}, ${username}, ${contactNo}, ${profilePic}");
+
+    final response = await http.put(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          "username": username,
+          "contact_no": contactNo,
+          "profile_pic": profilePic,
+        })
+    );
+
+    if (response.statusCode == 200) {
+      developer.log("Successfully updated renter: ${response.statusCode}.");
+      developer.log("Response Body: ${response.body}");
+    } else {
+      throw Exception("Cannot find renter");
+    }
+  }
 }

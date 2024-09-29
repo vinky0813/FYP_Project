@@ -38,5 +38,25 @@ class Owner {
       throw Exception("Cannot find owner");
     }
   }
+
+  static Future<void> updateOwner(String user_id, String username, String contactNo, String profilePic) async {
+    final url = Uri.parse("http://10.0.2.2:2000/api/update-owner-information/$user_id");
+
+    final response = await http.put(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          "username": username,
+          "contact_no": contactNo,
+          "profile_pic": profilePic,
+        })
+    );
+
+    if (response.statusCode == 200) {
+      developer.log("Successfully updated owner: ${response.statusCode}.");
+    } else {
+      throw Exception("Cannot find owner");
+    }
+  }
 }
 

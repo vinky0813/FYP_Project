@@ -992,6 +992,55 @@ app.get("/api/check-user-review/:listing_id/:user_id", async (req, res) => {
   }
 });
 
+app.put("/api/update-renter-information/:user_id", async (req, res) => {
+
+  const { user_id } = req.params;
+  const { username, contact_no, profile_pic } = req.body;
+
+  console.log('Request Body:', req.body);
+
+  try {
+    const { data, error } = await supabase
+    .from("Renters")
+    .upsert({
+      user_id: user_id,
+      username: username,
+      contact_no: contact_no,
+      profile_pic: profile_pic,
+    });
+
+    if (error) {
+      console.error('update Error:', error.message);
+      return res.status(500).json({ error: error.message });
+    }
+    res.status(200).json({ message: "Renter Updated Successfully", data });
+  } catch (error) {
+    console.error('Error updating row:', error);
+    res.status(500).json({ message: 'Error updating row:', error });
+  }
+});
+
+app.put("/api/update-owner-information/:user_id", async (req, res) => {
+
+  const { user_id } = req.params;
+  const { username, contact_no, profile_pic } = req.body;
+
+  try {
+    const { data, error } = await supabase
+    .from("Owners")
+    .update({
+      username: username,
+      contact_no: contact_no,
+      profile_pic: profile_pic,
+    })
+    .eq("user_id", user_id);
+
+    res.status(200).json({ message: 'owner row updated.' });
+  } catch (error) {
+    console.error('Error updating row:', error);
+    res.status(500).json({ message: 'Error updating row:', error });
+  }
+});
 
 app.listen(2000, () => {
   console.log("connected at server port 2000");
