@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:fyp_project/pages/manage_listing.dart';
 import 'package:fyp_project/pages/manage_property.dart';
-import 'package:fyp_project/pages/owner_home.dart';
 import 'package:fyp_project/pages/splash_page.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../widgets/SearchBarLocation.dart';
+import 'firebase_options.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 
 
 void main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   
   await dotenv.load(fileName: ".env");
 

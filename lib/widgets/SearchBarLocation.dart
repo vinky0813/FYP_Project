@@ -86,20 +86,27 @@ class SearchBarLocationState extends State<SearchBarLocation> {
 
               if ((minPrice != null && listing.price < minPrice) ||
                   (maxPrice != null && listing.price > maxPrice)) {
+                developer.log("filtered by price");
                 continue;
               }
             }
 
             if (filterData != null && filterData?["nationality_preference"] != null) {
               String preferredNationality = filterData?["nationality_preference"];
-              if (listing.nationality_preference != preferredNationality) {
+              developer.log(preferredNationality);
+
+              if (preferredNationality != "no preference" && listing.nationality_preference != preferredNationality) {
+                developer.log("filtered by nationality");
                 continue;
               }
             }
 
             if (filterData != null && filterData?["sex_preference"] != null) {
               String preferredSex = filterData?["sex_preference"];
-              if (listing.sex_preference != preferredSex) {
+              developer.log(preferredSex);
+
+              if (preferredSex != "no preference" && listing.sex_preference != preferredSex) {
+                developer.log("filtered by sex");
                 continue;
               }
             }
@@ -107,21 +114,23 @@ class SearchBarLocationState extends State<SearchBarLocation> {
             if (filterData != null && filterData?["room_type"] != "") {
               String preferredRoomType = filterData?["room_type"];
               if (listing.room_type != preferredRoomType) {
+                developer.log("filtered by roomtype");
                 continue;
               }
             }
 
             if (filterData != null && filterData?["amenities"] != null) {
-              List<Map<String, bool>> requiredAmenities = List<Map<String, bool>>.from(filterData?["amenities"]);
+              List<BooleanVariable> requiredAmenities = List<BooleanVariable>.from(filterData?["amenities"]);
 
               for (var amenity in requiredAmenities) {
-                String amenityName = amenity.keys.first;
-                bool amenityValue = amenity[amenityName]!;
+                String amenityName = amenity.name;
+                bool amenityValue = amenity.value;
 
                 var listingAmenity = listing.amenities.firstWhere(
                         (element) => element.name == amenityName, orElse: () => BooleanVariable(name: "", value: false));
 
                 if (amenityValue && !listingAmenity.value) {
+                  developer.log("filtered by amenities");
                   continue;
                 }
               }
@@ -237,20 +246,27 @@ class SearchBarLocationState extends State<SearchBarLocation> {
 
                           if ((minPrice != null && listing.price < minPrice) ||
                               (maxPrice != null && listing.price > maxPrice)) {
+                            developer.log("filtered by price");
                             continue;
                           }
                         }
 
                         if (filterData != null && filterData?["nationality_preference"] != null) {
                           String preferredNationality = filterData?["nationality_preference"];
-                          if (listing.nationality_preference != preferredNationality) {
+                          developer.log(preferredNationality);
+
+                          if (preferredNationality != "no preference" && listing.nationality_preference != preferredNationality) {
+                            developer.log("filtered by nationality");
                             continue;
                           }
                         }
 
                         if (filterData != null && filterData?["sex_preference"] != null) {
                           String preferredSex = filterData?["sex_preference"];
-                          if (listing.sex_preference != preferredSex) {
+                          developer.log(preferredSex);
+
+                          if (preferredSex != "no preference" && listing.sex_preference != preferredSex) {
+                            developer.log("filtered by sex");
                             continue;
                           }
                         }
@@ -258,21 +274,23 @@ class SearchBarLocationState extends State<SearchBarLocation> {
                         if (filterData != null && filterData?["room_type"] != "") {
                           String preferredRoomType = filterData?["room_type"];
                           if (listing.room_type != preferredRoomType) {
+                            developer.log("filtered by room type");
                             continue;
                           }
                         }
 
                         if (filterData != null && filterData?["amenities"] != null) {
-                          List<Map<String, bool>> requiredAmenities = List<Map<String, bool>>.from(filterData?["amenities"]);
+                          List<BooleanVariable> requiredAmenities = List<BooleanVariable>.from(filterData?["amenities"]);
 
                           for (var amenity in requiredAmenities) {
-                            String amenityName = amenity.keys.first;
-                            bool amenityValue = amenity[amenityName]!;
+                            String amenityName = amenity.name;
+                            bool amenityValue = amenity.value;
 
                             var listingAmenity = listing.amenities.firstWhere(
                                     (element) => element.name == amenityName, orElse: () => BooleanVariable(name: "", value: false));
 
                             if (amenityValue && !listingAmenity.value) {
+                              developer.log("filtered by amenities");
                               continue;
                             }
                           }

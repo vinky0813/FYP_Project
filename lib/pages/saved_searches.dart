@@ -44,11 +44,23 @@ class _SavedSearchesState extends State<SavedSearches> {
     developer.log('User ID: $userId');
 
     if (userId != null) {
-      try {
         await _getSavedSearches();
-        developer.log("raw search criteria: ${savedSearches[0].search_criteria}");
 
         for (var temp in savedSearches) {
+
+          if (temp.search_criteria == "") {
+            developer.log('Saved Search ID: ${temp.id} has no criteria.');
+            filterDataList.add({
+              "min_price": null,
+              "max_price": double.infinity,
+              "sex_preference": "no preference",
+              "nationality_preference": "no preference",
+              "room_type": "all rooms",
+              "amenities": []
+            });
+            continue;
+          }
+
           final criteria = jsonDecode(temp.search_criteria);
           double? minPrice = criteria["min_price"]?.toDouble();
           double? maxPrice = criteria["max_price"]?.toDouble() ?? double.infinity;
@@ -111,9 +123,6 @@ class _SavedSearchesState extends State<SavedSearches> {
           filterDataList;
         });
 
-      } catch (e) {
-        print('Error: $e');
-      }
     }
   }
 
@@ -150,20 +159,27 @@ class _SavedSearchesState extends State<SavedSearches> {
 
         if ((minPrice != null && listing.price < minPrice) ||
             (maxPrice != null && listing.price > maxPrice)) {
+          developer.log("filtered by price");
           continue;
         }
       }
 
       if (filterData != null && filterData?["nationality_preference"] != null) {
         String preferredNationality = filterData?["nationality_preference"];
-        if (listing.nationality_preference != preferredNationality) {
+        developer.log(preferredNationality);
+
+        if (preferredNationality != "no preference" && listing.nationality_preference != preferredNationality) {
+          developer.log("filtered by nationality");
           continue;
         }
       }
 
       if (filterData != null && filterData?["sex_preference"] != null) {
         String preferredSex = filterData?["sex_preference"];
-        if (listing.sex_preference != preferredSex) {
+        developer.log(preferredSex);
+
+        if (preferredSex != "no preference" && listing.sex_preference != preferredSex) {
+          developer.log("filtered by sex");
           continue;
         }
       }
@@ -171,21 +187,23 @@ class _SavedSearchesState extends State<SavedSearches> {
       if (filterData != null && filterData?["room_type"] != "") {
         String preferredRoomType = filterData?["room_type"];
         if (listing.room_type != preferredRoomType) {
+          developer.log("filtered by room type");
           continue;
         }
       }
 
       if (filterData != null && filterData?["amenities"] != null) {
-        List<Map<String, bool>> requiredAmenities = List<Map<String, bool>>.from(filterData?["amenities"]);
+        List<BooleanVariable> requiredAmenities = List<BooleanVariable>.from(filterData?["amenities"]);
 
         for (var amenity in requiredAmenities) {
-          String amenityName = amenity.keys.first;
-          bool amenityValue = amenity[amenityName]!;
+          String amenityName = amenity.name;
+          bool amenityValue = amenity.value;
 
           var listingAmenity = listing.amenities.firstWhere(
                   (element) => element.name == amenityName, orElse: () => BooleanVariable(name: "", value: false));
 
           if (amenityValue && !listingAmenity.value) {
+            developer.log("filtered by amenities");
             continue;
           }
         }
@@ -220,20 +238,6 @@ class _SavedSearchesState extends State<SavedSearches> {
                       fontWeight: FontWeight.bold,
                     ),),
                   const SizedBox(width: 50,),
-                  TextButton(
-                    onPressed: () {
-                      print("test");
-                    },
-                    style: TextButton.styleFrom(
-                      backgroundColor: Colors.transparent,
-                    ),
-                    child: const Text("Enable Notification",
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.black,
-                      ),
-                      textAlign: TextAlign.right,),
-                  ),
                 ],
               ),
             ),
@@ -288,10 +292,12 @@ class _SavedSearchesState extends State<SavedSearches> {
                                   textAlign: TextAlign.left,
                                 ),
                                 Text(
-                                  "Amenities: ${filterDataList[index]['amenities']
+                                  "Amenities: ${filterDataList[index]['amenities'] is List<BooleanVariable>
+                                      ? (filterDataList[index]['amenities'] as List<BooleanVariable>)
                                       .where((BooleanVariable amenity) => amenity.value)
                                       .map((BooleanVariable amenity) => amenity.name)
-                                      .join(', ') ?? 'None'}",
+                                      .join(', ')
+                                      : 'None'}",
                                   style: TextStyle(
                                     fontSize: 12,
                                   ),
