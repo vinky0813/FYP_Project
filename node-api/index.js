@@ -845,7 +845,7 @@ app.put("/api/accept-invitation-part-3", async (req, res) => {
   const { data, error } = await supabase
       .from("Property_Renter_JoinTable")
       .upsert({
-        renter_id: renter_id,
+        renter_id: renter_id, 
         property_id: property_id,
       });
 

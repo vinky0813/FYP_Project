@@ -561,8 +561,12 @@ class _SearchResultFilterState extends State<SearchResultFilter> {
             final filterData = {
               "min_price": double.tryParse(_minPriceController.text) ?? 0.0,
               "max_price": double.tryParse(_maxPriceController.text) ?? double.infinity,
-              "sex_preference": _genderController.text,
-              "nationality_preference": _nationalityController.text,
+              "sex_preference": _genderController.text.isNotEmpty
+                  ? _nationalityController.text
+                  : "no preference",
+              "nationality_preference": _nationalityController.text.isNotEmpty
+                  ? _nationalityController.text
+                  : "no preference",
               "room_type": room_type,
               "amenities": [
                 BooleanVariable(name: "isWifiAccess", value: isWifiAccess),

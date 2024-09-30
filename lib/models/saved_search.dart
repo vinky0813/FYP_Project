@@ -31,7 +31,7 @@ class SavedSearch {
     return SavedSearch(
       id: json["id"] as String,
       title: json["title"] as String,
-      search_criteria: json["search_criteria"] as String,
+      search_criteria: json["search_criteria"] as String? ?? "",
       user_id: json["user_id"] as String,
       lat: latitude,
       long: longitude,

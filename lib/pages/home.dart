@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:fyp_project/SearchController.dart';
@@ -76,15 +77,49 @@ class _HomePageState extends State<HomePage> {
     _initialize();
   }
 
+  Future<void> _setFcmToken(String fcmToken) async {
+    await Supabase.instance.client
+        .from('profiles')
+        .upsert({
+      "id": userId,
+      "fcm_token": fcmToken,
+    });
+  }
+
   Future<void> _initialize() async {
     final user = Supabase.instance.client.auth.currentUser;
-    userId = user?.id;
+    userId = user!.id;
+
+    Supabase.instance.client.auth.onAuthStateChange.listen((event) async {
+      if (event.event ==AuthChangeEvent.signedIn) {
+        await FirebaseMessaging.instance.requestPermission();
+
+        final fcmToken = await FirebaseMessaging.instance.getToken();
+
+        if (fcmToken != null) {
+          _setFcmToken(fcmToken);
+        }
+      }
+    });
+
+    FirebaseMessaging.instance.onTokenRefresh.listen((fcmToken) async {
+      await _setFcmToken(fcmToken);
+    });
+
+    FirebaseMessaging.onMessage.listen((event) {
+      final notification = event.notification;
+      if (notification != null) {
+        Get.snackbar("${notification.title}", "${notification.body}");
+      }
+    });
+
 
     developer.log('User: $user');
     developer.log('User ID: $userId');
 
     if (userId != null) {
       try {
+        developer.log("IF SOMETHING GOES WRONG HERE. THAT MEANS START YOUR NODE SERVER");
         await _getUser(userId!);
         await _getTopRatedListing();
         await _getMostViewedPropertyListing();
