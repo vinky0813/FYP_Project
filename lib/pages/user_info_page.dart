@@ -26,6 +26,7 @@ class UserInfoPage extends StatelessWidget {
               SizedBox(height: 16),
               // Username
               Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
                     user.username,

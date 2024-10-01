@@ -94,6 +94,12 @@ class _AccountPageState extends State<AccountPage> {
       await Owner.updateOwner(userId!, usernameController.text, contactDetailsController.text, imageUrl!,
       );
     }
+    Supabase.instance.client
+    .from("profiles")
+    .upsert({
+      "avatar_url": imageUrl,
+      "username": usernameController.text,
+      "user_id": userId});
   }
   bool isEditing = false;
 
