@@ -4,11 +4,13 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:fyp_project/models/boolean_variable.dart';
 import 'package:fyp_project/models/property.dart';
+import 'package:fyp_project/pages/chat_page.dart';
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:developer' as developer;
 
+import '../ChatService.dart';
 import '../models/property_listing.dart';
 
 class Listingdetails extends StatefulWidget {
@@ -83,7 +85,21 @@ class ListingdetailsState extends State<Listingdetails> {
       body: _getBody(),
       bottomNavigationBar: bottomNavigationBar(),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () async {
+          String? groupId = await Chatservice.findOneOnOneGroupId(userId!, property!.owner.id);
+
+          if (groupId != null) {
+            Get.to(() => ChatPage(groupId: groupId));
+          } else {
+            final newGroupId = await Chatservice.createGroup([userId!, property!.owner.id]);
+
+            if (newGroupId != null) {
+              Get.to(() => ChatPage(groupId: newGroupId));
+            } else {
+              Get.snackbar("Error", "Failed to create chat group.");
+            }
+          }
+        },
         child: Icon(
           Icons.chat,
           color: Colors.white,

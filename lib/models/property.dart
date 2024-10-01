@@ -12,6 +12,7 @@ class Property {
   String imageUrl;
   double lat;
   double long;
+  String group_id;
 
   Property({
     required this.property_id,
@@ -21,6 +22,7 @@ class Property {
     required this.imageUrl,
     required this.lat,
     required this.long,
+    required this.group_id,
   });
 
   factory Property.fromJson(Map<String, dynamic> json, Owner owner) {
@@ -35,6 +37,7 @@ class Property {
       imageUrl: json["property_image"],
       lat: coordinates[1].toDouble(),
       long: coordinates[0].toDouble(),
+      group_id: json["group_id"],
     );
   }
 

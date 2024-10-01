@@ -43,9 +43,15 @@ class MyroomState extends State<MyRoomInvitationDetails> {
         widget.propertyListing.listing_id, userId!);
   }
 
-  void _acceptInvitation() {
-    PropertyListing.acceptInvitation(userId!, widget.propertyListing.listing_id,
+  Future<void> _acceptInvitation() async {
+    await PropertyListing.acceptInvitation(userId!, widget.propertyListing.listing_id,
         widget.propertyListing.property_id);
+    await Supabase.instance.client
+        .from('Group_Members')
+        .insert({
+      'group_id': property!.group_id,
+      'user_id': userId,
+    });
   }
 
   Future<void> _getUser(String user_id) async {

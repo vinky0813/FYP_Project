@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fyp_project/pages/chat_list.dart';
 import 'package:fyp_project/pages/home.dart';
 import 'package:fyp_project/pages/login.dart';
 import 'package:fyp_project/pages/my_room.dart';
@@ -195,7 +196,11 @@ class _AppDrawerState extends State<AppDrawer> {
                 ),
                 ListTile(
                   title: Text("Chat"),
-                  onTap: () {},
+                  onTap: () {
+                    Get.to(() => ChatListPage(),
+                        transition: Transition.circularReveal,
+                        duration: const Duration(seconds: 1));
+                  },
                 ),
                 ListTile(
                   title: Text("My Room"),

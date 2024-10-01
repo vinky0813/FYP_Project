@@ -7,6 +7,8 @@ import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:developer' as developer;
 
+import '../pages/chat_list.dart';
+
 
 class Ownerdrawer extends StatelessWidget {
 
@@ -132,7 +134,11 @@ class Ownerdrawer extends StatelessWidget {
                 ),
                 ListTile(
                   title: Text("Chat"),
-                  onTap: () {},
+                  onTap: () {
+                    Get.to(() => ChatListPage(),
+                        transition: Transition.circularReveal,
+                        duration: const Duration(seconds: 1));
+                  },
                 ),
               ],
             ),

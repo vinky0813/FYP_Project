@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 
 import '../models/user.dart';
 
@@ -23,12 +25,30 @@ class UserInfoPage extends StatelessWidget {
               ),
               SizedBox(height: 16),
               // Username
-              Text(
-                user.username,
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
+              Row(
+                children: [
+                  Text(
+                    user.username,
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(width: 8),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black,
+                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    ),
+                    onPressed: () {
+                      _copyUserIdToClipboard(user.id);
+                    },
+                    child: Text(
+                      "Copy ID",
+                      style: TextStyle(color: Colors.white, fontSize: 14),
+                    ),
+                  ),
+                ],
               ),
               SizedBox(height: 8),
               // Contact Details
@@ -65,5 +85,11 @@ class UserInfoPage extends StatelessWidget {
       title: Text('User Information'),
       centerTitle: true,
     );
+  }
+
+  void _copyUserIdToClipboard(String userId) {
+    Clipboard.setData(ClipboardData(text: userId)).then((_) {
+      Get.snackbar("Sucesss","user id has been copied");
+    });
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:fyp_project/models/property.dart';
 import 'package:fyp_project/pages/add_property.dart';
+import 'package:fyp_project/pages/chat_page.dart';
 import 'package:fyp_project/pages/manage_listing.dart';
 import 'package:fyp_project/widgets/OwnerDrawer.dart';
 import 'package:get/get.dart';
@@ -142,7 +143,10 @@ class _ManagePropertyState extends State<ManageProperty> {
                                   child: IconButton(
                                     onPressed: () async {
                                       if (isEditing==false) {
-                                        // go to chat
+                                        Get.to(() => ChatPage(groupId: propertyList[index].group_id,
+                                        ),
+                                            transition: Transition.circularReveal,
+                                            duration: const Duration(seconds: 1));
                                       } else {
                                         final result = await Get.to(() => AddProperty(
                                           isEditing: true,

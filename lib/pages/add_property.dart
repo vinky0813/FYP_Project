@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:location_picker_flutter_map/location_picker_flutter_map.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../ChatService.dart';
 import '../models/owner.dart';
 import '../models/property.dart';
 
@@ -175,6 +176,8 @@ class _AddPropertyState extends State<AddProperty> {
         return;
       }
 
+      final group_id = await Chatservice.createGroup([userId!]);
+
       final url = Uri.parse("http://10.0.2.2:2000/api/add-property");
       final response = await http.post(
         url,
@@ -186,6 +189,7 @@ class _AddPropertyState extends State<AddProperty> {
           "address": _addressController.text,
           "lat": lat,
           "long": long,
+          "group_id": group_id,
         }),
       );
 
@@ -211,6 +215,7 @@ class _AddPropertyState extends State<AddProperty> {
           owner: owner,
           lat: lat,
           long: long,
+          group_id: group_id!,
         );
         Get.back(result: newProperty);
       } else {
@@ -271,12 +276,34 @@ class _AddPropertyState extends State<AddProperty> {
     final response = await http.delete(url);
 
     if (response.statusCode == 200) {
+      await Supabase.instance.client
+          .from('Messages')
+          .delete()
+          .eq('group_id',  widget.property!.group_id);
+
+      final deleteGroupMembersResponse = await Supabase.instance.client
+          .from('Group_Members')
+          .delete()
+          .eq('group_id', widget.property!.group_id);
+
+      if (deleteGroupMembersResponse.error != null) {
+        throw Exception("Failed to delete group members: ${deleteGroupMembersResponse.error!.message}");
+      }
+
+      final deleteGroupResponse = await Supabase.instance.client
+          .from('Groups')
+          .delete()
+          .eq('id', widget.property!.group_id);
+
+      if (deleteGroupResponse.error != null) {
+        throw Exception("Failed to delete group: ${deleteGroupResponse.error!.message}");
+      }
       developer.log("Success: Property Deleted");
 
       Get.back(result: false);
     } else {
       developer.log("Failed: ${response.statusCode}");
-      Get.snackbar("Failed", "Property Deletion Failed");
+      Get.snackbar("Failed", "Remove each listing in the property first");
     }
   }
 

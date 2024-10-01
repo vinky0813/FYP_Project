@@ -625,8 +625,8 @@ class _AddListingState extends State<AddListing> {
                       value: "no preference", child: Text("No Preference")),
                 ],
                 onChanged: (value) {
-                  widget.propertyListing!.sex_preference = value!;
                   sex_preference = value!;
+                  widget.propertyListing?.sex_preference = value!;
                 },
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -663,8 +663,8 @@ class _AddListingState extends State<AddListing> {
                       value: "no preference", child: Text("No Preference")),
                 ],
                 onChanged: (value) {
-                  widget.propertyListing?.nationality_preference = value!;
                   nationality_preference = value!;
+                  widget.propertyListing?.nationality_preference = value!;
                 },
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -812,6 +812,8 @@ class _AddListingState extends State<AddListing> {
 
 
   void _buildConfirmation(bool isEditing, String? listing_id) {
+
+    developer.log("SEX PREFERENCE HERE: $sex_preference");
 
     Get.to(
         () => ConfirmationPage(

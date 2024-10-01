@@ -357,6 +357,7 @@ class PropertyListing {
     List<PropertyListing> mostViewedListing = [];
 
     final url = Uri.parse("http://10.0.2.2:2000/api/get-most-viewed-listing");
+
     try {
       final response = await http.get(url);
       developer.log(response.statusCode.toString());

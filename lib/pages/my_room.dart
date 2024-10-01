@@ -4,12 +4,14 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_pannable_rating_bar/flutter_pannable_rating_bar.dart';
 import 'package:fyp_project/models/property.dart';
+import 'package:fyp_project/pages/chat_page.dart';
 import 'package:fyp_project/pages/user_info_page.dart';
 import 'package:fyp_project/widgets/AppDrawer.dart';
 import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../ChatService.dart';
 import '../models/boolean_variable.dart';
 import '../models/property_listing.dart';
 import '../models/review.dart';
@@ -126,6 +128,11 @@ class MyroomState extends State<MyRoom> {
       bottomNavigationBar: bottomNavigationBar(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          Get.to(() => ChatPage(
+            groupId: property!.group_id,
+          ),
+              transition: Transition.circularReveal,
+              duration: const Duration(seconds: 1));
         },
         child: Icon(Icons.chat,
           color: Colors.white,),
@@ -490,7 +497,20 @@ class MyroomState extends State<MyRoom> {
                               Align(
                                 alignment: Alignment.bottomRight,
                                 child: IconButton(
-                                    onPressed: () {},
+                                    onPressed: () async {
+                                      String? groupId = await Chatservice.findOneOnOneGroupId(userId!, property!.owner.id);
+                                      if (groupId != null) {
+                                        Get.to(() => ChatPage(groupId: groupId));
+                                      } else {
+                                        final newGroupId = await Chatservice.createGroup([userId!, property!.owner.id]);
+
+                                        if (newGroupId != null) {
+                                          Get.to(() => ChatPage(groupId: newGroupId));
+                                        } else {
+                                          Get.snackbar("Error", "Failed to create chat group.");
+                                        }
+                                      }
+                                    },
                                     style: IconButton.styleFrom(backgroundColor: Colors.black),
                                     icon: Icon(Icons.chat, color: Colors.white,))
                               )
