@@ -217,6 +217,7 @@ class ConfirmationPageState extends State<ConfirmationPage> {
     }
 
     final url_add_listing = Uri.parse("http://10.0.2.2:2000/api/add-listing");
+    developer.log("SEX PREFERENCE HERE: ${widget.sex_preference}");
     final response = await http.post(
       url_add_listing,
       headers: {"Content-Type": "application/json"},

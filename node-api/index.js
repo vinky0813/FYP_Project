@@ -28,14 +28,14 @@ app.get('/api/data', async (req, res) => {
 });
 
 app.post("/api/add-property", async (req, res) => {
-  const { property_title, address, owner_id, property_image, lat, long } = req.body;
+  const { property_title, address, owner_id, property_image, lat, long, group_id } = req.body;
 
   try {
     const location = `POINT(${long} ${lat})`;
 
     const { data, error } = await supabase
       .from('Property') 
-      .insert([{ property_title, address, owner_id, property_image, location }])
+      .insert([{ property_title, address, owner_id, property_image, location, group_id }])
       .select("property_id") 
       .single();
 

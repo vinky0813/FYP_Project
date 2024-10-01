@@ -11,9 +11,12 @@ import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../ChatService.dart';
 import '../models/property_listing.dart';
 import 'dart:developer' as developer;
 import 'package:flutter/services.dart';
+
+import 'chat_page.dart';
 
 class ListingDetailsOwner extends StatefulWidget {
   PropertyListing propertyListing;
@@ -79,8 +82,13 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
     });
   }
 
-  void _removeTenant() {
-    PropertyListing.removeTenant(widget.propertyListing.listing_id, widget.propertyListing.tenant!.id, widget.propertyListing.property_id);
+  Future<void> _removeTenant() async {
+    await PropertyListing.removeTenant(widget.propertyListing.listing_id, widget.propertyListing.tenant!.id, widget.propertyListing.property_id);
+    final response4 = await Supabase.instance.client
+        .from('Group_Members')
+        .delete()
+        .eq('group_id', widget.property.group_id)
+        .eq('user_id', widget.propertyListing.tenant!.id);
   }
 
   Future<void> _pasteFromClipboard() async {
@@ -472,7 +480,21 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
                           padding: EdgeInsets.symmetric(
                               horizontal: 16, vertical: 12),
                         ),
-                        onPressed: () {},
+                        onPressed: () async {
+                          String? groupId = await Chatservice.findOneOnOneGroupId(userId!, widget.propertyListing.tenant!.id);
+
+                          if (groupId != null) {
+                            Get.to(() => ChatPage(groupId: groupId));
+                          } else {
+                            final newGroupId = await Chatservice.createGroup([userId!, widget.propertyListing.tenant!.id]);
+
+                            if (newGroupId != null) {
+                              Get.to(() => ChatPage(groupId: newGroupId));
+                            } else {
+                              Get.snackbar("Error", "Failed to create chat group.");
+                            }
+                          }
+                        },
                         child: Text(
                           "Chat",
                           style: TextStyle(color: Colors.white),
@@ -568,7 +590,21 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
                             padding: EdgeInsets.symmetric(
                                 horizontal: 16, vertical: 12),
                           ),
-                          onPressed: () {},
+                          onPressed: () async {
+                              String? groupId = await Chatservice.findOneOnOneGroupId(userId!, invitedTenant!.id);
+
+                              if (groupId != null) {
+                                Get.to(() => ChatPage(groupId: groupId));
+                              } else {
+                                final newGroupId = await Chatservice.createGroup([userId!,  invitedTenant!.id]);
+
+                                if (newGroupId != null) {
+                                  Get.to(() => ChatPage(groupId: newGroupId));
+                                } else {
+                                  Get.snackbar("Error", "Failed to create chat group.");
+                                }
+                              }
+                            },
                           child: Text(
                             "Chat",
                             style: TextStyle(color: Colors.white),
