@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/rendering.dart';
@@ -36,9 +37,41 @@ class _DashboardOwnerState extends State<DashboardOwner> {
     _initialize();
   }
 
+  Future<void> _setFcmToken(String fcmToken) async {
+    await Supabase.instance.client
+        .from('profiles')
+        .upsert({
+      "id": userId,
+      "fcm_token": fcmToken,
+    });
+  }
+
   Future<void> _initialize() async {
     final user = Supabase.instance.client.auth.currentUser;
-    userId = user?.id;
+    userId = user!.id;
+
+    Supabase.instance.client.auth.onAuthStateChange.listen((event) async {
+      if (event.event ==AuthChangeEvent.signedIn) {
+        await FirebaseMessaging.instance.requestPermission();
+
+        final fcmToken = await FirebaseMessaging.instance.getToken();
+
+        if (fcmToken != null) {
+          _setFcmToken(fcmToken);
+        }
+      }
+    });
+
+    FirebaseMessaging.instance.onTokenRefresh.listen((fcmToken) async {
+      await _setFcmToken(fcmToken);
+    });
+
+    FirebaseMessaging.onMessage.listen((event) {
+      final notification = event.notification;
+      if (notification != null) {
+        Get.snackbar("${notification.title}", "${notification.body}");
+      }
+    });
 
     developer.log('User: $user');
     developer.log('User ID: $userId');

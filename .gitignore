@@ -11,6 +11,7 @@
 migrate_working_dir/
 .env
 node_modules/
+lib/service-account.json
 
 # IntelliJ related
 *.iml
