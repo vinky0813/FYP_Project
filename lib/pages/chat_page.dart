@@ -1,13 +1,18 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'dart:developer' as developer;
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:fyp_project/pages/user_info_page.dart';
 import 'package:get/get.dart';
+import 'package:googleapis_auth/auth_io.dart';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 import 'package:fyp_project/models/user.dart' as project_user;
+import 'package:http/http.dart' as http;
+import 'package:flutter/services.dart' show rootBundle;
 
 class ChatPage extends StatefulWidget {
   final String groupId;
@@ -23,6 +28,8 @@ class _ChatPageState extends State<ChatPage> {
   String? userId;
   late types.User _user;
   List<types.User> _groupMembers = [];
+  List<String> _fcmTokens = [];
+  late Map<String, dynamic> _serviceAccount;
 
   @override
   void initState() {
@@ -32,15 +39,46 @@ class _ChatPageState extends State<ChatPage> {
       userId = user.id;
       _user = types.User(id: userId!);
     }
+    _loadServiceAccount();
     _loadMessages();
     _subscribeToMessages();
     _fetchGroupMembers();
   }
 
+  Future<String> getAccessToken() async {
+    final serviceAccount = await loadServiceAccount();
+    final clientEmail = serviceAccount['client_email'];
+    final privateKey = serviceAccount['private_key'];
+
+    const scopes = 'https://www.googleapis.com/auth/firebase.messaging';
+
+    final accountCredentials = ServiceAccountCredentials(
+      clientEmail,
+      privateKey,
+      scopes,
+    );
+
+    final client = await clientViaServiceAccount(accountCredentials, [scopes]);
+
+    final response = await client.get(Uri.parse('https://www.googleapis.com/token'));
+
+    return client.credentials.accessToken.data;
+  }
+
+  Future<Map<String, dynamic>> loadServiceAccount() async {
+    final jsonString = await rootBundle.loadString('lib/service-account.json');
+    final Map<String, dynamic> jsonData = json.decode(jsonString);
+    return jsonData;
+  }
+
+  Future<void> _loadServiceAccount() async {
+    _serviceAccount = await loadServiceAccount();
+  }
+
   Future<void> _fetchGroupMembers() async {
     final response = await Supabase.instance.client
         .from('Group_Members')
-        .select('user_id, profiles(username, avatar_url, user_type)')
+        .select('user_id, profiles(username, avatar_url, user_type, fcm_token)')
         .eq('group_id', widget.groupId);
 
     if (response != null) {
@@ -137,6 +175,7 @@ class _ChatPageState extends State<ChatPage> {
       text: message.text,
     );
     await _saveMessageToDatabase(textMessage);
+    await _sendNotifications(textMessage);
   }
 
   Future<void> _saveMessageToDatabase(types.TextMessage message) async {
@@ -155,7 +194,7 @@ class _ChatPageState extends State<ChatPage> {
         .from("Messages")
         .select()
         .eq('group_id', widget.groupId)
-        .order('created_at', ascending: true);
+        .order('created_at', ascending: false);
 
     final loadedMessages = response.map<types.TextMessage>((message) {
       return types.TextMessage(
@@ -169,6 +208,43 @@ class _ChatPageState extends State<ChatPage> {
     setState(() {
       _messages = loadedMessages;
     });
+  }
+
+  Future<void> _sendNotifications(types.TextMessage message) async {
+    for (String token in _fcmTokens) {
+      await _sendFCMNotification(token, message);
+    }
+  }
+
+  Future<void> _sendFCMNotification(String fcmToken, types.TextMessage message) async {
+
+    developer.log("SENDING NOTIFICATION");
+    final accessToken = await getAccessToken();
+    final url = 'https://fcm.googleapis.com/v1/projects/${_serviceAccount["project_id"]}/messages:send';
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $accessToken',
+    };
+    final body = jsonEncode({
+      "message": {
+        "token": fcmToken,
+        "notification": {
+          "title": "New Message in Group ${widget.groupId}",
+          "body": message.text,
+        },
+      }
+    });
+
+    try {
+      final response = await http.post(Uri.parse(url), headers: headers, body: body);
+      if (response.statusCode == 200) {
+        print('Notification sent successfully!');
+      } else {
+        print('Failed to send notification: ${response.body}');
+      }
+    } catch (e) {
+      print('Error sending notification: $e');
+    }
   }
 
   @override

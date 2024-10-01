@@ -11,7 +11,8 @@ class ChatListPage extends StatefulWidget {
 class _ChatListPageState extends State<ChatListPage> {
   List<String> _groupIds = [];
   String? userId;
-
+  List<String?> chatThumbnailUrl = [];
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -24,6 +25,40 @@ class _ChatListPageState extends State<ChatListPage> {
     if (user != null) {
       userId = user.id;
       await _loadGroupIds();
+      await _loadChatPictures();
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _loadChatPictures() async {
+    try {
+      for (String groupId in _groupIds) {
+        final response = await Supabase.instance.client
+            .from('Group_Members')
+            .select('user_id')
+            .eq('group_id', groupId)
+            .limit(1)
+            .single();
+
+        if (response != null) {
+          String firstUserId = response['user_id'];
+
+          final profileResponse = await Supabase.instance.client
+              .from('profiles')
+              .select('avatar_url')
+              .eq('id', firstUserId)
+              .single();
+
+          if (profileResponse != null) {
+            String? avatarUrl = profileResponse['avatar_url']?.trim();
+            chatThumbnailUrl.add(avatarUrl);
+          }
+        }
+      }
+    } catch (error) {
+      print('Error fetching user IDs or avatar URLs: $error');
     }
   }
 
@@ -45,6 +80,11 @@ class _ChatListPageState extends State<ChatListPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
     return Scaffold(
       appBar: appBar(),
       body: _groupIds.isEmpty
@@ -72,18 +112,32 @@ class _ChatListPageState extends State<ChatListPage> {
                 SliverList(
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
-                      return GestureDetector(
-                          child: ListTile(
-                        title: Text("Group ID: ${_groupIds[index]}"),
-                        onTap: () {
-                          Get.to(
-                              () => ChatPage(
-                                    groupId: _groupIds[index],
-                                  ),
+                      return Card(
+                        elevation: 2,
+                        margin: const EdgeInsets.symmetric(vertical: 8),
+                        child: ListTile(
+                          leading: CircleAvatar(
+                            backgroundColor: Colors.blueAccent,
+                            backgroundImage: chatThumbnailUrl[index] != null
+                                ? NetworkImage(chatThumbnailUrl[index]!)
+                                : null,
+                            child: chatThumbnailUrl[index] == null
+                                ? const Icon(Icons.person)
+                                : null,
+                          ),
+                          title: Text("Group ID: ${_groupIds[index]}"),
+                          trailing: const Icon(Icons.chat),
+                          onTap: () {
+                            Get.to(
+                                  () => ChatPage(
+                                groupId: _groupIds[index],
+                              ),
                               transition: Transition.circularReveal,
-                              duration: const Duration(seconds: 1));
-                        },
-                      ));
+                              duration: const Duration(seconds: 1),
+                            );
+                          },
+                        ),
+                      );
                     },
                     childCount: _groupIds.length,
                   ),
