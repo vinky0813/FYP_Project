@@ -118,7 +118,7 @@ class _SearchResultState extends State<SearchResult> {
                           TextButton(
                               onPressed: () async => {
                                 Navigator.of(context).pop(),
-                                PropertyListing.addSavedSearch(
+                                await PropertyListing.addSavedSearch(
                                   userId!, convertFilterDataToJson(),
                                     titleController.text, widget.searchResultController.locationLat.value,
                                     widget.searchResultController.locationLong.value),

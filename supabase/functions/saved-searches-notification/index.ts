@@ -223,13 +223,15 @@ function meetsSearchCriteria(record: ListingRecord, criteria: SearchCriteria, li
     if (criteria.amenities && criteria.amenities.length > 0) {
         for (const requiredAmenity of criteria.amenities) {
             const amenityKey = requiredAmenity.name; 
+            const requiredAmenityValue = requiredAmenity.value;
             const listingAmenityValue = listingAmenities[amenityKey];
 
-            console.log(`Checking amenity: ${amenityKey}, ${listingAmenityValue}`);
+            // Log the full structure to check for issues
+            console.log(`Checking amenity key: ${amenityKey}, required value: ${requiredAmenityValue}, listing value: ${listingAmenityValue}`);
 
-            // Check if the amenity matches the required value
-            if (listingAmenityValue !== requiredAmenity.value) {
-                console.log(`filtered by amenities: ${amenityKey}`);
+            // If the listing doesn't have the amenity or the values don't match
+            if (listingAmenityValue !== requiredAmenityValue) {
+                console.log(`Filtered out by amenities: ${amenityKey}`);
                 return false;
             }
         }

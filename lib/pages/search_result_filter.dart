@@ -262,11 +262,11 @@ class _SearchResultFilterState extends State<SearchResultFilter> {
           children: [
             Expanded(
               child: CheckboxListTile(
-                title: Text("Near Train Station"),
-                value: isNearMRT,
+                title: Text("Near LRT"),
+                value: isNearLRT,
                 onChanged: (value) {
                   setState(() {
-                    isNearMRT = value!;
+                    isNearLRT = value!;
                   });
                 },
               ),
@@ -304,6 +304,21 @@ class _SearchResultFilterState extends State<SearchResultFilter> {
                 onChanged: (value) {
                   setState(() {
                     isWashingMachine = value!;
+                  });
+                },
+              ),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            Expanded(
+              child: CheckboxListTile(
+                title: Text("Near MRT"),
+                value: isNearMRT,
+                onChanged: (value) {
+                  setState(() {
+                    isCarPark = value!;
                   });
                 },
               ),
@@ -593,6 +608,7 @@ class _SearchResultFilterState extends State<SearchResultFilter> {
                     (room_type == null || room_type.isEmpty) &&
                     (filterData["amenities"] as List<BooleanVariable>).every((amenity) => !amenity.value);
 
+            developer.log("isFilterEmpty ${isFilterEmpty}");
             if (isFilterEmpty) {
               Get.back(result: null);
             } else {

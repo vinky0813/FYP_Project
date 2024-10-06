@@ -960,6 +960,30 @@ app.post("/api/upload-review", async (req, res) => {
       throw error;
     }
 
+     const { data: reviewsData, error: reviewsError } = await supabase
+          .from("Reviews")
+          .select("rating")
+          .eq("listing_id", listing_id);
+
+        if (reviewsError) {
+          throw reviewsError;
+        }
+
+    const totalRatings = reviewsData.length;
+    const sumRatings = reviewsData.reduce((sum, review) => sum + review.rating, 0);
+    const averageRating = sumRatings / totalRatings;
+
+    const { data: updateData, error: updateError } = await supabase
+      .from("Listing")
+      .upsert({
+        listing_id: listing_id,
+        rating: averageRating,
+      });
+
+    if (updateError) {
+      throw updateError;
+    }
+
     res.status(200).json({ message: "Review uploaded successfully", data });
   } catch (error) {
     console.error("Error uploading review:", error);
@@ -1111,7 +1135,35 @@ app.delete("/api/delete-saved-search", async (req, res) => {
     console.error("Error deleting saved search:", error);
     res.status(500).json({ message: "Error deleting saved search: ", error });
   }
-}); 
+});
+
+
+app.post("/api/report-listing", async (req, res) => {
+  const { reported_by, listing_id, reason, details } = req.body;
+
+  try {
+    const { data, error } = await supabase
+      .from("Reports")
+      .insert([
+        {
+          reported_by: reported_by,
+          listing_id: listing_id,
+          reason: reason,
+          details: details,
+          status: "pending"
+        }
+      ]);
+
+    if (error) {
+      throw error;
+    }
+
+    res.status(200).json({ message: "Report submitted successfully", data });
+  } catch (error) {
+    console.error("Error submitting report:", error);
+    res.status(500).json({ message: "Error submitting report", error });
+  }
+});
 
 app.listen(2000, () => {
   console.log("connected at server port 2000");

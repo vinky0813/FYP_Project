@@ -163,6 +163,7 @@ class MyroomState extends State<MyRoomInvitationDetails> {
                                 onPressed: () => {
                                       Navigator.of(context).pop(),
                                       _acceptInvitation(),
+                                  widget.propertyListing.tenant = renter,
                                   developer.log("passing to my room: ${widget.propertyListing.listing_id}"),
                                       Get.off(
                                           () => MyRoom(

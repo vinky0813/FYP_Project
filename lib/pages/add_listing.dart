@@ -461,40 +461,12 @@ class _AddListingState extends State<AddListing> {
                 ),
                 Expanded(
                   child: CheckboxListTile(
-                    title: Text("Private Bathroom"),
-                    value: isPrivateBathroom,
-                    onChanged: (bool? value) {
-                      setState(() {
-                        isPrivateBathroom = value!;
-                        amenities[1].value = value!;
-                      });
-                    },
-                  ),
-                )
-              ],
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: CheckboxListTile(
-                    title: Text("Gymnasium"),
-                    value: isGymnasium,
-                    onChanged: (bool? value) {
-                      setState(() {
-                        isGymnasium = value!;
-                        amenities[2].value = value!;
-                      });
-                    },
-                  ),
-                ),
-                Expanded(
-                  child: CheckboxListTile(
                     title: Text("Air Con"),
                     value: isAirCon,
                     onChanged: (bool? value) {
                       setState(() {
                         isAirCon = value!;
-                        amenities[3].value = value!;
+                        amenities[1].value = value!;
                       });
                     },
                   ),
@@ -510,6 +482,34 @@ class _AddListingState extends State<AddListing> {
                     onChanged: (bool? value) {
                       setState(() {
                         isNearMarket = value!;
+                        amenities[2].value = value!;
+                      });
+                    },
+                  ),
+                ),
+                Expanded(
+                  child: CheckboxListTile(
+                    title: Text("Car Park"),
+                    value: isCarPark,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        isCarPark = value!;
+                        amenities[3].value = value!;
+                      });
+                    },
+                  ),
+                )
+              ],
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: CheckboxListTile(
+                    title: Text("Near MRT"),
+                    value: isNearMRT,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        isNearMRT = value!;
                         amenities[4].value = value!;
                       });
                     },
@@ -517,11 +517,11 @@ class _AddListingState extends State<AddListing> {
                 ),
                 Expanded(
                   child: CheckboxListTile(
-                    title: Text("Cooking Allowed"),
-                    value: isCookingAllowed,
+                    title: Text("Near LRT"),
+                    value: isNearLRT,
                     onChanged: (bool? value) {
                       setState(() {
-                        isCookingAllowed = value!;
+                        isNearLRT = value!;
                         amenities[5].value = value!;
                       });
                     },
@@ -533,11 +533,11 @@ class _AddListingState extends State<AddListing> {
               children: [
                 Expanded(
                   child: CheckboxListTile(
-                    title: Text("Near Train Station"),
-                    value: isNearMRT,
+                    title: Text("Private Bathroom"),
+                    value: isPrivateBathroom,
                     onChanged: (bool? value) {
                       setState(() {
-                        isNearMRT = value!;
+                        isPrivateBathroom = value!;
                         amenities[6].value = value!;
                       });
                     },
@@ -545,11 +545,11 @@ class _AddListingState extends State<AddListing> {
                 ),
                 Expanded(
                   child: CheckboxListTile(
-                    title: Text("Near Bus Stop"),
-                    value: isNearBusStop,
+                    title: Text("Gymnasium"),
+                    value: isGymnasium,
                     onChanged: (bool? value) {
                       setState(() {
-                        isNearBusStop = value!;
+                        isGymnasium = value!;
                         amenities[7].value = value!;
                       });
                     },
@@ -561,11 +561,11 @@ class _AddListingState extends State<AddListing> {
               children: [
                 Expanded(
                   child: CheckboxListTile(
-                    title: Text("Car Park"),
-                    value: isCarPark,
+                    title: Text("Cooking Allowed"),
+                    value: isCookingAllowed,
                     onChanged: (bool? value) {
                       setState(() {
-                        isCarPark = value!;
+                        isCookingAllowed = value!;
                         amenities[8].value = value!;
                       });
                     },
@@ -579,6 +579,22 @@ class _AddListingState extends State<AddListing> {
                       setState(() {
                         isWashingMachine = value!;
                         amenities[9].value = value!;
+                      });
+                    },
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: CheckboxListTile(
+                    title: Text("Bus Stop"),
+                    value: isNearBusStop,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        isNearBusStop = value!;
+                        amenities[10].value = value!;
                       });
                     },
                   ),
