@@ -83,12 +83,20 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
   }
 
   Future<void> _removeTenant() async {
-    await PropertyListing.removeTenant(widget.propertyListing.listing_id, widget.propertyListing.tenant!.id, widget.propertyListing.property_id);
+    developer.log('group_id ${widget.property.group_id}');
+    developer.log('user_id ${widget.propertyListing.tenant!.id}');
+    developer.log('property_id ${widget.propertyListing.property_id}');
     final response4 = await Supabase.instance.client
         .from('Group_Members')
         .delete()
         .eq('group_id', widget.property.group_id)
         .eq('user_id', widget.propertyListing.tenant!.id);
+
+    developer.log('group_id ${widget.property.group_id}');
+    developer.log('user_id ${widget.propertyListing.tenant!.id}');
+    developer.log('property_id ${widget.propertyListing.property_id}');
+
+    await PropertyListing.removeTenant(widget.propertyListing.listing_id, widget.propertyListing.tenant!.id, widget.propertyListing.property_id);
   }
 
   Future<void> _pasteFromClipboard() async {
@@ -451,9 +459,9 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
                                     child: Text("Cancel"),
                                   ),
                                   TextButton(
-                                    onPressed: () {
+                                    onPressed: () async {
                                       Navigator.of(context).pop();
-                                      _removeTenant();
+                                      await _removeTenant();
 
                                       setState(() {
                                         _invitationSent = false;

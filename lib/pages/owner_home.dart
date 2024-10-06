@@ -4,6 +4,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/rendering.dart';
 import 'package:fyp_project/models/property.dart';
 import 'package:fyp_project/pages/account_page.dart';
+import 'package:fyp_project/pages/chat_list.dart';
 import 'package:fyp_project/pages/manage_property.dart';
 import 'package:fyp_project/widgets/OwnerDrawer.dart';
 import 'package:get/get.dart';
@@ -208,7 +209,9 @@ class _DashboardOwnerState extends State<DashboardOwner> {
                       backgroundColor: Colors.black,
                     ),
                     onPressed: () {
-                      // Chat logic
+                      Get.to(() =>ChatListPage(),
+                          transition: Transition.circularReveal,
+                          duration: const Duration(seconds: 1));
                     },
                     child: Text("Chat", style: TextStyle(color: Colors.white)),
                   ),

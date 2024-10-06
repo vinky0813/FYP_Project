@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -9,6 +11,7 @@ import 'package:get/get.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:developer' as developer;
+import 'package:http/http.dart' as http;
 
 import '../ChatService.dart';
 import '../models/property_listing.dart';
@@ -49,7 +52,8 @@ class ListingdetailsState extends State<Listingdetails> {
 
     developer.log("userid: $userId");
 
-    List<PropertyListing> shortlists = await PropertyListing.getShortlist(userId!);
+    List<PropertyListing> shortlists =
+        await PropertyListing.getShortlist(userId!);
 
     for (PropertyListing shortlist in shortlists) {
       if (shortlist.listing_id == widget.propertyListing.listing_id) {
@@ -84,27 +88,51 @@ class ListingdetailsState extends State<Listingdetails> {
       appBar: appBar(),
       body: _getBody(),
       bottomNavigationBar: bottomNavigationBar(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          String? groupId = await Chatservice.findOneOnOneGroupId(userId!, property!.owner.id);
+      floatingActionButton: Stack(
+        children: [
+          Positioned(
+            bottom: 80,
+            right: 0,
+            child: FloatingActionButton(
+              heroTag: null,
+              onPressed: _showReportDialog,
+              child: Icon(
+                Icons.report,
+                color: Colors.white,
+              ),
+              backgroundColor: Colors.black,
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            right: 0,
+            child: FloatingActionButton(
+              heroTag: null,
+              onPressed: () async {
+                String? groupId = await Chatservice.findOneOnOneGroupId(
+                    userId!, property!.owner.id);
 
-          if (groupId != null) {
-            Get.to(() => ChatPage(groupId: groupId));
-          } else {
-            final newGroupId = await Chatservice.createGroup([userId!, property!.owner.id]);
+                if (groupId != null) {
+                  Get.to(() => ChatPage(groupId: groupId));
+                } else {
+                  final newGroupId = await Chatservice.createGroup(
+                      [userId!, property!.owner.id]);
 
-            if (newGroupId != null) {
-              Get.to(() => ChatPage(groupId: newGroupId));
-            } else {
-              Get.snackbar("Error", "Failed to create chat group.");
-            }
-          }
-        },
-        child: Icon(
-          Icons.chat,
-          color: Colors.white,
-        ),
-        backgroundColor: Colors.black,
+                  if (newGroupId != null) {
+                    Get.to(() => ChatPage(groupId: newGroupId));
+                  } else {
+                    Get.snackbar("Error", "Failed to create chat group.");
+                  }
+                }
+              },
+              child: Icon(
+                Icons.chat,
+                color: Colors.white,
+              ),
+              backgroundColor: Colors.black,
+            ),
+          )
+        ],
       ),
     );
   }
@@ -459,8 +487,11 @@ class ListingdetailsState extends State<Listingdetails> {
                     TextButton(
                       onPressed: () async {
                         Navigator.of(context).pop();
-                        _isShortlisted ? _deleteShortlist(userId!, widget.propertyListing.listing_id)
-                            : _addShortlist(userId!, widget.propertyListing.listing_id);
+                        _isShortlisted
+                            ? _deleteShortlist(
+                                userId!, widget.propertyListing.listing_id)
+                            : _addShortlist(
+                                userId!, widget.propertyListing.listing_id);
                         _isShortlisted = _isShortlisted!;
                       },
                       child: const Text("Confirm"),
@@ -474,4 +505,96 @@ class ListingdetailsState extends State<Listingdetails> {
       ],
     );
   } // end of appBar method
+
+  void _showReportDialog() {
+    final TextEditingController reasonController = TextEditingController();
+    final TextEditingController detailsController = TextEditingController();
+    bool isReasonFilled = false;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Text("Report Listing"),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: reasonController,
+                    decoration: InputDecoration(
+                      labelText: "Reason",
+                      hintText: "Enter reason for reporting",
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        isReasonFilled = value.isNotEmpty;
+                        developer.log("isreasonfilled $isReasonFilled");
+                      });
+                    },
+                  ),
+                  SizedBox(height: 10),
+                  TextField(
+                    controller: detailsController,
+                    decoration: InputDecoration(
+                      labelText: "Details (Optional)",
+                    ),
+                    maxLines: 3,
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Get.back();
+                  },
+                  child: Text("Cancel"),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    if (isReasonFilled) {
+                      String reason = reasonController.text.trim();
+                      String details = detailsController.text.trim();
+
+                      developer.log(reason);
+                      developer.log(details);
+                      await _submitReport(reason, details);
+
+                      Get.back();
+                      Get.snackbar("Success", "Report submitted successfully");
+                    }
+                  },
+                  child: Text("Confirm"),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Future<void> _submitReport(String reason, String details) async {
+    try {
+      final response = await http.post(
+        Uri.parse("http://10.0.2.2:2000/api/report-listing"),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          "reported_by": userId,
+          "listing_id": widget.propertyListing.listing_id,
+          "reason": reason,
+          "details": details,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        developer.log("Success Report submitted successfully");
+      } else {
+        Get.snackbar("Error", "Failed to submit report");
+      }
+    } catch (error) {
+      Get.snackbar("Error", "An error occurred: $error");
+    }
+  }
 }

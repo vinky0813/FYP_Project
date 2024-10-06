@@ -6,8 +6,13 @@ import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+  print('Handling a background message: ${message.messageId}');
+}
 
 void main() async {
 
@@ -16,7 +21,43 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    print('Received a message in the foreground!');
+    RemoteNotification? notification = message.notification;
+    AndroidNotification? android = message.notification?.android;
+
+    if (notification != null && android != null) {
+      flutterLocalNotificationsPlugin.show(
+        notification.hashCode,
+        notification.title,
+        notification.body,
+        NotificationDetails(
+          android: AndroidNotificationDetails(
+            'default_channel_id',
+            'Default Channel',
+            icon: 'app_icon',
+          ),
+        ),
+      );
+    }
+  });
+
+  void setupLocalNotifications() {
+    const AndroidInitializationSettings initializationSettingsAndroid =
+    AndroidInitializationSettings('app_icon');
+    const InitializationSettings initializationSettings =
+    InitializationSettings(android: initializationSettingsAndroid);
+    flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  }
+
+
+  FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+    print('Notification caused app to open!');
+  });
+
   await dotenv.load(fileName: ".env");
 
   final supabaseUrl = dotenv.env["SUPABASE_URL"] ?? "";
@@ -27,6 +68,8 @@ void main() async {
   );
 
   final supabase = Supabase.instance.client;
+
+  setupLocalNotifications();
 
   runApp(const MyApp());
 }
