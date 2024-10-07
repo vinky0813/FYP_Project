@@ -4,6 +4,7 @@ import 'package:fyp_project/pages/login.dart';
 import 'package:fyp_project/pages/owner_home.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'dart:developer' as developer;
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -26,20 +27,29 @@ class _SplashPageState extends State<SplashPage> {
 
     if (session != null) {
       final user = session.user;
-      final response = await Supabase.instance.client
-          .from('profiles')
-          .select('user_type')
-          .eq('id', user.id)
-          .single();
+      developer.log("user id: ${user.id}");
 
-      if (response.isNotEmpty) {
-        final userType = response["user_type"] as String;
-        if (userType == "renter") {
-          Get.offAll(() => HomePage());
+      try {
+        final response = await Supabase.instance.client
+            .from('profiles')
+            .select('user_type')
+            .eq('id', user.id)
+            .single();
+
+        developer.log("response: ${response.toString()}");
+
+        if (response.isNotEmpty) {
+          final userType = response["user_type"] as String;
+          if (userType == "renter") {
+            Get.offAll(() => HomePage());
+          }
+          if (userType == "owner") {
+            Get.offAll(() => const DashboardOwner());
+          }
         }
-        if (userType == "owner") {
-          Get.offAll(() => const DashboardOwner());
-        }
+      } catch (e) {
+        developer.log("Error fetching user type: $e");
+        Get.offAll(() => const Login());
       }
         } else {
       Get.offAll(() => const Login());

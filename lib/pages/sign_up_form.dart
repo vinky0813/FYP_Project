@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:fyp_project/pages/home.dart';
+import 'package:fyp_project/pages/owner_home.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'dart:developer' as developer;
 
 class SignUpForm extends StatefulWidget {
 
@@ -15,8 +18,8 @@ class SignUpForm extends StatefulWidget {
 class _SignUpFormState extends State<SignUpForm> {
   final TextEditingController fullNameController = TextEditingController();
   final TextEditingController genderController = TextEditingController();
-  final TextEditingController ageController = TextEditingController();
-  final TextEditingController studentIdController = TextEditingController();
+  final TextEditingController nationalityController = TextEditingController();
+  final TextEditingController contactNumberController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController = TextEditingController();
@@ -24,8 +27,8 @@ class _SignUpFormState extends State<SignUpForm> {
   Future<void> _signUp(String userType) async {
     final String fullName = fullNameController.text;
     final String gender = genderController.text;
-    final String age = ageController.text;
-    final String studentId = studentIdController.text;
+    final String nationality = nationalityController.text;
+    final String contactNo = contactNumberController.text;
     final String email = emailController.text;
     final String password = passwordController.text;
     final String confirmPassword = confirmPasswordController.text;
@@ -35,12 +38,12 @@ class _SignUpFormState extends State<SignUpForm> {
       return;
     }
 
-    if (email.isEmpty || password.isEmpty || fullName.isEmpty || age.isEmpty || gender.isEmpty) {
+    if (email.isEmpty || password.isEmpty || fullName.isEmpty || nationality.isEmpty || gender.isEmpty) {
       Get.snackbar("Error", "Please fill in all required fields");
       return;
     }
 
-    if (userType == "renter" && studentId.isEmpty) {
+    if (userType == "renter" && contactNo.isEmpty) {
       Get.snackbar("Error", "Please fill in all required fields");
       return;
     }
@@ -57,7 +60,6 @@ class _SignUpFormState extends State<SignUpForm> {
         Get.snackbar("Error", "Something went wrong. Please try again");
         return;
       }
-
       await Supabase.instance.client
           .from('profiles')
           .upsert({
@@ -66,12 +68,36 @@ class _SignUpFormState extends State<SignUpForm> {
         'full_name': fullName,
       });
 
+      developer.log("user type: $userType");
+
+      if (userType == "renter") {
+        await Supabase.instance.client
+            .from('Renters')
+            .insert({
+          'user_id': user.id,
+          'name': fullName,
+          'contact_no': contactNo,
+          'sex': gender,
+          'nationality': nationality,
+          'isAccommodating': false,
+        });
+        Get.offAll(HomePage());
+      } else if (userType == "owner") {
+        await Supabase.instance.client
+            .from('Owners')
+            .insert({
+          'user_id': user.id,
+          'name': fullName,
+          'contact_no': contactNo,
+        });
+        Get.offAll(DashboardOwner());
+      }
+
       Get.snackbar("Success", "Sign up successful!");
     } catch (e) {
       Get.snackbar("Error", "An error occurred during sign up");
-      print('Exception: $e');
+      developer.log('Exception: $e');
     }
-    Get.back();
   }
 
 
@@ -162,24 +188,30 @@ class _SignUpFormState extends State<SignUpForm> {
                 ),
                 SizedBox(width: 10,),
                 Expanded(
-                    child: TextField(
-                      controller: ageController,
-                      decoration: InputDecoration(
-                        labelText: "Age",
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                  child: DropdownButtonFormField<String>(
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      keyboardType: TextInputType.number,
-                    ),)
+                      labelText: "Nationality",
+                      contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                    ),
+                    items: const [
+                      DropdownMenuItem(value: "malaysian", child: Text("Malaysian")),
+                      DropdownMenuItem(value: "non malaysian", child: Text("Non-Malaysian")),
+                    ],
+                    onChanged: (nationality) {
+                      nationalityController.text = nationality!;
+                    },
+                  ),
+                ),
               ],
             ),
             SizedBox(height: 20,),
             TextField(
-              controller: studentIdController,
+              controller: contactNumberController,
               decoration: InputDecoration(
-                labelText: "Student ID",
+                labelText: "Phone Number",
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
@@ -210,6 +242,7 @@ class _SignUpFormState extends State<SignUpForm> {
                 contentPadding: EdgeInsets.symmetric(horizontal: 10),
               ),
               keyboardType: TextInputType.visiblePassword,
+              obscureText: true,
             ),
             SizedBox(height: 20,),
             TextField(
@@ -222,6 +255,7 @@ class _SignUpFormState extends State<SignUpForm> {
                 contentPadding: EdgeInsets.symmetric(horizontal: 10),
               ),
               keyboardType: TextInputType.visiblePassword,
+              obscureText: true,
             ),
             SizedBox(height: 20,),
             TextButton(
@@ -259,41 +293,17 @@ class _SignUpFormState extends State<SignUpForm> {
               ),
               keyboardType: TextInputType.text,
             ),
-            SizedBox(height: 20),
-            Row(
-              children: [
-                Expanded(
-                  child: DropdownButtonFormField<String>(
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      labelText: "Gender",
-                      contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                    ),
-                    items: const [
-                      DropdownMenuItem(value: "male", child: Text("Male")),
-                      DropdownMenuItem(value: "female", child: Text("Female")),
-                    ],
-                    onChanged: (gender) {
-                      genderController.text=gender!;
-                    },
-                  ),
+            SizedBox(height: 20,),
+            TextField(
+              controller: contactNumberController,
+              decoration: InputDecoration(
+                labelText: "Phone Number",
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                SizedBox(width: 10,),
-                Expanded(
-                  child: TextField(
-                    controller: ageController,
-                    decoration: InputDecoration(
-                      labelText: "Age",
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                    ),
-                    keyboardType: TextInputType.number,
-                  ),)
-              ],
+                contentPadding: EdgeInsets.symmetric(horizontal: 10),
+              ),
+              keyboardType: TextInputType.text,
             ),
             SizedBox(height: 20,),
             TextField(
@@ -318,6 +328,7 @@ class _SignUpFormState extends State<SignUpForm> {
                 contentPadding: EdgeInsets.symmetric(horizontal: 10),
               ),
               keyboardType: TextInputType.visiblePassword,
+              obscureText: true,
             ),
             SizedBox(height: 20,),
             TextField(
@@ -330,6 +341,7 @@ class _SignUpFormState extends State<SignUpForm> {
                 contentPadding: EdgeInsets.symmetric(horizontal: 10),
               ),
               keyboardType: TextInputType.visiblePassword,
+              obscureText: true,
             ),
             SizedBox(height: 20,),
             TextButton(

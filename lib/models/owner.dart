@@ -18,7 +18,7 @@ class Owner {
   factory Owner.fromJson(Map<String, dynamic> json) {
     return Owner(
       id: json["user_id"],
-      username: json["username"],
+      username: json["username"] ?? "no username",
       contact_no: json["contact_no"],
       profile_pic: json["profile_pic"] ?? "https://via.placeholder.com/150",
     );
