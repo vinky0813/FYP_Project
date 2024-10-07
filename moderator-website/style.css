@@ -1,0 +1,92 @@
+body {
+    font-family: "Inter", sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: white;
+  }
+
+  .Navigation {
+    width: 100%;
+    padding: 20px;
+    background: white;
+    border-bottom: 1px solid #e0e0e0;
+    text-align: left;
+    position: fixed;
+    top: 0;
+    z-index: 1000;
+  }
+
+  .IntiAccommodationFinder {
+    padding-left: 50px;
+    color: black;
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  .LoginModerators {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 40px;
+    height: calc(100vh - 80px);
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 40%;
+    padding: 20px;
+    max-width: 500px;
+  }
+
+  .EnterEmail, .EnterPassword {
+    color: black;
+    font-size: 18px;
+    margin-top: 40px;
+    font-weight: 500;
+  }
+
+  input {
+    width: 95%;
+    height: 40px;
+    padding: 10px;
+    margin-top: 10px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+  }
+
+  button {
+    margin-top: 40px;
+    width: 100px;
+    height: 40px;
+    background-color: black;
+    color: white;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 16px;
+    cursor: pointer;
+    align-self: flex-end;
+  }
+
+  .login-image {
+    margin-left: 200px;
+    width: 30%;
+    max-width: 1000px;
+    height: auto;
+  }
+
+  @media (max-width: 768px) {
+    .LoginModerators {
+      flex-direction: column;
+    }
+
+    form {
+      width: 100%;
+    }
+
+    .login-image {
+      width: 100%;
+    }
+  }
