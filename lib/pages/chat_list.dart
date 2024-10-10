@@ -13,6 +13,7 @@ class _ChatListPageState extends State<ChatListPage> {
   String? userId;
   List<String?> chatThumbnailUrl = [];
   bool isLoading = true;
+  List<int> unreadMessagesCount = [];
 
   @override
   void initState() {
@@ -26,9 +27,54 @@ class _ChatListPageState extends State<ChatListPage> {
       userId = user.id;
       await _loadGroupIds();
       await _loadChatPictures();
+      await _loadUnreadMessagesCount();
       setState(() {
         isLoading = false;
       });
+    }
+  }
+
+  Future<void> _loadUnreadMessagesCount() async {
+    try {
+      unreadMessagesCount = List.filled(_groupIds.length, 0);
+
+      final unreadMessagesResponse = await Supabase.instance.client
+          .from('Message_Read_Status')
+          .select('message_id')
+          .eq('is_read', false)
+          .eq('user_id', userId!);
+
+      if (unreadMessagesResponse != null) {
+        List<dynamic> unreadMessagesData = unreadMessagesResponse;
+        Map<String, int> groupUnreadCount = {};
+
+        for (var message in unreadMessagesData) {
+          final messageId = message['message_id'];
+
+          final messageResponse = await Supabase.instance.client
+              .from('Messages')
+              .select('group_id')
+              .eq('id', messageId)
+              .single();
+
+          if (messageResponse != null) {
+            String groupId = messageResponse['group_id'];
+
+            if (groupUnreadCount.containsKey(groupId)) {
+              groupUnreadCount[groupId] = groupUnreadCount[groupId]! + 1;
+            } else {
+              groupUnreadCount[groupId] = 1;
+            }
+          }
+        }
+        for (int i = 0; i < _groupIds.length; i++) {
+          String groupId = _groupIds[i];
+          unreadMessagesCount[i] = groupUnreadCount[groupId] ?? 0;
+        }
+      }
+      setState(() {});
+    } catch (error) {
+      print('Error fetching unread messages count: $error');
     }
   }
 
@@ -126,6 +172,14 @@ class _ChatListPageState extends State<ChatListPage> {
                                 : null,
                           ),
                           title: Text("Group ID: ${_groupIds[index]}"),
+                          subtitle: unreadMessagesCount[index] > 0
+                              ? Text(
+                            "${unreadMessagesCount[index]} unread message(s)",
+                            style: TextStyle(
+                              color: Colors.red,
+                            ),
+                          )
+                              : null,
                           trailing: const Icon(Icons.chat),
                           onTap: () {
                             Get.to(
@@ -134,7 +188,9 @@ class _ChatListPageState extends State<ChatListPage> {
                               ),
                               transition: Transition.circularReveal,
                               duration: const Duration(seconds: 1),
-                            );
+                            )?.then((_) {
+                              _loadUnreadMessagesCount();
+                            });
                           },
                         ),
                       );

@@ -44,19 +44,15 @@ class _LoginFormState extends State<LoginForm> {
 
     final profileResponse = await Supabase.instance.client
         .from('profiles')
-        .select()
+        .select("user_type")
         .eq('id', userId)
         .single();
 
-    final profileData = profileResponse as Map<String, dynamic>?;
-
-    final user_type = profileData!["user_type"] as String?;
+    final user_type = profileResponse["user_type"];
 
     if (user_type!= userType) {
-      return;
-    }
-
-    if (user_type == "renter") {
+      _showErrorDialog(context, "wrong user type");
+    } else if (user_type == "renter") {
       Get.off(() => HomePage(), transition: Transition.circularReveal, duration: const Duration(seconds: 1));
     } else if (user_type == "owner") {
       Get.off(() => DashboardOwner(), transition: Transition.circularReveal, duration: const Duration(seconds: 1));
@@ -152,33 +148,31 @@ class _LoginFormState extends State<LoginForm> {
                           ),),
                       ),
                       SizedBox(height: 10,),
-                      Container(
-                        child: Align(
-                          alignment: Alignment.centerRight,
-                          child: TextButton(
-                            onPressed: () {
-                              Get.to(() => ForgotPasswordEmail(),
-                              transition: Transition.circularReveal,
-                              duration: const Duration(seconds: 1));
-                            },
-                            style: TextButton.styleFrom(
-                              backgroundColor: Colors.transparent,
-                            ),
-                            child: Text("Forgot Password",
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.black,
-                                decoration: TextDecoration.underline,
-                              ),
-                              textAlign: TextAlign.right,),
-                          ),
-                        )
-                      ),
                     ],)
               )
             ]
         ),
       )
+    );
+  }
+
+  void _showErrorDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Error'),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

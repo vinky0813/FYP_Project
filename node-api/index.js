@@ -1165,6 +1165,21 @@ app.post("/api/report-listing", async (req, res) => {
   }
 });
 
+app.get("/api/get-all-unpublished-listings", async (req, res) => {
+    try {
+      const { data, error } = await supabase
+        .from('Listing')
+        .select('*')
+        .eq('isPublished', false);
+
+      if (error) return res.status(500).json({ error: error });
+
+      res.status(200).json(data);
+    } catch (err) {
+      res.status(500).json({ error: err });
+    }
+  });
+
 app.listen(2000, () => {
   console.log("connected at server port 2000");
 });

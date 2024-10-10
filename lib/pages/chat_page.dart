@@ -43,20 +43,30 @@ class _ChatPageState extends State<ChatPage> {
     _loadMessages();
     _subscribeToMessages();
     _fetchGroupMembers();
+    _fetchUserFcmToken(userId!);
+  }
+
+  Future<void> _fetchUserFcmToken(String userId) async {
+    final response = await Supabase.instance.client
+        .from("profiles")
+        .select("fcm_token")
+        .eq("id", userId)
+        .single();
+
+    if (response != null && response['fcm_token'] != null) {
+      final currentUserFcmToken = response['fcm_token'];
+      _fcmTokens = _fcmTokens.where((token) => token != currentUserFcmToken).toList();
+    }
   }
 
   Future<String> getAccessToken() async {
     final serviceAccount = await loadServiceAccount();
-    final clientEmail = serviceAccount['client_email'];
-    final privateKey = serviceAccount['private_key'];
+
+    developer.log("Service Account: $serviceAccount");
 
     const scopes = 'https://www.googleapis.com/auth/firebase.messaging';
 
-    final accountCredentials = ServiceAccountCredentials(
-      clientEmail,
-      privateKey,
-      scopes,
-    );
+    final accountCredentials = ServiceAccountCredentials.fromJson(serviceAccount);
 
     final client = await clientViaServiceAccount(accountCredentials, [scopes]);
 
@@ -89,12 +99,18 @@ class _ChatPageState extends State<ChatPage> {
             imageUrl: member['profiles']['avatar_url']?.trim(),
           metadata: {
             "userType": member['profiles']['user_type'],
+            "fcm_token": member['profiles']['fcm_token'],
           }
         );
       }).toList();
 
       setState(() {
         _groupMembers = members;
+        _fcmTokens = members.map((member) => member.metadata?['fcm_token'] as String?).whereType<String>().toList();
+
+        for (String token in _fcmTokens) {
+          developer.log("FCM TOKEN: $token");
+        }
       });
     }
   }
@@ -175,7 +191,9 @@ class _ChatPageState extends State<ChatPage> {
       text: message.text,
     );
     await _saveMessageToDatabase(textMessage);
+    await _insertMessageReadStatus(textMessage);
     await _sendNotifications(textMessage);
+    await _markMessageAsRead(textMessage.id);
   }
 
   Future<void> _saveMessageToDatabase(types.TextMessage message) async {
@@ -208,15 +226,56 @@ class _ChatPageState extends State<ChatPage> {
     setState(() {
       _messages = loadedMessages;
     });
+
+    for (var message in loadedMessages) {
+      await _markMessageAsRead(message.id);
+    }
+  }
+
+  Future<void> _markMessageAsRead(String messageId) async {
+    final existingStatus = await Supabase.instance.client
+        .from('Message_Read_Status')
+        .select('id')
+        .eq('message_id', messageId)
+        .eq('user_id', _user.id)
+        .single();
+
+    if (existingStatus != null) {
+      await Supabase.instance.client
+          .from('Message_Read_Status')
+          .update({'is_read': true})
+          .eq('message_id', messageId)
+          .eq('user_id', _user.id);
+    }
+  }
+
+  Future<void> _insertMessageReadStatus(types.TextMessage message) async {
+    for (final member in _groupMembers) {
+      await Supabase.instance.client
+          .from('Message_Read_Status')
+          .insert({
+        'message_id': message.id,
+        'user_id': member.id,
+        'is_read': false,
+      });
+    }
   }
 
   Future<void> _sendNotifications(types.TextMessage message) async {
     for (String token in _fcmTokens) {
+      developer.log("FCM TOKEN: $token");
+      developer.log("go into send notification");
       await _sendFCMNotification(token, message);
     }
   }
 
   Future<void> _sendFCMNotification(String fcmToken, types.TextMessage message) async {
+
+/*
+    if (message.author.id == _user.id) {
+      return;
+    }
+*/
 
     developer.log("SENDING NOTIFICATION");
     final accessToken = await getAccessToken();
