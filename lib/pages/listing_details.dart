@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:fyp_project/models/boolean_variable.dart';
 import 'package:fyp_project/models/property.dart';
@@ -82,9 +83,12 @@ class ListingdetailsState extends State<Listingdetails> {
   int _currentIndex = 0;
   List<Widget> body = [];
 
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       appBar: appBar(),
       body: _getBody(),
       bottomNavigationBar: bottomNavigationBar(),
@@ -121,7 +125,7 @@ class ListingdetailsState extends State<Listingdetails> {
                   if (newGroupId != null) {
                     Get.to(() => ChatPage(groupId: newGroupId));
                   } else {
-                    Get.snackbar("Error", "Failed to create chat group.");
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Failed to create chat group")));
                   }
                 }
               },
@@ -523,6 +527,10 @@ class ListingdetailsState extends State<Listingdetails> {
                 children: [
                   TextField(
                     controller: reasonController,
+                    maxLength: 50,
+                    inputFormatters: [
+                      LengthLimitingTextInputFormatter(58),
+                    ],
                     decoration: InputDecoration(
                       labelText: "Reason",
                       hintText: "Enter reason for reporting",
@@ -537,6 +545,10 @@ class ListingdetailsState extends State<Listingdetails> {
                   SizedBox(height: 10),
                   TextField(
                     controller: detailsController,
+                    maxLength: 200,
+                    inputFormatters: [
+                      LengthLimitingTextInputFormatter(200),
+                    ],
                     decoration: InputDecoration(
                       labelText: "Details (Optional)",
                     ),
@@ -562,7 +574,6 @@ class ListingdetailsState extends State<Listingdetails> {
                       await _submitReport(reason, details);
 
                       Get.back();
-                      Get.snackbar("Success", "Report submitted successfully");
                     }
                   },
                   child: Text("Confirm"),
@@ -576,6 +587,22 @@ class ListingdetailsState extends State<Listingdetails> {
   }
 
   Future<void> _submitReport(String reason, String details) async {
+
+    final now = DateTime.now();
+    final oneHourAgo = now.subtract(Duration(hours: 1));
+
+    final reportRessponse = await Supabase.instance.client
+        .from('Reports')
+        .select('report_id')
+        .eq('reported_by', userId!)
+        .gte('created_at', oneHourAgo.toIso8601String());
+
+    if ((reportRessponse as List).length >= 3) {
+      developer.log("LIMIT REACHED");
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("You can only submit 3 reports per hour")));
+      return;
+    }
+
     try {
       final response = await http.post(
         Uri.parse("http://10.0.2.2:2000/api/report-listing"),
@@ -590,11 +617,12 @@ class ListingdetailsState extends State<Listingdetails> {
 
       if (response.statusCode == 200) {
         developer.log("Success Report submitted successfully");
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Report submitted successfully")));
       } else {
-        Get.snackbar("Error", "Failed to submit report");
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Failed to submit report")));
       }
     } catch (error) {
-      Get.snackbar("Error", "An error occurred: $error");
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("An error occurred: $error")));
     }
   }
 }

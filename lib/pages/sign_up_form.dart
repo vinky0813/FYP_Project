@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fyp_project/pages/home.dart';
 import 'package:fyp_project/pages/owner_home.dart';
 import 'package:get/get.dart';
@@ -24,6 +25,11 @@ class _SignUpFormState extends State<SignUpForm> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController = TextEditingController();
 
+  bool _isValidPassword(String password) {
+    final hasSpecialCharacter = RegExp(r'[!@#\$&*~]');
+    return password.length >= 8 && hasSpecialCharacter.hasMatch(password);
+  }
+
   Future<void> _signUp(String userType) async {
     final String fullName = fullNameController.text;
     final String gender = genderController.text;
@@ -35,6 +41,11 @@ class _SignUpFormState extends State<SignUpForm> {
 
     if (password != confirmPassword) {
       Get.snackbar("Error", "Passwords do not match");
+      return;
+    }
+
+    if (!_isValidPassword(password)) {
+      Get.snackbar("Error", "Password must be at least 8 characters long and include a special character");
       return;
     }
 
@@ -164,6 +175,10 @@ class _SignUpFormState extends State<SignUpForm> {
                 contentPadding: EdgeInsets.symmetric(horizontal: 10),
               ),
               keyboardType: TextInputType.text,
+              maxLength: 50,
+              inputFormatters: [
+                LengthLimitingTextInputFormatter(50),
+              ],
             ),
             SizedBox(height: 20),
             Row(
@@ -218,6 +233,10 @@ class _SignUpFormState extends State<SignUpForm> {
                 contentPadding: EdgeInsets.symmetric(horizontal: 10),
               ),
               keyboardType: TextInputType.text,
+              maxLength: 15,
+              inputFormatters: [
+                LengthLimitingTextInputFormatter(15),
+              ],
             ),
             SizedBox(height: 20,),
             TextField(
@@ -230,6 +249,10 @@ class _SignUpFormState extends State<SignUpForm> {
                 contentPadding: EdgeInsets.symmetric(horizontal: 10),
               ),
               keyboardType: TextInputType.emailAddress,
+              maxLength: 50,
+              inputFormatters: [
+                LengthLimitingTextInputFormatter(50),
+              ],
             ),
             SizedBox(height: 20,),
             TextField(
@@ -243,6 +266,10 @@ class _SignUpFormState extends State<SignUpForm> {
               ),
               keyboardType: TextInputType.visiblePassword,
               obscureText: true,
+              maxLength: 20,
+              inputFormatters: [
+                LengthLimitingTextInputFormatter(20),
+              ],
             ),
             SizedBox(height: 20,),
             TextField(
@@ -256,6 +283,10 @@ class _SignUpFormState extends State<SignUpForm> {
               ),
               keyboardType: TextInputType.visiblePassword,
               obscureText: true,
+              maxLength: 20,
+              inputFormatters: [
+                LengthLimitingTextInputFormatter(20),
+              ],
             ),
             SizedBox(height: 20,),
             TextButton(
@@ -292,6 +323,10 @@ class _SignUpFormState extends State<SignUpForm> {
                 contentPadding: EdgeInsets.symmetric(horizontal: 10),
               ),
               keyboardType: TextInputType.text,
+              maxLength: 50,
+              inputFormatters: [
+                LengthLimitingTextInputFormatter(50),
+              ],
             ),
             SizedBox(height: 20,),
             TextField(
@@ -304,6 +339,10 @@ class _SignUpFormState extends State<SignUpForm> {
                 contentPadding: EdgeInsets.symmetric(horizontal: 10),
               ),
               keyboardType: TextInputType.text,
+              maxLength: 15,
+              inputFormatters: [
+                LengthLimitingTextInputFormatter(15),
+              ],
             ),
             SizedBox(height: 20,),
             TextField(
@@ -316,6 +355,10 @@ class _SignUpFormState extends State<SignUpForm> {
                 contentPadding: EdgeInsets.symmetric(horizontal: 10),
               ),
               keyboardType: TextInputType.emailAddress,
+              maxLength: 50,
+              inputFormatters: [
+                LengthLimitingTextInputFormatter(50),
+              ],
             ),
             SizedBox(height: 20,),
             TextField(
@@ -329,6 +372,10 @@ class _SignUpFormState extends State<SignUpForm> {
               ),
               keyboardType: TextInputType.visiblePassword,
               obscureText: true,
+              maxLength: 20,
+              inputFormatters: [
+                LengthLimitingTextInputFormatter(20),
+              ],
             ),
             SizedBox(height: 20,),
             TextField(
@@ -342,6 +389,10 @@ class _SignUpFormState extends State<SignUpForm> {
               ),
               keyboardType: TextInputType.visiblePassword,
               obscureText: true,
+              maxLength: 20,
+              inputFormatters: [
+                LengthLimitingTextInputFormatter(20),
+              ],
             ),
             SizedBox(height: 20,),
             TextButton(

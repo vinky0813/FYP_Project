@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_pannable_rating_bar/flutter_pannable_rating_bar.dart';
 import 'package:fyp_project/models/property.dart';
@@ -311,6 +312,10 @@ class MyroomState extends State<MyRoom> {
                                     border: OutlineInputBorder(),
                                   ),
                                   maxLines: 3,
+                                  maxLength: 100,
+                                  inputFormatters: [
+                                    LengthLimitingTextInputFormatter(100),
+                                  ],
                                 ),
                               ],
                             ),

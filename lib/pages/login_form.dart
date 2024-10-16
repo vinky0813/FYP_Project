@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fyp_project/pages/forgot_password_email.dart';
+import 'package:flutter/services.dart';
 import 'package:fyp_project/pages/home.dart';
 import 'package:fyp_project/pages/owner_home.dart';
 import 'package:fyp_project/pages/sign_up_form.dart';
@@ -36,6 +36,7 @@ class _LoginFormState extends State<LoginForm> {
     );
 
     if (response.user == null) {
+      _showErrorDialog(context, "Failed to authenticate user");
       Get.snackbar("Login Error", "Failed to authenticate user");
       return;
     }
@@ -105,6 +106,9 @@ class _LoginFormState extends State<LoginForm> {
                           ),
                         ),
                         keyboardType: TextInputType.emailAddress,
+                        inputFormatters: [
+                          LengthLimitingTextInputFormatter(50),
+                        ],
                       ),
                       SizedBox(height: 20),
                       TextField(
@@ -115,7 +119,10 @@ class _LoginFormState extends State<LoginForm> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
-                        keyboardType: TextInputType.visiblePassword, obscureText: true
+                        keyboardType: TextInputType.visiblePassword, obscureText: true,
+                        inputFormatters: [
+                          LengthLimitingTextInputFormatter(20),
+                        ],
                       ),
                       SizedBox(height: 20,),
                       TextButton(

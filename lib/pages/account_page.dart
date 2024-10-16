@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/owner.dart';
@@ -169,6 +170,10 @@ class _AccountPageState extends State<AccountPage> {
                 color: isEditing ? Colors.black : Colors.grey,
               ),
               readOnly: !isEditing,
+              maxLength: 50,
+              inputFormatters: [
+                LengthLimitingTextInputFormatter(50),
+              ],
             ),
             SizedBox(height: 20),
             TextField(
@@ -183,6 +188,10 @@ class _AccountPageState extends State<AccountPage> {
                 color: isEditing ? Colors.black : Colors.grey,
               ),
               readOnly: !isEditing,
+              maxLength: 15,
+              inputFormatters: [
+                LengthLimitingTextInputFormatter(15),
+              ],
             ),
             SizedBox(height: 20),
             if (widget.userType == "renter")

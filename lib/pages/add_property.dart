@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:developer' as developer;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
@@ -321,6 +322,10 @@ class _AddPropertyState extends State<AddProperty> {
               const SizedBox(height: 16),
               TextFormField(
                 controller: _propertyTitleController,
+                maxLength: 50,
+                inputFormatters: [
+                  LengthLimitingTextInputFormatter(50),
+                ],
                 decoration: InputDecoration(
                   labelText: widget.isEditing
                       ? widget.property?.property_title

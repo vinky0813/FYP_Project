@@ -152,63 +152,60 @@ class _SavedSearchesState extends State<SavedSearches> {
     List<PropertyListing> filteredResults = [];
 
     for (PropertyListing listing in searchResult) {
-      developer.log("room type: ${listing.room_type}");
+      bool shouldAddListing = true;
+
       if (filterData != null) {
         double? minPrice = filterData?["min_price"];
         double? maxPrice = filterData?["max_price"];
 
         if ((minPrice != null && listing.price < minPrice) ||
             (maxPrice != null && listing.price > maxPrice)) {
-          developer.log("filtered by price");
-          continue;
+          developer.log("Filtered by price");
+          shouldAddListing = false;
         }
-      }
 
-      if (filterData != null && filterData?["nationality_preference"] != null) {
         String preferredNationality = filterData?["nationality_preference"];
-        developer.log(preferredNationality);
-
-        if (preferredNationality != "no preference" && listing.nationality_preference != preferredNationality) {
-          developer.log("filtered by nationality");
-          continue;
+        if (preferredNationality != null && preferredNationality != "no preference" &&
+            listing.nationality_preference != preferredNationality) {
+          developer.log("Filtered by nationality");
+          shouldAddListing = false;
         }
-      }
 
-      if (filterData != null && filterData?["sex_preference"] != null) {
         String preferredSex = filterData?["sex_preference"];
-        developer.log(preferredSex);
-
-        if (preferredSex != "no preference" && listing.sex_preference != preferredSex) {
-          developer.log("filtered by sex");
-          continue;
+        if (preferredSex != null && preferredSex != "no preference" &&
+            listing.sex_preference != preferredSex) {
+          developer.log("Filtered by sex");
+          shouldAddListing = false;
         }
-      }
 
-      if (filterData != null && filterData?["room_type"] != "") {
         String preferredRoomType = filterData?["room_type"];
-        if (listing.room_type != preferredRoomType) {
-          developer.log("filtered by room type");
-          continue;
+        if (preferredRoomType != null && preferredRoomType.isNotEmpty &&
+            listing.room_type != preferredRoomType) {
+          developer.log("Filtered by room type");
+          shouldAddListing = false;
         }
-      }
 
-      if (filterData != null && filterData?["amenities"] != null) {
-        List<BooleanVariable> requiredAmenities = List<BooleanVariable>.from(filterData?["amenities"]);
-
-        for (var amenity in requiredAmenities) {
-          String amenityName = amenity.name;
-          bool amenityValue = amenity.value;
-
-          var listingAmenity = listing.amenities.firstWhere(
-                  (element) => element.name == amenityName, orElse: () => BooleanVariable(name: "", value: false));
-
-          if (amenityValue && !listingAmenity.value) {
-            developer.log("filtered by amenities");
-            continue;
+        if (filterData?["amenities"] != null) {
+          List<BooleanVariable> requiredAmenities = List<BooleanVariable>.from(filterData?["amenities"]);
+          for (var amenity in requiredAmenities) {
+            String amenityName = amenity.name;
+            if (amenity.value) {
+              var listingAmenity = listing.amenities.firstWhere(
+                    (element) => element.name == amenityName,
+                orElse: () => BooleanVariable(name: amenityName, value: false),
+              );
+              if (!listingAmenity.value) {
+                developer.log("Filtered out by missing amenity: $amenityName");
+                shouldAddListing = false;
+                break;
+              }
+            }
           }
         }
       }
-      filteredResults.add(listing);
+      if (shouldAddListing) {
+        filteredResults.add(listing);
+      }
     }
 
     searchResultController.updateSearchResult(filteredResults);

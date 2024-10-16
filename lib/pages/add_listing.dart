@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fyp_project/models/boolean_variable.dart';
 import 'package:fyp_project/pages/confirmation_page.dart';
 import 'package:get/get.dart';
@@ -346,6 +347,10 @@ class _AddListingState extends State<AddListing> {
             return null;
           },
           decoration: InputDecoration(hintText: "Listing Title"),
+          maxLength: 50,
+          inputFormatters: [
+            LengthLimitingTextInputFormatter(50),
+          ],
         ),
         SizedBox(height: 16),
         Text("Room Type",
@@ -701,6 +706,10 @@ class _AddListingState extends State<AddListing> {
         TextFormField(
           controller: _descriptionController,
           maxLines: 4,
+          maxLength: 200,
+          inputFormatters: [
+            LengthLimitingTextInputFormatter(200),
+          ],
           decoration: InputDecoration(
             labelText: "Description",
             border: OutlineInputBorder(),
@@ -722,6 +731,10 @@ class _AddListingState extends State<AddListing> {
             Expanded(
               child: TextFormField(
                 controller: _priceController,
+                maxLength: 10,
+                inputFormatters: [
+                  LengthLimitingTextInputFormatter(10),
+                ],
                 decoration: InputDecoration(
                   labelText: "Price",
                   border: OutlineInputBorder(
@@ -744,6 +757,10 @@ class _AddListingState extends State<AddListing> {
             Expanded(
               child: TextFormField(
                 controller: _depositController,
+                maxLength: 10,
+                inputFormatters: [
+                  LengthLimitingTextInputFormatter(10),
+                ],
                 decoration: InputDecoration(
                   labelText: "Deposit",
                   border: OutlineInputBorder(

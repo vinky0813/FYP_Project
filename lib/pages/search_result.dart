@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:fyp_project/SearchController.dart';
 import 'package:fyp_project/pages/listing_details.dart';
 import 'package:fyp_project/widgets/SearchBarLocation.dart';
@@ -108,6 +109,10 @@ class _SearchResultState extends State<SearchResult> {
                               border: OutlineInputBorder(),
                               labelText: "Title",
                             ),
+                            maxLength: 50,
+                            inputFormatters: [
+                              LengthLimitingTextInputFormatter(50),
+                            ],
                           ),
                         actions: [
                           TextButton(
