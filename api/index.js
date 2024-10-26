@@ -21,6 +21,13 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "https://fyp-project-liart.vercel.app");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Authorization, Content-Type");
+  next();
+});
+
 app.get('/', async (req, res) => {
   res.json({ message: 'this is your API response' });
 });
