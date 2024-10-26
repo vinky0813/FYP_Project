@@ -7,10 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:fyp_project/models/property.dart';
+import 'package:fyp_project/models/property_listing.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
 
+import '../AccessTokenController.dart';
 import '../models/boolean_variable.dart';
 
 class ConfirmationPage extends StatefulWidget {
@@ -62,11 +64,21 @@ class ConfirmationPageState extends State<ConfirmationPage> {
   bool isSingleRoom = false;
   bool isSharedRoom = false;
   bool isSuite = false;
+  final accesstokencontroller = Get.find<Accesstokencontroller>();
+  String accessToken = accessTokenController.token!;
 
   Future<String?> _uploadImage(File image) async {
     final url = Uri.parse("http://fyp-project-liart.vercel.app/api/upload-property-image");
 
     var request = http.MultipartRequest("POST", url);
+
+    if (accessToken != null && accessToken.isNotEmpty) {
+      request.headers['Authorization'] = 'Bearer $accessToken';
+    } else {
+      developer.log("Access token is missing");
+      return null;
+    }
+
     developer.log(image.path);
     request.files.add(await http.MultipartFile.fromPath("image", image.path));
 
@@ -88,7 +100,7 @@ class ConfirmationPageState extends State<ConfirmationPage> {
 
       final responseEditListing = await http.put(
         urlEditListing,
-        headers: {"Content-Type": "application/json"},
+        headers: {"Content-Type": "application/json", 'Authorization': 'Bearer $accessToken',},
         body: jsonEncode({
           "listing_title": widget.listingTitle,
           "price": widget.price,
@@ -111,7 +123,7 @@ class ConfirmationPageState extends State<ConfirmationPage> {
         final url_delete_image = Uri.parse("http://fyp-project-liart.vercel.app/api/delete-listing-image");
         final response_delete_image = await http.delete(
           url_delete_image,
-          headers: {"Content-Type": "application/json"},
+          headers: {"Content-Type": "application/json", 'Authorization': 'Bearer $accessToken',},
           body: jsonEncode({
             "listing_id": widget.listing_id,
             "image_url": image_url,
@@ -142,7 +154,7 @@ class ConfirmationPageState extends State<ConfirmationPage> {
       for (var image_url in urls_to_be_uploaded) {
         final responseListingImage = await http.post(
           url_listing_images,
-          headers: {"Content-Type": "application/json"},
+          headers: {"Content-Type": "application/json", 'Authorization': 'Bearer $accessToken',},
           body: jsonEncode({
             "listing_id": widget.listing_id,
             "image_url": image_url,
@@ -158,7 +170,7 @@ class ConfirmationPageState extends State<ConfirmationPage> {
       final urlUpdateAmenities = Uri.parse("http://fyp-project-liart.vercel.app/api/edit-listing-ammenities");
       final responseUpdateAmenities = await http.put(
         urlUpdateAmenities,
-        headers: {"Content-Type": "application/json"},
+        headers: {"Content-Type": "application/json", 'Authorization': 'Bearer $accessToken',},
         body: jsonEncode({
           "listing_id": widget.listing_id,
           "isMasterRoom": widget.roomType == "master",
@@ -219,7 +231,7 @@ class ConfirmationPageState extends State<ConfirmationPage> {
     final url_add_listing = Uri.parse("http://fyp-project-liart.vercel.app/api/add-listing");
     final response = await http.post(
       url_add_listing,
-      headers: {"Content-Type": "application/json"},
+      headers: {"Content-Type": "application/json",'Authorization': 'Bearer $accessToken',},
       body: jsonEncode({
         "listing_title": widget.listingTitle,
         "tenant": null,
@@ -254,7 +266,7 @@ class ConfirmationPageState extends State<ConfirmationPage> {
         developer.log(image_url);
         final responseListingImage = await http.post(
           url_listing_images,
-          headers: {"Content-Type": "application/json"},
+          headers: {"Content-Type": "application/json", 'Authorization': 'Bearer $accessToken',},
           body: jsonEncode({
             "listing_id": listingId,
             "image_url": image_url,
@@ -289,7 +301,7 @@ class ConfirmationPageState extends State<ConfirmationPage> {
   
         final response_listing_ammenities = await http.post(
           url_listing_ammenities,
-          headers: {"Content-Type": "application/json"},
+          headers: {'Content-Type': 'application/json',"Authorization": "Bearer $accessToken"},
           body: jsonEncode({
             "listing_id": listingId,
             "isMasterRoom": isMasterRoom,

@@ -1,5 +1,7 @@
+import 'package:fyp_project/AccessTokenController.dart';
 import 'package:fyp_project/models/owner.dart';
 import 'package:fyp_project/models/user.dart' as my_user;
+import 'package:get/get.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'dart:developer' as developer;
@@ -42,10 +44,14 @@ class Property {
   }
 
   static Future<List<Property>> getOwnerProperties(Owner owner) async {
+
+    final accessTokenController = Get.find<Accesstokencontroller>();
+    final accessToken = accessTokenController.token;
+
     final url = Uri.parse("http://fyp-project-liart.vercel.app/api/get-all-owner-properties")
         .replace(queryParameters: {"owner_id": owner.id});
     final response = await http.get(
-        url, headers: {"Accept": "application/json"});
+        url, headers: {"Accept": "application/json", "Authorization": "Bearer $accessToken"});
 
     developer.log(response.body);
 
@@ -68,6 +74,8 @@ class Property {
   }
 
   static Future<List<Property>> getSearchedProperty(double lat, double long) async {
+    final accessTokenController = Get.find<Accesstokencontroller>();
+    final accessToken = accessTokenController.token;
 
     final url = Uri.parse("http://fyp-project-liart.vercel.app/api/search-properties-by-location")
         .replace(queryParameters: {
@@ -76,7 +84,7 @@ class Property {
       "radius" : "100000",
     });
 
-    final response = await http.get(url, headers: {"Accept": "application/json"});
+    final response = await http.get(url, headers: {"Accept": "application/json", "Authorization": "Bearer $accessToken"});
 
     developer.log("Response body: ${response.body}");
 
@@ -97,10 +105,12 @@ class Property {
   }
 
   static Future<Property> getPropertyWithId(String property_id) async {
+    final accessTokenController = Get.find<Accesstokencontroller>();
+    final accessToken = accessTokenController.token;
 
     final url = Uri.parse("http://fyp-project-liart.vercel.app/api/get-property-with-id/$property_id");
 
-    final response = await http.get(url, headers: {"Accept": "application/json"});
+    final response = await http.get(url, headers: {"Accept": "application/json", "Authorization": "Bearer $accessToken"});
 
     developer.log("status code: ${response.statusCode}");
 

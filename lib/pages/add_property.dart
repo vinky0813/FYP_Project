@@ -152,6 +152,14 @@ class _AddPropertyState extends State<AddProperty> {
     final url = Uri.parse("http://fyp-project-liart.vercel.app/api/upload-property-image");
 
     var request = http.MultipartRequest("POST", url);
+
+    if (accessToken != null && accessToken.isNotEmpty) {
+      request.headers['Authorization'] = 'Bearer $accessToken';
+    } else {
+      developer.log("Access token is missing");
+      return null;
+    }
+
     developer.log(image.path);
     request.files.add(await http.MultipartFile.fromPath("image", image.path));
 
@@ -249,7 +257,8 @@ class _AddPropertyState extends State<AddProperty> {
           "http://fyp-project-liart.vercel.app/api/update-property/${widget.property?.property_id}");
       final response = await http.put(
         url,
-        headers: {"Content-Type": "application/json"},
+        headers: {"Content-Type": "application/json",
+                  "Authorization": "Bearer $accessToken"},
         body: jsonEncode({
           "property_title": _propertyTitleController.text,
           "owner_id": userId,
@@ -279,7 +288,7 @@ class _AddPropertyState extends State<AddProperty> {
   Future<void> _deleteProperty() async {
     final url = Uri.parse(
         "http://fyp-project-liart.vercel.app/api/delete-property/${widget.property?.property_id}");
-    final response = await http.delete(url);
+    final response = await http.delete(url, headers: {"Authorization": "Bearer $accessToken"});
 
     if (response.statusCode == 200) {
       await Supabase.instance.client

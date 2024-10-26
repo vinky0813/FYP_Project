@@ -1,14 +1,19 @@
 import 'dart:convert';
 
+import 'package:fyp_project/AccessTokenController.dart';
 import 'package:fyp_project/models/property.dart';
 import 'package:fyp_project/models/review.dart';
 import 'package:fyp_project/models/saved_search.dart';
 import 'package:fyp_project/models/user.dart';
+import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' as supabase_project;
 
 import 'boolean_variable.dart';
 import 'dart:developer' as developer;
 import 'package:http/http.dart' as http;
+
+final accessTokenController = Get.find<Accesstokencontroller>();
+final accessToken = accessTokenController.token;
 
 class PropertyListing {
   String listing_id;
@@ -57,7 +62,7 @@ class PropertyListing {
 
     final url = Uri.parse("http://fyp-project-liart.vercel.app/api/get-all-listing/$property_id");
     try {
-      final response = await http.get(url);
+      final response = await http.get(url, headers: {"Authorization": "Bearer $accessToken"});
       developer.log(response.statusCode.toString());
 
       if (response.statusCode == 200) {
@@ -142,7 +147,7 @@ class PropertyListing {
 
   static Future<List<Review>> _getReviews(String listing_Id) async {
     final reviewsResponse = await http
-        .get(Uri.parse("http://fyp-project-liart.vercel.app/api/get-all-reviews/$listing_Id"));
+        .get(Uri.parse("http://fyp-project-liart.vercel.app/api/get-all-reviews/$listing_Id"), headers: {"Authorization": "Bearer $accessToken"});
 
     if (reviewsResponse.statusCode == 200) {
       final reviewsJsonResponse = jsonDecode(reviewsResponse.body);
@@ -159,7 +164,7 @@ class PropertyListing {
 
   static Future<List<String>> _getListingImages(String listing_Id) async {
     final imagesResponse = await http.get(
-        Uri.parse("http://fyp-project-liart.vercel.app/api/get-listing-images/$listing_Id"));
+        Uri.parse("http://fyp-project-liart.vercel.app/api/get-listing-images/$listing_Id"), headers: {"Authorization": "Bearer $accessToken"});
 
     if (imagesResponse.statusCode == 200) {
       final imagesjsonResponse = jsonDecode(imagesResponse.body);
@@ -175,7 +180,7 @@ class PropertyListing {
   static Future<List<BooleanVariable>> _getAmenities(String listing_Id) async {
     final url =
         Uri.parse("http://fyp-project-liart.vercel.app/api/get-all-amenities/$listing_Id");
-    final response = await http.get(url);
+    final response = await http.get(url, headers: {"Authorization": "Bearer $accessToken"});
     developer.log(response.body);
     if (response.statusCode == 200) {
       final amenitiesJson = jsonDecode(response.body);
@@ -239,7 +244,7 @@ class PropertyListing {
     final image_delete_url = Uri.parse("http://fyp-project-liart.vercel.app/api/delete-listing-images/$listing_id");
 
     try {
-      final response = await http.delete(image_delete_url);
+      final response = await http.delete(image_delete_url, headers: {"Authorization": "Bearer $accessToken"});
 
       developer.log(response.body);
       if (response.statusCode == 200) {
@@ -263,7 +268,7 @@ class PropertyListing {
     final amenities_url = Uri.parse("http://fyp-project-liart.vercel.app/api/delete-listing-amenities/$listing_id");
 
     try {
-      final response = await http.delete(amenities_url);
+      final response = await http.delete(amenities_url, headers: {"Authorization": "Bearer $accessToken"});
 
       if (response.statusCode == 200) {
         developer.log("amenities deleted successfully");
@@ -278,7 +283,7 @@ class PropertyListing {
     final listing_url = Uri.parse("http://fyp-project-liart.vercel.app/api/delete-listing/$listing_id");
 
     try {
-      final response = await http.delete(listing_url);
+      final response = await http.delete(listing_url, headers: {"Authorization": "Bearer $accessToken"});
 
       if (response.statusCode == 200) {
         developer.log("Listing deleted successfully");
@@ -295,7 +300,7 @@ class PropertyListing {
 
     final url = Uri.parse("http://fyp-project-liart.vercel.app/api/get-listing-with-id/$listing_id");
     try {
-      final response = await http.get(url);
+      final response = await http.get(url, headers: {"Authorization": "Bearer $accessToken"});
       developer.log(response.statusCode.toString());
 
       if (response.statusCode == 200) {
@@ -322,7 +327,7 @@ class PropertyListing {
 
     final url = Uri.parse("http://fyp-project-liart.vercel.app/api/get-top-rated-listing");
     try {
-      final response = await http.get(url);
+      final response = await http.get(url, headers: {"Authorization": "Bearer $accessToken"});
       developer.log(response.statusCode.toString());
 
       developer.log(response.body);
@@ -359,7 +364,7 @@ class PropertyListing {
     final url = Uri.parse("http://fyp-project-liart.vercel.app/api/get-most-viewed-listing");
 
     try {
-      final response = await http.get(url);
+      final response = await http.get(url, headers: {"Authorization": "Bearer $accessToken"});
       developer.log(response.statusCode.toString());
 
       developer.log(response.body);
@@ -408,7 +413,7 @@ class PropertyListing {
   static Future<bool> incrementView(String listing_id) async {
     final url = Uri.parse("http://fyp-project-liart.vercel.app/api/increment-view/$listing_id");
     try {
-      final response = await http.put(url);
+      final response = await http.put(url, headers: {"Authorization": "Bearer $accessToken"});
 
       if (response.statusCode == 200) {
         developer.log("View count incremented successfully.");
@@ -430,7 +435,7 @@ class PropertyListing {
 
     final response = await http.get(
       url,
-      headers: {'Content-Type': 'application/json'},
+      headers: {'Content-Type': 'application/json', "Authorization": "Bearer $accessToken"},
     );
 
     if (response.statusCode == 200) {
@@ -481,7 +486,7 @@ class PropertyListing {
     try {
       final response = await http.delete(
         url,
-        headers: {'Content-Type': 'application/json'},
+        headers: {'Content-Type': 'application/json',"Authorization": "Bearer $accessToken"},
         body: jsonEncode({
           "user_id": user_id,
           "listing_id": listing_id,
@@ -507,7 +512,7 @@ class PropertyListing {
     try {
       final response = await http.post(
         url,
-        headers: {'Content-Type': 'application/json'},
+        headers: {'Content-Type': 'application/json',"Authorization": "Bearer $accessToken"},
         body: jsonEncode({
           "user_id": user_id,
           "listing_id": listing_id,
@@ -535,7 +540,7 @@ class PropertyListing {
 
     final url = Uri.parse("http://fyp-project-liart.vercel.app/api/get-invitations-with-renter-id/$renter_id");
     try {
-      final response = await http.get(url);
+      final response = await http.get(url, headers: {"Authorization": "Bearer $accessToken"},);
       developer.log(response.statusCode.toString());
 
       if (response.statusCode == 200) {
@@ -546,7 +551,7 @@ class PropertyListing {
           developer.log("listing id: $listing_id");
 
           final url = Uri.parse("http://fyp-project-liart.vercel.app/api/get-listing-with-id/$listing_id");
-          final response = await http.get(url);
+          final response = await http.get(url, headers: {"Authorization": "Bearer $accessToken"},);
 
           if (response.statusCode == 200) {
             final listings = jsonDecode(response.body)["data"];
@@ -584,7 +589,7 @@ class PropertyListing {
       try {
         final responsePart1 = await http.put(
           Uri.parse("http://fyp-project-liart.vercel.app/api/accept-invitation-part-1"),
-          headers: {'Content-Type': 'application/json'},
+            headers: {'Content-Type': 'application/json',"Authorization": "Bearer $accessToken"},
           body: jsonEncode({
             "listing_id": listing_id,
             "renter_id": renter_id,
@@ -596,7 +601,7 @@ class PropertyListing {
 
         final responsePart2 = await http.delete(
           Uri.parse("http://fyp-project-liart.vercel.app/api/accept-invitation-part-2"),
-          headers: {'Content-Type': 'application/json'},
+          headers: {'Content-Type': 'application/json',"Authorization": "Bearer $accessToken"},
           body: jsonEncode({"renter_id": renter_id}),
         );
         if (responsePart2.statusCode != 200) {
@@ -605,7 +610,7 @@ class PropertyListing {
 
         final responsePart3 = await http.put(
           Uri.parse("http://fyp-project-liart.vercel.app/api/accept-invitation-part-3"),
-          headers: {'Content-Type': 'application/json'},
+          headers: {'Content-Type': 'application/json',"Authorization": "Bearer $accessToken"},
           body: jsonEncode({
             "renter_id": renter_id,
             "property_id": property_id,
@@ -617,7 +622,7 @@ class PropertyListing {
 
         final responsePart4 = await http.put(
           Uri.parse("http://fyp-project-liart.vercel.app/api/accept-invitation-part-4"),
-          headers: {'Content-Type': 'application/json'},
+          headers: {'Content-Type': 'application/json',"Authorization": "Bearer $accessToken"},
           body: jsonEncode({
             "renter_id": renter_id,
             "listing_id": listing_id,
@@ -637,7 +642,7 @@ class PropertyListing {
     try {
       final response = await http.delete(
         Uri.parse("http://fyp-project-liart.vercel.app/api/delete-invitations/$listing_id"),
-        headers: {'Content-Type': 'application/json'},
+        headers: {'Content-Type': 'application/json',"Authorization": "Bearer $accessToken"},
         body: jsonEncode({
           "renter_id": renter_id,
         }),
@@ -655,7 +660,7 @@ class PropertyListing {
     try {
       final response1 = await http.put(
         Uri.parse("http://fyp-project-liart.vercel.app/api/remove-tenant-part-1"),
-        headers: {'Content-Type': 'application/json'},
+        headers: {'Content-Type': 'application/json',"Authorization": "Bearer $accessToken"},
         body: jsonEncode({
           "listing_id": listing_id,
           "renter_id": renter_id,
@@ -667,7 +672,7 @@ class PropertyListing {
 
       final response2 = await http.put(
         Uri.parse("http://fyp-project-liart.vercel.app/api/remove-tenant-part-2"),
-        headers: {'Content-Type': 'application/json'},
+        headers: {'Content-Type': 'application/json',"Authorization": "Bearer $accessToken"},
         body: jsonEncode({
           "renter_id": renter_id
         }),
@@ -678,7 +683,7 @@ class PropertyListing {
 
       final response3 = await http.delete(
         Uri.parse("http://fyp-project-liart.vercel.app/api/remove-tenant-part-3"),
-        headers: {'Content-Type': 'application/json'},
+        headers: {'Content-Type': 'application/json',"Authorization": "Bearer $accessToken"},
         body: jsonEncode({
           "property_id": property_id,
           "renter_id": renter_id,
@@ -698,7 +703,7 @@ class PropertyListing {
     try {
       final response = await http.post(
         Uri.parse("http://fyp-project-liart.vercel.app/api/add-saved-search"),
-        headers: {'Content-Type': 'application/json'},
+        headers: {'Content-Type': 'application/json',"Authorization": "Bearer $accessToken"},
         body: jsonEncode({
           "user_id": user_id,
           "search_criteria": search_criteria,
@@ -718,7 +723,7 @@ class PropertyListing {
 
   static Future<List<SavedSearch>> getSavedSearches(String userId) async {
     final response = await http.get(
-        Uri.parse("http://fyp-project-liart.vercel.app/api/get-saved-searches-with-userid/$userId"),
+        Uri.parse("http://fyp-project-liart.vercel.app/api/get-saved-searches-with-userid/$userId"), headers: {"Authorization": "Bearer $accessToken"},
     );
 
     developer.log(response.body);
@@ -740,7 +745,7 @@ class PropertyListing {
     try {
       final response = await http.delete(
         url,
-        headers: {'Content-Type': 'application/json'},
+        headers: {'Content-Type': 'application/json',"Authorization": "Bearer $accessToken"},
         body: jsonEncode({
           "id": id,
         }),

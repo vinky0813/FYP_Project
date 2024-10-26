@@ -1,6 +1,12 @@
 import 'dart:convert';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'dart:developer' as developer;
+
+import '../AccessTokenController.dart';
+
+final accessTokenController = Get.find<Accesstokencontroller>();
+final accessToken = accessTokenController.token;
 
 class User {
   String id;
@@ -37,9 +43,13 @@ class User {
   }
 
   static Future<User> getUserById(String user_id) async {
+
     developer.log("im here");
+    developer.log("Access Token: $accessToken");
     final url = Uri.parse("http://fyp-project-liart.vercel.app/api/get-renter-with-id/$user_id");
-    final response = await http.get(url);
+    final response = await http.get(url, headers: {'Content-Type': 'application/json', "Authorization": "Bearer $accessToken"},);
+
+    developer.log("response ${jsonDecode(response.body)}");
 
     if (response.statusCode == 200) {
       final jsonResponse = jsonDecode(response.body);
@@ -62,7 +72,7 @@ class User {
     try {
       final response = await http.get(
         url,
-        headers: {'Content-Type': 'application/json'},
+        headers: {'Content-Type': 'application/json',"Authorization": "Bearer $accessToken"},
       );
 
       if (response.statusCode == 200) {
@@ -96,7 +106,7 @@ class User {
     try {
       final response = await http.delete(
         url,
-        headers: {'Content-Type': 'application/json'},
+        headers: {'Content-Type': 'application/json',"Authorization": "Bearer $accessToken"},
       );
 
       if (response.statusCode == 200) {
@@ -118,7 +128,7 @@ class User {
     try {
       final response = await http.post(
         url,
-        headers: {'Content-Type': 'application/json'},
+        headers: {'Content-Type': 'application/json',"Authorization": "Bearer $accessToken"},
         body: jsonEncode({
           "listing_id": listing_id,
           "owner_id": owner_id,
@@ -145,7 +155,7 @@ class User {
     try {
       final response = await http.get(
         url,
-        headers: {'Content-Type': 'application/json'},
+        headers: {'Content-Type': 'application/json',"Authorization": "Bearer $accessToken"},
       );
 
       if (response.statusCode == 200) {
@@ -168,7 +178,7 @@ class User {
     try {
       final response = await http.get(
         url,
-        headers: {'Content-Type': 'application/json'},
+        headers: {'Content-Type': 'application/json',"Authorization": "Bearer $accessToken"},
       );
 
       developer.log("Response status code: ${response.statusCode}");
@@ -212,7 +222,7 @@ class User {
 
     final response = await http.put(
         url,
-        headers: {'Content-Type': 'application/json'},
+        headers: {'Content-Type': 'application/json',"Authorization": "Bearer $accessToken"},
         body: jsonEncode({
           "username": username,
           "contact_no": contactNo,

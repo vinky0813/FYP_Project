@@ -623,7 +623,7 @@ class ListingdetailsState extends State<Listingdetails> {
     try {
       final response = await http.post(
         Uri.parse("http://fyp-project-liart.vercel.app/api/report-listing"),
-        headers: {'Content-Type': 'application/json'},
+        headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer $accessToken',},
         body: jsonEncode({
           "reported_by": userId,
           "listing_id": widget.propertyListing.listing_id,
