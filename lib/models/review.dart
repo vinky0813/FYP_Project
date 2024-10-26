@@ -30,7 +30,7 @@ class Review {
   static Future<void> uploadReview(Review review) async {
     final accessTokenController = Get.find<Accesstokencontroller>();
     final accessToken = accessTokenController.token;
-    final url = Uri.parse("http://fyp-project-liart.vercel.app/api/upload-review");
+    final url = Uri.parse("https://fyp-project-liart.vercel.app/api/upload-review");
 
     try {
       final response = await http.post(
@@ -59,7 +59,7 @@ class Review {
   static Future<bool> checkUserReview(String listing_id, String user_id) async {
     final accessTokenController = Get.find<Accesstokencontroller>();
     final accessToken = accessTokenController.token;
-    final url = Uri.parse("http://fyp-project-liart.vercel.app/api/check-user-review/$listing_id/$user_id");
+    final url = Uri.parse("https://fyp-project-liart.vercel.app/api/check-user-review/$listing_id/$user_id");
 
     try {
       final response = await http.get(

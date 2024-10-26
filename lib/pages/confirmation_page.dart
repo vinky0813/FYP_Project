@@ -68,7 +68,7 @@ class ConfirmationPageState extends State<ConfirmationPage> {
   String accessToken = accessTokenController.token!;
 
   Future<String?> _uploadImage(File image) async {
-    final url = Uri.parse("http://fyp-project-liart.vercel.app/api/upload-property-image");
+    final url = Uri.parse("https://fyp-project-liart.vercel.app/api/upload-property-image");
 
     var request = http.MultipartRequest("POST", url);
 
@@ -96,7 +96,7 @@ class ConfirmationPageState extends State<ConfirmationPage> {
 
   Future<void> _editListing() async {
     try {
-      final urlEditListing = Uri.parse("http://fyp-project-liart.vercel.app/api/update-listing/${widget.listing_id}");
+      final urlEditListing = Uri.parse("https://fyp-project-liart.vercel.app/api/update-listing/${widget.listing_id}");
 
       final responseEditListing = await http.put(
         urlEditListing,
@@ -120,7 +120,7 @@ class ConfirmationPageState extends State<ConfirmationPage> {
       }
 
       for (var image_url in widget.removedExistingImages) {
-        final url_delete_image = Uri.parse("http://fyp-project-liart.vercel.app/api/delete-listing-image");
+        final url_delete_image = Uri.parse("https://fyp-project-liart.vercel.app/api/delete-listing-image");
         final response_delete_image = await http.delete(
           url_delete_image,
           headers: {"Content-Type": "application/json", 'Authorization': 'Bearer $accessToken',},
@@ -149,7 +149,7 @@ class ConfirmationPageState extends State<ConfirmationPage> {
           return;
         }
       }
-      final url_listing_images = Uri.parse("http://fyp-project-liart.vercel.app/api/add-listing-images");
+      final url_listing_images = Uri.parse("https://fyp-project-liart.vercel.app/api/add-listing-images");
 
       for (var image_url in urls_to_be_uploaded) {
         final responseListingImage = await http.post(
@@ -167,7 +167,7 @@ class ConfirmationPageState extends State<ConfirmationPage> {
         }
       }
 
-      final urlUpdateAmenities = Uri.parse("http://fyp-project-liart.vercel.app/api/edit-listing-ammenities");
+      final urlUpdateAmenities = Uri.parse("https://fyp-project-liart.vercel.app/api/edit-listing-ammenities");
       final responseUpdateAmenities = await http.put(
         urlUpdateAmenities,
         headers: {"Content-Type": "application/json", 'Authorization': 'Bearer $accessToken',},
@@ -228,7 +228,7 @@ class ConfirmationPageState extends State<ConfirmationPage> {
       return;
     }
 
-    final url_add_listing = Uri.parse("http://fyp-project-liart.vercel.app/api/add-listing");
+    final url_add_listing = Uri.parse("https://fyp-project-liart.vercel.app/api/add-listing");
     final response = await http.post(
       url_add_listing,
       headers: {"Content-Type": "application/json",'Authorization': 'Bearer $accessToken',},
@@ -260,7 +260,7 @@ class ConfirmationPageState extends State<ConfirmationPage> {
       }
 
       final url_listing_images =
-          Uri.parse("http://fyp-project-liart.vercel.app/api/add-listing-images");
+          Uri.parse("https://fyp-project-liart.vercel.app/api/add-listing-images");
 
       for (var image_url in imageUrls) {
         developer.log(image_url);
@@ -297,7 +297,7 @@ class ConfirmationPageState extends State<ConfirmationPage> {
       }
 
         final url_listing_ammenities =
-            Uri.parse("http://fyp-project-liart.vercel.app/api/add-listing-ammenities");
+            Uri.parse("https://fyp-project-liart.vercel.app/api/add-listing-ammenities");
   
         final response_listing_ammenities = await http.post(
           url_listing_ammenities,

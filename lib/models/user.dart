@@ -46,14 +46,21 @@ class User {
 
     developer.log("im here");
     developer.log("Access Token: $accessToken");
-    final url = Uri.parse("http://fyp-project-liart.vercel.app/api/get-renter-with-id/$user_id");
+
+    String authorizationValue = "Bearer $accessToken";
+
+    final url = Uri.parse("https://fyp-project-liart.vercel.app/api/get-renter-with-id/$user_id");
+
+    developer.log("Authorization Value: $authorizationValue");
+
     final response = await http.get(url, headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $accessToken',
+      'Authorization': authorizationValue,
+      'Content-Type': 'application/json'
     });
 
     developer.log("Response Status: ${response.statusCode}");
-    developer.log("response ${jsonDecode(response.body)}");
+    developer.log("Response body: ${response.body}");
+
 
     if (response.statusCode == 200) {
       final jsonResponse = jsonDecode(response.body);
@@ -71,7 +78,7 @@ class User {
   }
 
   static Future<User?> checkInvitation(String listing_id) async {
-    final url = Uri.parse("http://fyp-project-liart.vercel.app/api/get-invitation-with-listing_id/$listing_id");
+    final url = Uri.parse("https://fyp-project-liart.vercel.app/api/get-invitation-with-listing_id/$listing_id");
 
     try {
       final response = await http.get(
@@ -105,7 +112,7 @@ class User {
   }
 
   static Future<bool> removeInvitation(String listing_id) async {
-    final url = Uri.parse("http://fyp-project-liart.vercel.app/api/delete-invitations/$listing_id");
+    final url = Uri.parse("https://fyp-project-liart.vercel.app/api/delete-invitations/$listing_id");
 
     try {
       final response = await http.delete(
@@ -127,7 +134,7 @@ class User {
   }
 
   static Future<bool> sendInvitation(String listing_id, String owner_id, String renter_id) async {
-    final url = Uri.parse("http://fyp-project-liart.vercel.app/api/add-invitation");
+    final url = Uri.parse("https://fyp-project-liart.vercel.app/api/add-invitation");
 
     try {
       final response = await http.post(
@@ -154,7 +161,7 @@ class User {
   }
 
   static Future<bool> checkRenterId(String renter_id) async {
-    final url = Uri.parse("http://fyp-project-liart.vercel.app/api/check-renter/$renter_id");
+    final url = Uri.parse("https://fyp-project-liart.vercel.app/api/check-renter/$renter_id");
 
     try {
       final response = await http.get(
@@ -177,7 +184,7 @@ class User {
   static Future<List<User>> getTenants(String property_id) async {
 
     developer.log("start of getTenant");
-    final url = Uri.parse("http://fyp-project-liart.vercel.app/api/get-tenants/$property_id");
+    final url = Uri.parse("https://fyp-project-liart.vercel.app/api/get-tenants/$property_id");
 
     try {
       final response = await http.get(
@@ -220,7 +227,7 @@ class User {
   }
 
   static Future<void> updateUser(String user_id, String username, String contactNo, String profilePic) async {
-    final url = Uri.parse("http://fyp-project-liart.vercel.app/api/update-renter-information/$user_id");
+    final url = Uri.parse("https://fyp-project-liart.vercel.app/api/update-renter-information/$user_id");
 
     developer.log("${user_id}, ${username}, ${contactNo}, ${profilePic}");
 

@@ -48,7 +48,7 @@ class Property {
     final accessTokenController = Get.find<Accesstokencontroller>();
     final accessToken = accessTokenController.token;
 
-    final url = Uri.parse("http://fyp-project-liart.vercel.app/api/get-all-owner-properties")
+    final url = Uri.parse("https://fyp-project-liart.vercel.app/api/get-all-owner-properties")
         .replace(queryParameters: {"owner_id": owner.id});
     final response = await http.get(
         url, headers: {"Accept": "application/json", "Authorization": "Bearer $accessToken"});
@@ -77,7 +77,7 @@ class Property {
     final accessTokenController = Get.find<Accesstokencontroller>();
     final accessToken = accessTokenController.token;
 
-    final url = Uri.parse("http://fyp-project-liart.vercel.app/api/search-properties-by-location")
+    final url = Uri.parse("https://fyp-project-liart.vercel.app/api/search-properties-by-location")
         .replace(queryParameters: {
       "lat": lat.toString(),
       "long": long.toString(),
@@ -108,7 +108,7 @@ class Property {
     final accessTokenController = Get.find<Accesstokencontroller>();
     final accessToken = accessTokenController.token;
 
-    final url = Uri.parse("http://fyp-project-liart.vercel.app/api/get-property-with-id/$property_id");
+    final url = Uri.parse("https://fyp-project-liart.vercel.app/api/get-property-with-id/$property_id");
 
     final response = await http.get(url, headers: {"Accept": "application/json", "Authorization": "Bearer $accessToken"});
 

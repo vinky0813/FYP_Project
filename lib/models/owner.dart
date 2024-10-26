@@ -30,7 +30,7 @@ class Owner {
     final accessTokenController = Get.find<Accesstokencontroller>();
     final accessToken = accessTokenController.token;
 
-    final url = Uri.parse("http://fyp-project-liart.vercel.app/api/get-owner-with-id/$ownerId");
+    final url = Uri.parse("https://fyp-project-liart.vercel.app/api/get-owner-with-id/$ownerId");
 
     final response = await http.get(
       url, headers: {"Accept": "application/json",
@@ -49,7 +49,7 @@ class Owner {
     final accessTokenController = Get.find<Accesstokencontroller>();
     final accessToken = accessTokenController.token;
 
-    final url = Uri.parse("http://fyp-project-liart.vercel.app/api/update-owner-information/$user_id");
+    final url = Uri.parse("https://fyp-project-liart.vercel.app/api/update-owner-information/$user_id");
 
     final response = await http.put(
         url,
