@@ -9,7 +9,12 @@ const mime = require('mime-types');
 require('dotenv').config();
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: 'https://fyp-project-liart.vercel.app',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 app.use(express.json());
 
 const supabase = createClient(process.env.SUPABASE_URL, process.env.API_KEY);
