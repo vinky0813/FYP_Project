@@ -5,16 +5,19 @@ const multer = require('multer');
 const path = require('path');
 const cors = require('cors');
 const mime = require('mime-types'); 
+const microCors = require('micro-cors');
 
 require('dotenv').config();
 
 const app = express();
-app.use(cors({
-  origin: 'https://fyp-project-liart.vercel.app',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
 
+const cors = microCors({
+  origin: 'https://fyp-project-liart.vercel.app',
+  allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowHeaders: ['Content-Type', 'Authorization']
+});
+
+app.use(cors());
 app.use(express.json());
 
 const supabase = createClient(process.env.SUPABASE_URL, process.env.API_KEY);
@@ -32,6 +35,7 @@ app.get('/', async (req, res) => {
 });
 
 async function authenticateToken(req, res, next) {
+  console.log("Incoming Headers in authenticateToken:", req.headers);
   const authHeader = req.headers['authorization'];
 
     if (!authHeader) {
