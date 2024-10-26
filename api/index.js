@@ -46,7 +46,6 @@ async function authenticateToken(req, res, next) {
   }
 };
 
-}
 app.use(authenticateToken);
 
 app.post("/api/add-property", async (req, res) => {
