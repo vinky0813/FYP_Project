@@ -18,12 +18,7 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 app.get('/api/data', async (req, res) => {
-  try {
-    const { data, error } = await supabase.from("profiles").select("*");
-    if (error) return res.status(500).json({ error: error.message });
-    res.json(data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  res.json({ message: 'this is your API response' });
   }
 });
 
