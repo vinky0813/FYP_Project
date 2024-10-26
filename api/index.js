@@ -21,22 +21,31 @@ app.get('/', async (req, res) => {
   res.json({ message: 'this is your API response' });
 });
 
-function authenticateToken(req, res, next) {
-  const token = req.headers['Authorization'];
+async function authenticateToken(req, res, next) {
+  const authHeader = req.headers['authorization'];
 
-  console.log(token);
-
-  if (!token) {
-    return res.status(401).json({ message: 'Access token required' });
-  }
-
-  supabase.auth.getUser(token).then(({ data, error }) => {
-    if (error || !data.user) {
-      return res.status(403).json({ message: 'Invalid access token' });
+    if (!authHeader) {
+      return res.status(401).json({ error: 'Authorization header is missing' });
     }
-    req.user = data.user;
+
+    const token = authHeader.split(' ')[1];
+
+    try {
+    const { data: { user }, error } = await supabase.auth.api.getUser(token);
+
+    if (error || !user) {
+      return res.status(403).json({ error: 'Invalid token' });
+    }
+
+    req.user = user;
+
     next();
-  });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
 }
 app.use(authenticateToken);
 
