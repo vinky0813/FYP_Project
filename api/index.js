@@ -4,10 +4,19 @@ const express = require("express");
 const multer = require('multer');
 const path = require('path');
 const mime = require('mime-types');
+const cors = require('cors');
 
 require('dotenv').config();
 
 const app = express();
+
+const corsOptions = {
+  origin: ['http://localhost:5000', 'https://fyp-project-liart.vercel.app'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Authorization', 'Content-Type'],
+};
+
+app.use(cors(corsOptions));
 
 app.use(express.json());
 
@@ -18,13 +27,6 @@ const upload = multer({ storage });
 
 app.use((req, res, next) => {
   console.log("Incoming Headers:", req.headers);
-  next();
-});
-
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "https://fyp-project-liart.vercel.app");
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Authorization, Content-Type");
   next();
 });
 
