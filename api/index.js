@@ -1179,5 +1179,9 @@ app.get("/api/get-all-unpublished-listings", async (req, res) => {
     }
   });
 
+app.listen(2000, () => {
+  console.log("connected at server port 2000");
+});
+
 module.exports = app;
 
