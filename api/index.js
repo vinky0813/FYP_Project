@@ -46,6 +46,11 @@ async function authenticateToken(req, res, next) {
   }
 };
 
+app.use((req, res, next) => {
+  console.log("Incoming Headers:", req.headers);
+  next();
+});
+
 app.use(authenticateToken);
 
 app.post("/api/add-property", async (req, res) => {
