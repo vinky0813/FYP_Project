@@ -3,21 +3,12 @@ const { createClient } = require('@supabase/supabase-js');
 const express = require("express");
 const multer = require('multer');
 const path = require('path');
-const cors = require('cors');
-const mime = require('mime-types'); 
-const microCors = require('micro-cors');
+const mime = require('mime-types');
 
 require('dotenv').config();
 
 const app = express();
 
-const cors = microCors({
-  origin: 'https://fyp-project-liart.vercel.app',
-  allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowHeaders: ['Content-Type', 'Authorization']
-});
-
-app.use(cors());
 app.use(express.json());
 
 const supabase = createClient(process.env.SUPABASE_URL, process.env.API_KEY);
