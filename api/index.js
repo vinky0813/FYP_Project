@@ -17,7 +17,7 @@ const supabase = createClient(process.env.SUPABASE_URL, process.env.API_KEY);
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-app.get('/api/data', async (req, res) => {
+app.get('/', async (req, res) => {
   res.json({ message: 'this is your API response' });
 });
 
