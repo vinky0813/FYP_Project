@@ -49,7 +49,7 @@ class User {
     final url = Uri.parse("http://fyp-project-liart.vercel.app/api/get-renter-with-id/$user_id");
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
-      "Authorization": "Bearer $accessToken",
+      'Authorization': 'Bearer $accessToken',
     });
 
     developer.log("Response Status: ${response.statusCode}");
