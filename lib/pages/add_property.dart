@@ -4,6 +4,7 @@ import 'dart:developer' as developer;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fyp_project/AccessTokenController.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
@@ -29,12 +30,15 @@ class _AddPropertyState extends State<AddProperty> {
   final _formKey = GlobalKey<FormState>();
   double lat = 0;
   double long = 0;
+  final accesstokencontroller = Get.find<Accesstokencontroller>();
+  late String accessToken;
 
   @override
   void initState() {
     super.initState();
     final user = Supabase.instance.client.auth.currentUser;
     userId = user?.id;
+    accessToken = accesstokencontroller.token!;
 
     if (widget.isEditing && widget.property != null) {
 
@@ -182,7 +186,8 @@ class _AddPropertyState extends State<AddProperty> {
       final url = Uri.parse("http://fyp-project-liart.vercel.app/api/add-property");
       final response = await http.post(
         url,
-        headers: {"Content-Type": "application/json"},
+        headers: {"Content-Type": "application/json",
+                  "Authorization": "Bearer $accessToken",},
         body: jsonEncode({
           "property_title": _propertyTitleController.text,
           "owner_id": userId,

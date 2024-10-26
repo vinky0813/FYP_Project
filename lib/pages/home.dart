@@ -15,6 +15,7 @@ import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:developer' as developer;
 
+import '../AccessTokenController.dart';
 import '../models/property_listing.dart';
 import 'package:fyp_project/widgets/SearchBarLocation.dart';
 
@@ -75,6 +76,8 @@ class _HomePageState extends State<HomePage> {
 
   void initState() {
     super.initState();
+    Get.put(Accesstokencontroller());
+
     _initialize();
   }
 

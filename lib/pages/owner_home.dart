@@ -11,6 +11,7 @@ import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:developer' as developer;
 
+import '../AccessTokenController.dart';
 import '../models/owner.dart';
 import '../models/property_listing.dart';
 import '../widgets/ListingCard.dart';
@@ -48,6 +49,7 @@ class _DashboardOwnerState extends State<DashboardOwner> {
   }
 
   Future<void> _initialize() async {
+    Get.put(Accesstokencontroller());
     final user = Supabase.instance.client.auth.currentUser;
     userId = user!.id;
 

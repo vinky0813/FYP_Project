@@ -21,6 +21,23 @@ app.get('/', async (req, res) => {
   res.json({ message: 'this is your API response' });
 });
 
+function authenticateToken(req, res, next) {
+  const token = req.headers['authorization']?.split(' ')[1];
+
+  if (!token) {
+    return res.status(401).json({ message: 'Access token required' });
+  }
+
+  supabase.auth.getUser(token).then(({ data, error }) => {
+    if (error || !data.user) {
+      return res.status(403).json({ message: 'Invalid access token' });
+    }
+    req.user = data.user;
+    next();
+  });
+}
+app.use(authenticateToken);
+
 app.post("/api/add-property", async (req, res) => {
   const { property_title, address, owner_id, property_image, lat, long, group_id } = req.body;
 
