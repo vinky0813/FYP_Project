@@ -55,7 +55,7 @@ class PropertyListing {
 
     developer.log("property id: ${property_id}");
 
-    final url = Uri.parse("http://10.0.2.2:2000/api/get-all-listing/$property_id");
+    final url = Uri.parse("http://fyp-project-liart.vercel.app/api/get-all-listing/$property_id");
     try {
       final response = await http.get(url);
       developer.log(response.statusCode.toString());
@@ -142,7 +142,7 @@ class PropertyListing {
 
   static Future<List<Review>> _getReviews(String listing_Id) async {
     final reviewsResponse = await http
-        .get(Uri.parse("http://10.0.2.2:2000/api/get-all-reviews/$listing_Id"));
+        .get(Uri.parse("http://fyp-project-liart.vercel.app/api/get-all-reviews/$listing_Id"));
 
     if (reviewsResponse.statusCode == 200) {
       final reviewsJsonResponse = jsonDecode(reviewsResponse.body);
@@ -159,7 +159,7 @@ class PropertyListing {
 
   static Future<List<String>> _getListingImages(String listing_Id) async {
     final imagesResponse = await http.get(
-        Uri.parse("http://10.0.2.2:2000/api/get-listing-images/$listing_Id"));
+        Uri.parse("http://fyp-project-liart.vercel.app/api/get-listing-images/$listing_Id"));
 
     if (imagesResponse.statusCode == 200) {
       final imagesjsonResponse = jsonDecode(imagesResponse.body);
@@ -174,7 +174,7 @@ class PropertyListing {
 
   static Future<List<BooleanVariable>> _getAmenities(String listing_Id) async {
     final url =
-        Uri.parse("http://10.0.2.2:2000/api/get-all-amenities/$listing_Id");
+        Uri.parse("http://fyp-project-liart.vercel.app/api/get-all-amenities/$listing_Id");
     final response = await http.get(url);
     developer.log(response.body);
     if (response.statusCode == 200) {
@@ -236,7 +236,7 @@ class PropertyListing {
 
   static Future<void> deleteListing(String listing_id) async {
 
-    final image_delete_url = Uri.parse("http://10.0.2.2:2000/api/delete-listing-images/$listing_id");
+    final image_delete_url = Uri.parse("http://fyp-project-liart.vercel.app/api/delete-listing-images/$listing_id");
 
     try {
       final response = await http.delete(image_delete_url);
@@ -260,7 +260,7 @@ class PropertyListing {
       developer.log('Unexpected error: $e');
     }
 
-    final amenities_url = Uri.parse("http://10.0.2.2:2000/api/delete-listing-amenities/$listing_id");
+    final amenities_url = Uri.parse("http://fyp-project-liart.vercel.app/api/delete-listing-amenities/$listing_id");
 
     try {
       final response = await http.delete(amenities_url);
@@ -275,7 +275,7 @@ class PropertyListing {
       developer.log('Unexpected error: $e');
     }
 
-    final listing_url = Uri.parse("http://10.0.2.2:2000/api/delete-listing/$listing_id");
+    final listing_url = Uri.parse("http://fyp-project-liart.vercel.app/api/delete-listing/$listing_id");
 
     try {
       final response = await http.delete(listing_url);
@@ -293,7 +293,7 @@ class PropertyListing {
 
   static Future<PropertyListing?> getCurrentProperty(String? listing_id) async {
 
-    final url = Uri.parse("http://10.0.2.2:2000/api/get-listing-with-id/$listing_id");
+    final url = Uri.parse("http://fyp-project-liart.vercel.app/api/get-listing-with-id/$listing_id");
     try {
       final response = await http.get(url);
       developer.log(response.statusCode.toString());
@@ -320,7 +320,7 @@ class PropertyListing {
   static Future<List<PropertyListing>> getTopRatedListing() async {
     List<PropertyListing> topRatedList = [];
 
-    final url = Uri.parse("http://10.0.2.2:2000/api/get-top-rated-listing");
+    final url = Uri.parse("http://fyp-project-liart.vercel.app/api/get-top-rated-listing");
     try {
       final response = await http.get(url);
       developer.log(response.statusCode.toString());
@@ -356,7 +356,7 @@ class PropertyListing {
   static Future<List<PropertyListing>> getMostViewedListing() async {
     List<PropertyListing> mostViewedListing = [];
 
-    final url = Uri.parse("http://10.0.2.2:2000/api/get-most-viewed-listing");
+    final url = Uri.parse("http://fyp-project-liart.vercel.app/api/get-most-viewed-listing");
 
     try {
       final response = await http.get(url);
@@ -406,7 +406,7 @@ class PropertyListing {
   }
 
   static Future<bool> incrementView(String listing_id) async {
-    final url = Uri.parse("http://10.0.2.2:2000/api/increment-view/$listing_id");
+    final url = Uri.parse("http://fyp-project-liart.vercel.app/api/increment-view/$listing_id");
     try {
       final response = await http.put(url);
 
@@ -426,7 +426,7 @@ class PropertyListing {
   static Future<List<PropertyListing>> getShortlist(String user_id) async {
     List<PropertyListing> shortlist = [];
 
-    final url = Uri.parse("http://10.0.2.2:2000/api/get-shortlists-with-userid/$user_id");
+    final url = Uri.parse("http://fyp-project-liart.vercel.app/api/get-shortlists-with-userid/$user_id");
 
     final response = await http.get(
       url,
@@ -442,7 +442,7 @@ class PropertyListing {
         String listingId = item["listing_id"];
         developer.log("Listing ID: $listingId");
 
-        final url = Uri.parse("http://10.0.2.2:2000/api/get-listing-with-id/$listingId");
+        final url = Uri.parse("http://fyp-project-liart.vercel.app/api/get-listing-with-id/$listingId");
 
         try {
           final response = await http.get(url);
@@ -476,7 +476,7 @@ class PropertyListing {
   }
 
   static Future<bool> deleteShortlist(String user_id, String listing_id) async {
-    final url = Uri.parse("http://10.0.2.2:2000/api/remove-shortlist");
+    final url = Uri.parse("http://fyp-project-liart.vercel.app/api/remove-shortlist");
 
     try {
       final response = await http.delete(
@@ -502,7 +502,7 @@ class PropertyListing {
   }
 
   static Future<bool> addShortlist(String user_id, String listing_id) async {
-    final url = Uri.parse("http://10.0.2.2:2000/api/add-shortlist");
+    final url = Uri.parse("http://fyp-project-liart.vercel.app/api/add-shortlist");
 
     try {
       final response = await http.post(
@@ -533,7 +533,7 @@ class PropertyListing {
 
     developer.log("renter id: ${renter_id}");
 
-    final url = Uri.parse("http://10.0.2.2:2000/api/get-invitations-with-renter-id/$renter_id");
+    final url = Uri.parse("http://fyp-project-liart.vercel.app/api/get-invitations-with-renter-id/$renter_id");
     try {
       final response = await http.get(url);
       developer.log(response.statusCode.toString());
@@ -545,7 +545,7 @@ class PropertyListing {
           String listing_id = invitation["listing_id"];
           developer.log("listing id: $listing_id");
 
-          final url = Uri.parse("http://10.0.2.2:2000/api/get-listing-with-id/$listing_id");
+          final url = Uri.parse("http://fyp-project-liart.vercel.app/api/get-listing-with-id/$listing_id");
           final response = await http.get(url);
 
           if (response.statusCode == 200) {
@@ -583,7 +583,7 @@ class PropertyListing {
     developer.log("property id: $property_id");
       try {
         final responsePart1 = await http.put(
-          Uri.parse("http://10.0.2.2:2000/api/accept-invitation-part-1"),
+          Uri.parse("http://fyp-project-liart.vercel.app/api/accept-invitation-part-1"),
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode({
             "listing_id": listing_id,
@@ -595,7 +595,7 @@ class PropertyListing {
         }
 
         final responsePart2 = await http.delete(
-          Uri.parse("http://10.0.2.2:2000/api/accept-invitation-part-2"),
+          Uri.parse("http://fyp-project-liart.vercel.app/api/accept-invitation-part-2"),
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode({"renter_id": renter_id}),
         );
@@ -604,7 +604,7 @@ class PropertyListing {
         }
 
         final responsePart3 = await http.put(
-          Uri.parse("http://10.0.2.2:2000/api/accept-invitation-part-3"),
+          Uri.parse("http://fyp-project-liart.vercel.app/api/accept-invitation-part-3"),
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode({
             "renter_id": renter_id,
@@ -616,7 +616,7 @@ class PropertyListing {
         }
 
         final responsePart4 = await http.put(
-          Uri.parse("http://10.0.2.2:2000/api/accept-invitation-part-4"),
+          Uri.parse("http://fyp-project-liart.vercel.app/api/accept-invitation-part-4"),
           headers: {'Content-Type': 'application/json'},
           body: jsonEncode({
             "renter_id": renter_id,
@@ -636,7 +636,7 @@ class PropertyListing {
   static Future<void> rejectInvitation(String listing_id, String renter_id) async {
     try {
       final response = await http.delete(
-        Uri.parse("http://10.0.2.2:2000/api/delete-invitations/$listing_id"),
+        Uri.parse("http://fyp-project-liart.vercel.app/api/delete-invitations/$listing_id"),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           "renter_id": renter_id,
@@ -654,7 +654,7 @@ class PropertyListing {
   static Future<void> removeTenant(String listing_id, String renter_id, String property_id) async {
     try {
       final response1 = await http.put(
-        Uri.parse("http://10.0.2.2:2000/api/remove-tenant-part-1"),
+        Uri.parse("http://fyp-project-liart.vercel.app/api/remove-tenant-part-1"),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           "listing_id": listing_id,
@@ -666,7 +666,7 @@ class PropertyListing {
       }
 
       final response2 = await http.put(
-        Uri.parse("http://10.0.2.2:2000/api/remove-tenant-part-2"),
+        Uri.parse("http://fyp-project-liart.vercel.app/api/remove-tenant-part-2"),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           "renter_id": renter_id
@@ -677,7 +677,7 @@ class PropertyListing {
       }
 
       final response3 = await http.delete(
-        Uri.parse("http://10.0.2.2:2000/api/remove-tenant-part-3"),
+        Uri.parse("http://fyp-project-liart.vercel.app/api/remove-tenant-part-3"),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           "property_id": property_id,
@@ -697,7 +697,7 @@ class PropertyListing {
   static Future<void> addSavedSearch(String user_id, String? search_criteria, String title, double? lat, double? long) async {
     try {
       final response = await http.post(
-        Uri.parse("http://10.0.2.2:2000/api/add-saved-search"),
+        Uri.parse("http://fyp-project-liart.vercel.app/api/add-saved-search"),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           "user_id": user_id,
@@ -718,7 +718,7 @@ class PropertyListing {
 
   static Future<List<SavedSearch>> getSavedSearches(String userId) async {
     final response = await http.get(
-        Uri.parse("http://10.0.2.2:2000/api/get-saved-searches-with-userid/$userId"),
+        Uri.parse("http://fyp-project-liart.vercel.app/api/get-saved-searches-with-userid/$userId"),
     );
 
     developer.log(response.body);
@@ -735,7 +735,7 @@ class PropertyListing {
   }
 
   static Future<bool> deleteSavedSearch(String id) async {
-    final url = Uri.parse("http://10.0.2.2:2000/api/delete-saved-search");
+    final url = Uri.parse("http://fyp-project-liart.vercel.app/api/delete-saved-search");
 
     try {
       final response = await http.delete(

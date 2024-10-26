@@ -622,7 +622,7 @@ class ListingdetailsState extends State<Listingdetails> {
 
     try {
       final response = await http.post(
-        Uri.parse("http://10.0.2.2:2000/api/report-listing"),
+        Uri.parse("http://fyp-project-liart.vercel.app/api/report-listing"),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           "reported_by": userId,

@@ -63,7 +63,7 @@ class _AccountPageState extends State<AccountPage> {
   }
 
   Future<String?> _uploadImage(File image) async {
-    final url = Uri.parse("http://10.0.2.2:2000/api/upload-property-image");
+    final url = Uri.parse("http://fyp-project-liart.vercel.app/api/upload-property-image");
 
     var request = http.MultipartRequest("POST", url);
     developer.log(image.path);

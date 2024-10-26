@@ -25,7 +25,7 @@ class Review {
   }
 
   static Future<void> uploadReview(Review review) async {
-    final url = Uri.parse("http://10.0.2.2:2000/api/upload-review");
+    final url = Uri.parse("http://fyp-project-liart.vercel.app/api/upload-review");
 
     try {
       final response = await http.post(
@@ -52,7 +52,7 @@ class Review {
   }
 
   static Future<bool> checkUserReview(String listing_id, String user_id) async {
-    final url = Uri.parse("http://10.0.2.2:2000/api/check-user-review/$listing_id/$user_id");
+    final url = Uri.parse("http://fyp-project-liart.vercel.app/api/check-user-review/$listing_id/$user_id");
 
     try {
       final response = await http.get(

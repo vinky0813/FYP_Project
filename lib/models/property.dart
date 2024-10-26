@@ -42,7 +42,7 @@ class Property {
   }
 
   static Future<List<Property>> getOwnerProperties(Owner owner) async {
-    final url = Uri.parse("http://10.0.2.2:2000/api/get-all-owner-properties")
+    final url = Uri.parse("http://fyp-project-liart.vercel.app/api/get-all-owner-properties")
         .replace(queryParameters: {"owner_id": owner.id});
     final response = await http.get(
         url, headers: {"Accept": "application/json"});
@@ -69,7 +69,7 @@ class Property {
 
   static Future<List<Property>> getSearchedProperty(double lat, double long) async {
 
-    final url = Uri.parse("http://10.0.2.2:2000/api/search-properties-by-location")
+    final url = Uri.parse("http://fyp-project-liart.vercel.app/api/search-properties-by-location")
         .replace(queryParameters: {
       "lat": lat.toString(),
       "long": long.toString(),
@@ -98,7 +98,7 @@ class Property {
 
   static Future<Property> getPropertyWithId(String property_id) async {
 
-    final url = Uri.parse("http://10.0.2.2:2000/api/get-property-with-id/$property_id");
+    final url = Uri.parse("http://fyp-project-liart.vercel.app/api/get-property-with-id/$property_id");
 
     final response = await http.get(url, headers: {"Accept": "application/json"});
 

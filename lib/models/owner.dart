@@ -25,7 +25,7 @@ class Owner {
   }
 
   static Future<Owner> getOwnerWithId(String ownerId) async {
-    final url = Uri.parse("http://10.0.2.2:2000/api/get-owner-with-id/$ownerId");
+    final url = Uri.parse("http://fyp-project-liart.vercel.app/api/get-owner-with-id/$ownerId");
 
     final response = await http.get(
       url, headers: {"Accept": "application/json"}
@@ -40,7 +40,7 @@ class Owner {
   }
 
   static Future<void> updateOwner(String user_id, String username, String contactNo, String profilePic) async {
-    final url = Uri.parse("http://10.0.2.2:2000/api/update-owner-information/$user_id");
+    final url = Uri.parse("http://fyp-project-liart.vercel.app/api/update-owner-information/$user_id");
 
     final response = await http.put(
         url,

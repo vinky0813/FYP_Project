@@ -145,7 +145,7 @@ class _AddPropertyState extends State<AddProperty> {
   }
 
   Future<String?> _uploadImage(File image) async {
-    final url = Uri.parse("http://10.0.2.2:2000/api/upload-property-image");
+    final url = Uri.parse("http://fyp-project-liart.vercel.app/api/upload-property-image");
 
     var request = http.MultipartRequest("POST", url);
     developer.log(image.path);
@@ -179,7 +179,7 @@ class _AddPropertyState extends State<AddProperty> {
 
       final group_id = await Chatservice.createGroup([userId!]);
 
-      final url = Uri.parse("http://10.0.2.2:2000/api/add-property");
+      final url = Uri.parse("http://fyp-project-liart.vercel.app/api/add-property");
       final response = await http.post(
         url,
         headers: {"Content-Type": "application/json"},
@@ -241,7 +241,7 @@ class _AddPropertyState extends State<AddProperty> {
       }
 
       final url = Uri.parse(
-          "http://10.0.2.2:2000/api/update-property/${widget.property?.property_id}");
+          "http://fyp-project-liart.vercel.app/api/update-property/${widget.property?.property_id}");
       final response = await http.put(
         url,
         headers: {"Content-Type": "application/json"},
@@ -273,7 +273,7 @@ class _AddPropertyState extends State<AddProperty> {
 
   Future<void> _deleteProperty() async {
     final url = Uri.parse(
-        "http://10.0.2.2:2000/api/delete-property/${widget.property?.property_id}");
+        "http://fyp-project-liart.vercel.app/api/delete-property/${widget.property?.property_id}");
     final response = await http.delete(url);
 
     if (response.statusCode == 200) {
