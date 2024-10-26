@@ -32,7 +32,7 @@ app.get('/', async (req, res) => {
 });
 
 async function authenticateToken(req, res, next) {
-  const authHeader = req.headers['x_authorization'];
+  const authHeader = req.headers['authorization'];
 
     if (!authHeader) {
       return res.status(401).json({ error: 'Authorization header is missing' });
