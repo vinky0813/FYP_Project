@@ -17,6 +17,11 @@ const supabase = createClient(process.env.SUPABASE_URL, process.env.API_KEY);
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
+app.use((req, res, next) => {
+  console.log("Incoming Headers:", req.headers);
+  next();
+});
+
 app.get('/', async (req, res) => {
   res.json({ message: 'this is your API response' });
 });
@@ -46,12 +51,8 @@ async function authenticateToken(req, res, next) {
   }
 };
 
-app.use((req, res, next) => {
-  console.log("Incoming Headers:", req.headers);
-  next();
-});
 
-app.use(authenticateToken);
+app.use('/api', authenticateToken);
 
 app.post("/api/add-property", async (req, res) => {
   const { property_title, address, owner_id, property_image, lat, long, group_id } = req.body;
