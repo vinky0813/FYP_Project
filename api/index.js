@@ -19,7 +19,6 @@ const upload = multer({ storage });
 
 app.get('/api/data', async (req, res) => {
   res.json({ message: 'this is your API response' });
-  }
 });
 
 app.post("/api/add-property", async (req, res) => {
