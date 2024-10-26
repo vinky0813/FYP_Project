@@ -146,20 +146,17 @@ async function sendNotification(record: ListingRecord) {
     for (const search of savedSearches) {
         const { user_id, search_criteria, location, title } = search;
 
-        if (!search_criteria) {
-            console.warn(`Skipping search for user ${user_id} due to null search criteria.`);
-            continue; // Skip if search criteria is null
-        }
+        let matches = true;
 
-        let criteria: SearchCriteria;
-        try {
-            criteria = JSON.parse(search_criteria);
-        } catch (error) {
-            console.error(`Failed to parse search criteria for user ${user_id}:`, error);
-            continue; // Skip this search if parsing fails
+        if (search_criteria != null) {
+            try {
+                const criteria: SearchCriteria = JSON.parse(search_criteria);
+                matches = meetsSearchCriteria(record, criteria, listingAmenities);
+            } catch (error) {
+                console.error(`Failed to parse search criteria for user ${user_id}:`, error);
+                continue;
+            }
         }
-
-        const matches = meetsSearchCriteria(record, criteria, listingAmenities);
 
         console.log("matches:", matches);
 
@@ -193,30 +190,40 @@ async function sendNotification(record: ListingRecord) {
 
 
 function meetsSearchCriteria(record: ListingRecord, criteria: SearchCriteria, listingAmenities: any): boolean {
-    if (criteria.min_price && record.price < criteria.min_price){ 
-        console.log("filtered by min price");
-        return false;}
-    if (criteria.max_price && record.price > criteria.max_price) {
-        console.log("filtered by max price");
-        return false;}
-    if (criteria.sex_preference && record.sex_preference !== criteria.sex_preference) {
-        console.log("filtered by sex");
-        return false;}
-    if (criteria.nationality_preference && record.nationality_preference !== criteria.nationality_preference){
-        console.log("filtered by nationality");
+    if ((criteria.min_price != null && record.price < criteria.min_price) ||
+        (criteria.max_price != null && record.price > criteria.max_price)) {
+        console.log("Filtered by price");
+        return false;
+    }
+
+    const preferredNationality = criteria.nationality_preference;
+    if (preferredNationality != null && preferredNationality !== "no preference" &&
+        record.nationality_preference !== preferredNationality) {
+        console.log("Filtered by nationality");
+        return false;
+    }
+
+    const preferredSex = criteria.sex_preference;
+    if (preferredSex != null && preferredSex !== "no preference" &&
+        record.sex_preference !== preferredSex) {
+        console.log("Filtered by sex");
         return false;
     }
 
     // Check room type using the amenities object
-    const roomTypeMatches = 
-        (criteria.room_type === "master" && listingAmenities.isMasterRoom) ||
-        (criteria.room_type === "single" && listingAmenities.isSingleRoom) ||
-        (criteria.room_type === "shared" && listingAmenities.isSharedRoom) ||
-        (criteria.room_type === "suite" && listingAmenities.isSuite);
+    const preferredRoomType = criteria.room_type;
 
-    if (criteria.room_type && !roomTypeMatches) {
-        console.log("filtered by room type");
-        return false;
+    if (preferredRoomType != null && preferredRoomType.length > 0) {
+        const roomTypeMatches =
+            (preferredRoomType === "master" && listingAmenities.isMasterRoom) ||
+            (preferredRoomType === "single" && listingAmenities.isSingleRoom) ||
+            (preferredRoomType === "shared" && listingAmenities.isSharedRoom) ||
+            (preferredRoomType === "suite" && listingAmenities.isSuite);
+
+        if (!roomTypeMatches) {
+            console.log("Filtered by room type");
+            return false;
+        }
     }
 
     // Check for amenities matches
@@ -229,14 +236,14 @@ function meetsSearchCriteria(record: ListingRecord, criteria: SearchCriteria, li
             // Log the full structure to check for issues
             console.log(`Checking amenity key: ${amenityKey}, required value: ${requiredAmenityValue}, listing value: ${listingAmenityValue}`);
 
-            // If the listing doesn't have the amenity or the values don't match
-            if (listingAmenityValue !== requiredAmenityValue) {
-                console.log(`Filtered out by amenities: ${amenityKey}`);
-                return false;
+            if (requiredAmenityValue) {
+                if (listingAmenityValue !== true) {
+                    console.log(`Filtered out by missing amenity: ${amenityKey}`);
+                    return false;
+                }
             }
         }
     }
-
 
     return true; // Only criteria from JSON checked here
 }

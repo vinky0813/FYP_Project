@@ -16,8 +16,9 @@ import 'package:flutter/services.dart' show rootBundle;
 
 class ChatPage extends StatefulWidget {
   final String groupId;
+  final String chatName;
 
-  ChatPage({required this.groupId});
+  ChatPage({required this.groupId, required this.chatName});
 
   @override
   _ChatPageState createState() => _ChatPageState();
@@ -30,6 +31,7 @@ class _ChatPageState extends State<ChatPage> {
   List<types.User> _groupMembers = [];
   List<String> _fcmTokens = [];
   late Map<String, dynamic> _serviceAccount;
+  late String myFcmToken;
 
   @override
   void initState() {
@@ -39,11 +41,11 @@ class _ChatPageState extends State<ChatPage> {
       userId = user.id;
       _user = types.User(id: userId!);
     }
+    _fetchUserFcmToken(userId!);
     _loadServiceAccount();
     _loadMessages();
     _subscribeToMessages();
     _fetchGroupMembers();
-    _fetchUserFcmToken(userId!);
   }
 
   Future<void> _fetchUserFcmToken(String userId) async {
@@ -53,16 +55,14 @@ class _ChatPageState extends State<ChatPage> {
         .eq("id", userId)
         .single();
 
-    if (response != null && response['fcm_token'] != null) {
-      final currentUserFcmToken = response['fcm_token'];
-      _fcmTokens = _fcmTokens.where((token) => token != currentUserFcmToken).toList();
+    if (response["fcm_token"] != null) {
+      myFcmToken = response["fcm_token"];
+      print("myfcmtoken: $myFcmToken");
     }
   }
 
   Future<String> getAccessToken() async {
     final serviceAccount = await loadServiceAccount();
-
-    developer.log("Service Account: $serviceAccount");
 
     const scopes = 'https://www.googleapis.com/auth/firebase.messaging';
 
@@ -107,6 +107,8 @@ class _ChatPageState extends State<ChatPage> {
       setState(() {
         _groupMembers = members;
         _fcmTokens = members.map((member) => member.metadata?['fcm_token'] as String?).whereType<String>().toList();
+
+        _fcmTokens.remove(myFcmToken);
 
         for (String token in _fcmTokens) {
           developer.log("FCM TOKEN: $token");
@@ -271,12 +273,6 @@ class _ChatPageState extends State<ChatPage> {
 
   Future<void> _sendFCMNotification(String fcmToken, types.TextMessage message) async {
 
-/*
-    if (message.author.id == _user.id) {
-      return;
-    }
-*/
-
     developer.log("SENDING NOTIFICATION");
     final accessToken = await getAccessToken();
     final url = 'https://fcm.googleapis.com/v1/projects/${_serviceAccount["project_id"]}/messages:send';
@@ -309,7 +305,7 @@ class _ChatPageState extends State<ChatPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Chat'),
+      appBar: AppBar(title: Text(widget.chatName),
         actions: [
         IconButton(
           icon: const Icon(Icons.group),

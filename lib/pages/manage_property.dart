@@ -19,7 +19,6 @@ class ManageProperty extends StatefulWidget {
 }
 
 class _ManagePropertyState extends State<ManageProperty> {
-
   List<Property> propertyList = [];
   bool isEditing = false;
   String? userId;
@@ -60,9 +59,13 @@ class _ManagePropertyState extends State<ManageProperty> {
       drawer: Ownerdrawer(),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          Property newProperty = await Get.to(() => AddProperty(isEditing: false, property: null,),
-          transition: Transition.circularReveal,
-          duration: const Duration(seconds: 1));
+          Property newProperty = await Get.to(
+              () => AddProperty(
+                    isEditing: false,
+                    property: null,
+                  ),
+              transition: Transition.circularReveal,
+              duration: const Duration(seconds: 1));
 
           if (newProperty != null) {
             setState(() {
@@ -70,7 +73,10 @@ class _ManagePropertyState extends State<ManageProperty> {
             });
           }
         },
-        child: Icon(Icons.add, color: Colors.white,),
+        child: Icon(
+          Icons.add,
+          color: Colors.white,
+        ),
         backgroundColor: Colors.black,
       ),
       body: CustomScrollView(
@@ -142,41 +148,65 @@ class _ManagePropertyState extends State<ManageProperty> {
                                   alignment: Alignment.bottomRight,
                                   child: IconButton(
                                     onPressed: () async {
-                                      if (isEditing==false) {
-                                        Get.to(() => ChatPage(groupId: propertyList[index].group_id,
-                                        ),
-                                            transition: Transition.circularReveal,
-                                            duration: const Duration(seconds: 1));
-                                      } else {
-                                        final result = await Get.to(() => AddProperty(
-                                          isEditing: true,
-                                          property: propertyList[index],
-                                        ),
-                                            transition: Transition.circularReveal,
-                                            duration: const Duration(seconds: 1));
+                                      String chatNames = "";
+                                      if (isEditing == false) {
+                                        final response = await Supabase
+                                            .instance.client
+                                            .from('Group_Members')
+                                            .select(
+                                                'user_id, profiles(username)')
+                                            .eq('group_id',
+                                                propertyList[index].group_id);
 
-                                        developer.log("datatype is ${result.runtimeType}");
+                                        if (response != null) {
+                                          List groupUsernames = response.map((member) => member['profiles']['username'] ?? 'Unknown User').toList();
+                                          chatNames =groupUsernames.join(', ');
+                                        }
+
+                                        Get.to(
+                                            () => ChatPage(
+                                                groupId: propertyList[index]
+                                                    .group_id,
+                                                chatName: chatNames),
+                                            transition:
+                                                Transition.circularReveal,
+                                            duration:
+                                                const Duration(seconds: 1));
+                                      } else {
+                                        final result = await Get.to(
+                                            () => AddProperty(
+                                                  isEditing: true,
+                                                  property: propertyList[index],
+                                                ),
+                                            transition:
+                                                Transition.circularReveal,
+                                            duration:
+                                                const Duration(seconds: 1));
+
+                                        developer.log(
+                                            "datatype is ${result.runtimeType}");
                                         developer.log("result is ${result}");
 
                                         if (result != null) {
-                                          if (result is Property){
+                                          if (result is Property) {
                                             setState(() {
                                               propertyList[index] = result;
                                             });
-                                          } else if (result is bool && result == false) {
+                                          } else if (result is bool &&
+                                              result == false) {
                                             setState(() {
-                                              developer.log("im here ${propertyList.length}");
+                                              developer.log(
+                                                  "im here ${propertyList.length}");
                                               propertyList.removeAt(index);
-                                              developer.log("im here ${propertyList.length}");
+                                              developer.log(
+                                                  "im here ${propertyList.length}");
                                             });
                                           }
                                         }
                                       }
                                     },
                                     icon: Icon(
-                                      isEditing
-                                          ? Icons.edit
-                                          : Icons.chat,
+                                      isEditing ? Icons.edit : Icons.chat,
                                       color: Colors.white,
                                     ),
                                     style: IconButton.styleFrom(
@@ -192,9 +222,14 @@ class _ManagePropertyState extends State<ManageProperty> {
                   ),
                   onTap: () {
                     if (!isEditing) {
-                      Get.to(() => ManageListing(property: propertyList[index], userId: userId!, owner: owner!,),
-                      transition: Transition.circularReveal,
-                      duration: const Duration(seconds: 1));
+                      Get.to(
+                          () => ManageListing(
+                                property: propertyList[index],
+                                userId: userId!,
+                                owner: owner!,
+                              ),
+                          transition: Transition.circularReveal,
+                          duration: const Duration(seconds: 1));
                     }
                   },
                 );

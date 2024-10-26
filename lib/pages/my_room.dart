@@ -128,9 +128,23 @@ class MyroomState extends State<MyRoom> {
       body: _getBody(),
       bottomNavigationBar: bottomNavigationBar(),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
+        onPressed: () async {
+          String chatNames = "";
+          final response = await Supabase
+              .instance.client
+              .from('Group_Members')
+              .select(
+              'user_id, profiles(username)')
+              .eq('group_id',
+              property!.group_id);
+
+          if (response != null) {
+            List groupUsernames = response.map((member) => member['profiles']['username'] ?? 'Unknown User').toList();
+            chatNames =groupUsernames.join(', ');
+          }
+
           Get.to(() => ChatPage(
-            groupId: property!.group_id,
+            groupId: property!.group_id, chatName: chatNames,
           ),
               transition: Transition.circularReveal,
               duration: const Duration(seconds: 1));
@@ -505,12 +519,12 @@ class MyroomState extends State<MyRoom> {
                                     onPressed: () async {
                                       String? groupId = await Chatservice.findOneOnOneGroupId(userId!, property!.owner.id);
                                       if (groupId != null) {
-                                        Get.to(() => ChatPage(groupId: groupId));
+                                        Get.to(() => ChatPage(groupId: groupId, chatName: tenantList[index].username,));
                                       } else {
                                         final newGroupId = await Chatservice.createGroup([userId!, property!.owner.id]);
 
                                         if (newGroupId != null) {
-                                          Get.to(() => ChatPage(groupId: newGroupId));
+                                          Get.to(() => ChatPage(groupId: newGroupId,chatName: tenantList[index].username));
                                         } else {
                                           Get.snackbar("Error", "Failed to create chat group.");
                                         }

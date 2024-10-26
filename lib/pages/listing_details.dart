@@ -117,15 +117,16 @@ class ListingdetailsState extends State<Listingdetails> {
                     userId!, property!.owner.id);
 
                 if (groupId != null) {
-                  Get.to(() => ChatPage(groupId: groupId));
+                  Get.to(() => ChatPage(groupId: groupId, chatName: property!.owner.username));
                 } else {
                   final newGroupId = await Chatservice.createGroup(
                       [userId!, property!.owner.id]);
 
                   if (newGroupId != null) {
-                    Get.to(() => ChatPage(groupId: newGroupId));
+                    Get.to(() => ChatPage(groupId: newGroupId, chatName: property!.owner.username ));
                   } else {
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Failed to create chat group")));
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Failed to create chat group")));
                   }
                 }
               },
@@ -285,63 +286,79 @@ class ListingdetailsState extends State<Listingdetails> {
           ],
         );
       case 1:
-        return Column(
-          children: [
-            Container(
-              padding: EdgeInsets.only(left: 20),
-              child: Align(
-                child: Text("Review",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    )),
-                alignment: Alignment.centerLeft,
+        if (widget.propertyListing.reviews.length == 0) {
+          return Center(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                "No Reviews",
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey,
+                ),
               ),
             ),
-            SizedBox(height: 16),
-            Expanded(
-              child: ListView.separated(
-                itemCount: widget.propertyListing.reviews.length,
-                scrollDirection: Axis.vertical,
-                padding: EdgeInsets.only(left: 20, right: 20),
-                separatorBuilder: (context, index) {
-                  return SizedBox(height: 30);
-                },
-                itemBuilder: (context, index) {
-                  return Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Color(0xffE5E4E2),
-                      ),
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.star,
-                                color: Colors.yellow,
-                              ),
-                              Text(
-                                  "${widget.propertyListing.reviews[index].rating}/5")
-                            ],
-                          ),
-                          Container(
-                            padding: EdgeInsets.all(8),
-                            child: Text(
-                              "${widget.propertyListing.reviews[index].comment}/5",
-                              style: TextStyle(
-                                fontSize: 12,
-                              ),
-                              textAlign: TextAlign.left,
-                            ),
-                          ),
-                        ],
-                      ));
-                },
+          );
+        } else {
+          return Column(
+            children: [
+              Container(
+                padding: EdgeInsets.only(left: 20),
+                child: Align(
+                  child: Text("Review",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      )),
+                  alignment: Alignment.centerLeft,
+                ),
               ),
-            )
-          ],
-        );
+              SizedBox(height: 16),
+              Expanded(
+                child: ListView.separated(
+                  itemCount: widget.propertyListing.reviews.length,
+                  scrollDirection: Axis.vertical,
+                  padding: EdgeInsets.only(left: 20, right: 20),
+                  separatorBuilder: (context, index) {
+                    return SizedBox(height: 30);
+                  },
+                  itemBuilder: (context, index) {
+                    return Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Color(0xffE5E4E2),
+                        ),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.star,
+                                  color: Colors.yellow,
+                                ),
+                                Text(
+                                    "${widget.propertyListing.reviews[index].rating}/5")
+                              ],
+                            ),
+                            Container(
+                              padding: EdgeInsets.all(8),
+                              child: Text(
+                                "${widget.propertyListing.reviews[index].comment}/5",
+                                style: TextStyle(
+                                  fontSize: 12,
+                                ),
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                          ],
+                        ));
+                  },
+                ),
+              )
+            ],
+          );
+        }
       case 2:
         return Column(
           children: [
@@ -587,7 +604,6 @@ class ListingdetailsState extends State<Listingdetails> {
   }
 
   Future<void> _submitReport(String reason, String details) async {
-
     final now = DateTime.now();
     final oneHourAgo = now.subtract(Duration(hours: 1));
 
@@ -599,7 +615,8 @@ class ListingdetailsState extends State<Listingdetails> {
 
     if ((reportRessponse as List).length >= 3) {
       developer.log("LIMIT REACHED");
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("You can only submit 3 reports per hour")));
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("You can only submit 3 reports per hour")));
       return;
     }
 
@@ -617,12 +634,15 @@ class ListingdetailsState extends State<Listingdetails> {
 
       if (response.statusCode == 200) {
         developer.log("Success Report submitted successfully");
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Report submitted successfully")));
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Report submitted successfully")));
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Failed to submit report")));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Failed to submit report")));
       }
     } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("An error occurred: $error")));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("An error occurred: $error")));
     }
   }
 }

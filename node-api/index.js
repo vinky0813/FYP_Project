@@ -1050,14 +1050,19 @@ app.put("/api/update-owner-information/:user_id", async (req, res) => {
   const { username, contact_no, profile_pic } = req.body;
 
   try {
-    const { data, error } = await supabase
-    .from("Owners")
-    .update({
-      username: username,
-      contact_no: contact_no,
-      profile_pic: profile_pic,
-    })
-    .eq("user_id", user_id);
+    const { data: ownerData, error: ownerError } = await supabase
+      .from("Owners")
+      .update({
+        username: username,
+        contact_no: contact_no,
+        profile_pic: profile_pic,
+      })
+      .eq("user_id", user_id);
+
+    if (ownerError) {
+      console.error('Error updating Owners table:', ownerError);
+      return res.status(500).json({ message: 'Error updating Owners table' });
+    }
 
     res.status(200).json({ message: 'owner row updated.' });
   } catch (error) {

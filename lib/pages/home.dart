@@ -4,6 +4,7 @@ import 'package:flutter/rendering.dart';
 import 'package:fyp_project/SearchController.dart';
 import 'package:fyp_project/models/user.dart' as project_user;
 import 'package:fyp_project/pages/account_page.dart';
+import 'package:fyp_project/pages/chat_list.dart';
 import 'package:fyp_project/pages/listing_details.dart';
 import 'package:fyp_project/pages/my_room.dart';
 import 'package:fyp_project/pages/my_room_invitation.dart';
@@ -383,7 +384,8 @@ class _HomePageState extends State<HomePage> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(10),
-                    child: GestureDetector(child: Container(
+                    child: GestureDetector(
+                      child: Container(
                       alignment: Alignment.center,
                       width: 125,
                       height: 90,
@@ -402,7 +404,9 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     onTap: () {
-                      print("PUT NAVIGATE TO CHAT HERE");
+                      Get.to(() => ChatListPage(),
+                          transition: Transition.circularReveal,
+                          duration: const Duration(seconds: 1));
                     }
                     ,)
                   ),

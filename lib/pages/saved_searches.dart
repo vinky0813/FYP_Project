@@ -55,7 +55,7 @@ class _SavedSearchesState extends State<SavedSearches> {
               "max_price": double.infinity,
               "sex_preference": "no preference",
               "nationality_preference": "no preference",
-              "room_type": "all rooms",
+              "room_type": null,
               "amenities": []
             });
             continue;
@@ -178,7 +178,7 @@ class _SavedSearchesState extends State<SavedSearches> {
           shouldAddListing = false;
         }
 
-        String preferredRoomType = filterData?["room_type"];
+        String? preferredRoomType = filterData?["room_type"];
         if (preferredRoomType != null && preferredRoomType.isNotEmpty &&
             listing.room_type != preferredRoomType) {
           developer.log("Filtered by room type");

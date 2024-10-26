@@ -81,6 +81,31 @@ class _AccountPageState extends State<AccountPage> {
     }
   }
 
+  Future<void> _updateUser(String imageUrl) async {
+    developer.log("${userId!}, ${usernameController.text}, ${contactDetailsController.text}, ${imageUrl!}");
+    await project_user.User.updateUser(userId!, usernameController.text, contactDetailsController.text, imageUrl!);
+
+    final response =  await Supabase.instance.client
+        .from("profiles")
+        .update({
+      "username": usernameController.text,
+      "avatar_url": imageUrl,
+    }).eq("id", userId!);
+  }
+
+  Future<void> _updateOwner(String imageUrl) async {
+    developer.log("${userId!}, ${usernameController.text}, ${contactDetailsController.text}, ${imageUrl!}");
+    await Owner.updateOwner(userId!, usernameController.text, contactDetailsController.text, imageUrl!,);
+
+    final response =  await Supabase.instance.client
+        .from("profiles")
+        .update({
+      "username": usernameController.text,
+      "avatar_url": imageUrl,
+    }).eq("id", userId!);
+  }
+
+
   Future<void> _saveProfileUpdates() async {
     String? imageUrl;
     if (_profileImage != null) {
@@ -89,11 +114,9 @@ class _AccountPageState extends State<AccountPage> {
       imageUrl = _profilePic;
     }
     if (widget.userType == "renter") {
-      developer.log("${userId!}, ${usernameController.text}, ${contactDetailsController.text}, ${imageUrl!}");
-      await project_user.User.updateUser(userId!, usernameController.text, contactDetailsController.text, imageUrl!);
+      _updateUser(imageUrl!);
     } else if (widget.userType == "owner") {
-      await Owner.updateOwner(userId!, usernameController.text, contactDetailsController.text, imageUrl!,
-      );
+      _updateOwner(imageUrl!);
     }
     Supabase.instance.client
     .from("profiles")

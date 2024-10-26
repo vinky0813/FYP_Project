@@ -324,7 +324,7 @@ class _DashboardOwnerState extends State<DashboardOwner> {
 
   Widget mostViewedListing(List<PropertyListing> all_listing) {
     return Container(
-      height: 200, // Set a fixed height for the ListView
+      height: 200,
       child: ListView.builder(
         scrollDirection: Axis.vertical,
         itemCount: all_listing.length,

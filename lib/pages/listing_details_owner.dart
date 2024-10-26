@@ -492,12 +492,12 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
                           String? groupId = await Chatservice.findOneOnOneGroupId(userId!, widget.propertyListing.tenant!.id);
 
                           if (groupId != null) {
-                            Get.to(() => ChatPage(groupId: groupId));
+                            Get.to(() => ChatPage(groupId: groupId, chatName: widget.propertyListing.tenant!.username, ));
                           } else {
                             final newGroupId = await Chatservice.createGroup([userId!, widget.propertyListing.tenant!.id]);
 
                             if (newGroupId != null) {
-                              Get.to(() => ChatPage(groupId: newGroupId));
+                              Get.to(() => ChatPage(groupId: newGroupId, chatName: widget.propertyListing.tenant!.username));
                             } else {
                               Get.snackbar("Error", "Failed to create chat group.");
                             }
@@ -602,12 +602,12 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
                               String? groupId = await Chatservice.findOneOnOneGroupId(userId!, invitedTenant!.id);
 
                               if (groupId != null) {
-                                Get.to(() => ChatPage(groupId: groupId));
+                                Get.to(() => ChatPage(groupId: groupId, chatName: invitedTenant!.username,));
                               } else {
                                 final newGroupId = await Chatservice.createGroup([userId!,  invitedTenant!.id]);
 
                                 if (newGroupId != null) {
-                                  Get.to(() => ChatPage(groupId: newGroupId));
+                                  Get.to(() => ChatPage(groupId: newGroupId, chatName: invitedTenant!.username,));
                                 } else {
                                   Get.snackbar("Error", "Failed to create chat group.");
                                 }

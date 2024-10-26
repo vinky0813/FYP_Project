@@ -846,8 +846,6 @@ class _AddListingState extends State<AddListing> {
 
   void _buildConfirmation(bool isEditing, String? listing_id) {
 
-    developer.log("SEX PREFERENCE HERE: $sex_preference");
-
     Get.to(
         () => ConfirmationPage(
             property: widget.property,
