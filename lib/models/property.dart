@@ -1,6 +1,5 @@
 import 'package:fyp_project/AccessTokenController.dart';
 import 'package:fyp_project/models/owner.dart';
-import 'package:fyp_project/models/user.dart' as my_user;
 import 'package:get/get.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;

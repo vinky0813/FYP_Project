@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
@@ -155,7 +157,7 @@ class _SearchResultFilterState extends State<SearchResultFilter> {
 
           });
         },
-        child: Icon(
+        child: const Icon(
           Icons.refresh,
           color: Colors.white,
         ),
@@ -184,7 +186,7 @@ class _SearchResultFilterState extends State<SearchResultFilter> {
           children: [
             Expanded(
               child: CheckboxListTile(
-                title: Text("Wifi Access"),
+                title: const Text("Wifi Access"),
                 value: isWifiAccess,
                 onChanged: (value) {
                   setState(() {
@@ -195,7 +197,7 @@ class _SearchResultFilterState extends State<SearchResultFilter> {
             ),
             Expanded(
               child: CheckboxListTile(
-                title: Text("Private Bathroom"),
+                title: const Text("Private Bathroom"),
                 value: isPrivateBathroom,
                 onChanged: (value) {
                   setState(() {
@@ -210,7 +212,7 @@ class _SearchResultFilterState extends State<SearchResultFilter> {
           children: [
             Expanded(
               child: CheckboxListTile(
-                title: Text("Gymnasium"),
+                title: const Text("Gymnasium"),
                 value: isGymnasium,
                 onChanged: (value) {
                   setState(() {
@@ -221,7 +223,7 @@ class _SearchResultFilterState extends State<SearchResultFilter> {
             ),
             Expanded(
               child: CheckboxListTile(
-                title: Text("Air Con"),
+                title: const Text("Air Con"),
                 value: isAirCon,
                 onChanged: (value) {
                   setState(() {
@@ -236,7 +238,7 @@ class _SearchResultFilterState extends State<SearchResultFilter> {
           children: [
             Expanded(
               child: CheckboxListTile(
-                title: Text("Near Market"),
+                title: const Text("Near Market"),
                 value: isNearMarket,
                 onChanged: (value) {
                   setState(() {
@@ -247,7 +249,7 @@ class _SearchResultFilterState extends State<SearchResultFilter> {
             ),
             Expanded(
               child: CheckboxListTile(
-                title: Text("Cooking Allowed"),
+                title: const Text("Cooking Allowed"),
                 value: isCookingAllowed,
                 onChanged: (value) {
                   setState(() {
@@ -262,7 +264,7 @@ class _SearchResultFilterState extends State<SearchResultFilter> {
           children: [
             Expanded(
               child: CheckboxListTile(
-                title: Text("Near LRT"),
+                title: const Text("Near LRT"),
                 value: isNearLRT,
                 onChanged: (value) {
                   setState(() {
@@ -273,7 +275,7 @@ class _SearchResultFilterState extends State<SearchResultFilter> {
             ),
             Expanded(
               child: CheckboxListTile(
-                title: Text("Near Bus Stop"),
+                title: const Text("Near Bus Stop"),
                 value: isNearBusStop,
                 onChanged: (value) {
                   setState(() {
@@ -288,7 +290,7 @@ class _SearchResultFilterState extends State<SearchResultFilter> {
           children: [
             Expanded(
               child: CheckboxListTile(
-                title: Text("Car Park"),
+                title: const Text("Car Park"),
                 value: isCarPark,
                 onChanged: (value) {
                   setState(() {
@@ -299,7 +301,7 @@ class _SearchResultFilterState extends State<SearchResultFilter> {
             ),
             Expanded(
               child: CheckboxListTile(
-                title: Text("Washing Machine"),
+                title: const Text("Washing Machine"),
                 value: isWashingMachine,
                 onChanged: (value) {
                   setState(() {
@@ -314,7 +316,7 @@ class _SearchResultFilterState extends State<SearchResultFilter> {
           children: [
             Expanded(
               child: CheckboxListTile(
-                title: Text("Near MRT"),
+                title: const Text("Near MRT"),
                 value: isNearMRT,
                 onChanged: (value) {
                   setState(() {
@@ -345,7 +347,7 @@ class _SearchResultFilterState extends State<SearchResultFilter> {
             ),
           ),
         ),
-        SizedBox(
+        const SizedBox(
           height: 5,
         ),
         Padding(
@@ -362,7 +364,7 @@ class _SearchResultFilterState extends State<SearchResultFilter> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     labelText: "Gender",
-                    contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 10),
                   ),
                   items: const [
                     DropdownMenuItem(value: "male", child: Text("Male")),
@@ -375,7 +377,7 @@ class _SearchResultFilterState extends State<SearchResultFilter> {
                   },
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 width: 20,
               ),
               Expanded(
@@ -387,7 +389,7 @@ class _SearchResultFilterState extends State<SearchResultFilter> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     labelText: "Nationality",
-                    contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 10),
                   ),
                   items: const [
                     DropdownMenuItem(
@@ -429,7 +431,7 @@ class _SearchResultFilterState extends State<SearchResultFilter> {
           children: [
             Expanded(
               child: CheckboxListTile(
-                title: Text("Master Room"),
+                title: const Text("Master Room"),
                 value: isMasterRoom,
                 onChanged: (value) {
                   setState(() {
@@ -444,7 +446,7 @@ class _SearchResultFilterState extends State<SearchResultFilter> {
             ),
             Expanded(
               child: CheckboxListTile(
-                title: Text("Single Room"),
+                title: const Text("Single Room"),
                 value: isSingleRoom,
                 onChanged: (value) {
                   setState(() {
@@ -464,7 +466,7 @@ class _SearchResultFilterState extends State<SearchResultFilter> {
           children: [
             Expanded(
               child: CheckboxListTile(
-                title: Text("Shared Room"),
+                title: const Text("Shared Room"),
                 value: isSharedRoom,
                 onChanged: (value) {
                   setState(() {
@@ -479,7 +481,7 @@ class _SearchResultFilterState extends State<SearchResultFilter> {
             ),
             Expanded(
               child: CheckboxListTile(
-                title: Text("Suite"),
+                title: const Text("Suite"),
                 value: isSuite,
                 onChanged: (value) {
                   setState(() {
@@ -514,7 +516,7 @@ class _SearchResultFilterState extends State<SearchResultFilter> {
             ),
           ),
         ),
-        SizedBox(
+        const SizedBox(
           height: 5,
         ),
         Padding(
@@ -530,12 +532,12 @@ class _SearchResultFilterState extends State<SearchResultFilter> {
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 10),
                   ),
                   keyboardType: TextInputType.number,
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 width: 20,
               ),
               Expanded(
@@ -546,7 +548,7 @@ class _SearchResultFilterState extends State<SearchResultFilter> {
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 10),
                   ),
                   keyboardType: TextInputType.number,
                 ),
@@ -570,9 +572,37 @@ class _SearchResultFilterState extends State<SearchResultFilter> {
       ),
       centerTitle: true,
       elevation: 0,
+      leading: IconButton(
+        icon: Icon(Icons.arrow_back),
+        onPressed: () => {showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Clear Filters"),
+            content: Text("Do you want to clear all filter data?"),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text("Cancel"),
+              ),
+              TextButton(
+                onPressed: () => {
+                  Navigator.of(context).pop(),
+                  Get.back(result: null),},
+                child: Text("Confirm"),
+              ),
+            ],
+          );
+        },
+      )
+        }
+      ),
       actions: [
         TextButton(
           onPressed: () {
+            if (!isSingleRoom && !isSharedRoom && !isSuite && !isMasterRoom) {
+              room_type = '';
+            }
             final filterData = {
               "min_price": double.tryParse(_minPriceController.text) ?? 0.0,
               "max_price": double.tryParse(_maxPriceController.text) ?? double.infinity,
@@ -615,9 +645,11 @@ class _SearchResultFilterState extends State<SearchResultFilter> {
               Get.back(result: filterData);
             }
           },
-          child: Text("Confirm"),
+          child: const Text("Confirm"),
         )
       ],
     );
   }
 }
+
+

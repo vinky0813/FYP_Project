@@ -41,7 +41,7 @@ class _SplashPageState extends State<SplashPage> {
         if (response.isNotEmpty) {
           final userType = response["user_type"] as String;
           if (userType == "renter") {
-            Get.offAll(() => HomePage());
+            Get.offAll(() => const HomePage());
           }
           if (userType == "owner") {
             Get.offAll(() => const DashboardOwner());

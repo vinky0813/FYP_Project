@@ -24,6 +24,7 @@ class ManageListing extends StatefulWidget {
 class _ManageListingState extends State<ManageListing> {
   List<PropertyListing> listingList = [];
 
+  @override
   void initState() {
     super.initState();
     _initialize();
@@ -42,7 +43,7 @@ class _ManageListingState extends State<ManageListing> {
 
         developer.log("listings: $listingList");
       } catch (e) {
-        print('Error: $e');
+        developer.log('Error: $e');
       }
     }
   }
@@ -57,13 +58,13 @@ class _ManageListingState extends State<ManageListing> {
           transition: Transition.circularReveal,
           duration: const Duration(seconds: 1));
         },
-        child: Icon(Icons.add, color: Colors.white,),
+        child: const Icon(Icons.add, color: Colors.white,),
         backgroundColor: Colors.black,
       ),
       body: CustomScrollView(
         slivers: [
-          SliverToBoxAdapter(
-            child: const Padding(
+          const SliverToBoxAdapter(
+            child: Padding(
               padding: EdgeInsets.only(left: 20),
               child: Text("Manage Listing",
                 textAlign: TextAlign.left,
@@ -74,17 +75,17 @@ class _ManageListingState extends State<ManageListing> {
                 ),),
             ),
           ),
-          SliverToBoxAdapter(
+          const SliverToBoxAdapter(
               child: SizedBox(height: 16,)
           ),
           SliverList(
             delegate: SliverChildBuilderDelegate((context, index) {
               return GestureDetector(child: Container(
                 height: 140,
-                margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
+                margin: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: Color(0xffE5E4E2),
+                  color: const Color(0xffE5E4E2),
                 ),
                 child: Row(
                   children: [
@@ -102,7 +103,7 @@ class _ManageListingState extends State<ManageListing> {
                             if (loadingProgress == null) {
                               return child;
                             } else {
-                              return Center(child: CircularProgressIndicator());
+                              return const Center(child: CircularProgressIndicator());
                             }
                           },
                           errorBuilder: (context, error, stackTrace) {
@@ -114,32 +115,32 @@ class _ManageListingState extends State<ManageListing> {
                         ),
                       ),
                     ), borderRadius: BorderRadius.circular(10),),
-                    SizedBox(width: 10),
+                    const SizedBox(width: 10),
                     Expanded(
                       child: Container(
-                        padding: EdgeInsets.all(8),
+                        padding: const EdgeInsets.all(8),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               listingList[index].listing_title,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,
                               ),
                               textAlign: TextAlign.left,
                             ),
-                            SizedBox(height: 18,),
+                            const SizedBox(height: 18,),
                             Text(
                               "RM ${listingList[index].price.toString()}",
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 9,
                               ),
                               textAlign: TextAlign.left,
                             ),
                             Text(
                               "Published: ${listingList[index].isPublished}",
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 9,
                               ),
                               textAlign: TextAlign.left,

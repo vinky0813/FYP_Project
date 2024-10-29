@@ -146,7 +146,7 @@ class _AddListingState extends State<AddListing> {
   void _nextPage() {
     if (roomtype.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please choose a room type.')),
+        const SnackBar(content: Text('Please choose a room type.')),
       );
     } else if (_currentStep < 3) {
       if (_formKey.currentState?.validate() ?? false) {
@@ -154,7 +154,7 @@ class _AddListingState extends State<AddListing> {
           _currentStep++;
         });
         _pageController.nextPage(
-          duration: Duration(milliseconds: 300),
+          duration: const Duration(milliseconds: 300),
           curve: Curves.easeInOut,
         );
       }
@@ -167,7 +167,7 @@ class _AddListingState extends State<AddListing> {
         _currentStep--;
       });
       _pageController.previousPage(
-        duration: Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
       );
     }
@@ -197,26 +197,26 @@ class _AddListingState extends State<AddListing> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: widget.isEditing ? Text("Edit Listing") : Text("Add Listing"),
+        title: widget.isEditing ? const Text("Edit Listing") : const Text("Add Listing"),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             showDialog(
                 context: context,
                 builder: (BuildContext context) {
                   return AlertDialog(
-                    title: widget.isEditing ? Text("Cancel Edit Listing") : Text("Cancel Add Listing"),
-                    content: Text("Are you sure you want to discard this form"),
+                    title: widget.isEditing ? const Text("Cancel Edit Listing") : const Text("Cancel Add Listing"),
+                    content: const Text("Are you sure you want to discard this form"),
                     actions: [
                       TextButton(
                           onPressed: () => {
                                 Navigator.of(context).pop(),
                               },
-                          child: Text("Cancel")),
+                          child: const Text("Cancel")),
                       TextButton(
                           onPressed: () =>
                               {Navigator.of(context).pop(), Get.back()},
-                          child: Text("Discard"))
+                          child: const Text("Discard"))
                     ],
                   );
                 });
@@ -250,9 +250,9 @@ class _AddListingState extends State<AddListing> {
                     child: TextButton(
                       style: TextButton.styleFrom(
                           backgroundColor: Colors.black,
-                          minimumSize: Size(120, 50)),
+                          minimumSize: const Size(120, 50)),
                       onPressed: _previousPage,
-                      child: Text("Previous",
+                      child: const Text("Previous",
                           style: TextStyle(fontSize: 16, color: Colors.white)),
                     ),
                   ),
@@ -264,11 +264,11 @@ class _AddListingState extends State<AddListing> {
                     child: TextButton(
                       style: TextButton.styleFrom(
                           backgroundColor: Colors.black,
-                          minimumSize: Size(120, 50)),
+                          minimumSize: const Size(120, 50)),
                       onPressed: () {
                         if (((_existingImageUrls.length - _deletedExistingImageUrls.length) + _addedNewImages.length)< 3) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
+                            const SnackBar(
                                 content: Text("Please add at least 4 images")),
                           );
                         } else {
@@ -281,7 +281,7 @@ class _AddListingState extends State<AddListing> {
                           }
                         }
                       },
-                      child: Text("Submit",
+                      child: const Text("Submit",
                           style: TextStyle(fontSize: 16, color: Colors.white)),
                     ),
                   ),
@@ -293,9 +293,9 @@ class _AddListingState extends State<AddListing> {
                     child: TextButton(
                       style: TextButton.styleFrom(
                           backgroundColor: Colors.black,
-                          minimumSize: Size(120, 50)),
+                          minimumSize: const Size(120, 50)),
                       onPressed: _nextPage,
-                      child: Text("Save & Next",
+                      child: const Text("Save & Next",
                           style: TextStyle(fontSize: 16, color: Colors.white)),
                     ),
                   ),
@@ -320,7 +320,7 @@ class _AddListingState extends State<AddListing> {
 
       default:
         return ListView(
-          children: [
+          children: const [
             Center(
               child: Icon(Icons.account_tree_outlined),
             ),
@@ -336,7 +336,7 @@ class _AddListingState extends State<AddListing> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Listing Title",
+        const Text("Listing Title",
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         TextFormField(
           controller: _listingTitleController,
@@ -346,14 +346,14 @@ class _AddListingState extends State<AddListing> {
             }
             return null;
           },
-          decoration: InputDecoration(hintText: "Listing Title"),
+          decoration: const InputDecoration(hintText: "Listing Title"),
           maxLength: 50,
           inputFormatters: [
             LengthLimitingTextInputFormatter(50),
           ],
         ),
-        SizedBox(height: 16),
-        Text("Room Type",
+        const SizedBox(height: 16),
+        const Text("Room Type",
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -373,7 +373,7 @@ class _AddListingState extends State<AddListing> {
                       children: [
                         Expanded(
                           child: CheckboxListTile(
-                            title: Text("Master Room"),
+                            title: const Text("Master Room"),
                             value: isMasterRoom,
                             onChanged: (bool? value) {
                               setState(() {
@@ -388,7 +388,7 @@ class _AddListingState extends State<AddListing> {
                         ),
                         Expanded(
                           child: CheckboxListTile(
-                            title: Text("Single Room"),
+                            title: const Text("Single Room"),
                             value: isSingleRoom,
                             onChanged: (bool? value) {
                               setState(() {
@@ -407,7 +407,7 @@ class _AddListingState extends State<AddListing> {
                       children: [
                         Expanded(
                           child: CheckboxListTile(
-                            title: Text("Shared Room"),
+                            title: const Text("Shared Room"),
                             value: isSharedRoom,
                             onChanged: (bool? value) {
                               setState(() {
@@ -422,7 +422,7 @@ class _AddListingState extends State<AddListing> {
                         ),
                         Expanded(
                           child: CheckboxListTile(
-                            title: Text("Suite"),
+                            title: const Text("Suite"),
                             value: isSuite,
                             onChanged: (bool? value) {
                               setState(() {
@@ -443,10 +443,10 @@ class _AddListingState extends State<AddListing> {
             ),
           ],
         ),
-        SizedBox(height: 16),
-        Text("Amenities",
+        const SizedBox(height: 16),
+        const Text("Amenities",
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -454,7 +454,7 @@ class _AddListingState extends State<AddListing> {
               children: [
                 Expanded(
                   child: CheckboxListTile(
-                    title: Text("Wifi Access"),
+                    title: const Text("Wifi Access"),
                     value: isWifiAccess,
                     onChanged: (bool? value) {
                       setState(() {
@@ -466,7 +466,7 @@ class _AddListingState extends State<AddListing> {
                 ),
                 Expanded(
                   child: CheckboxListTile(
-                    title: Text("Air Con"),
+                    title: const Text("Air Con"),
                     value: isAirCon,
                     onChanged: (bool? value) {
                       setState(() {
@@ -482,7 +482,7 @@ class _AddListingState extends State<AddListing> {
               children: [
                 Expanded(
                   child: CheckboxListTile(
-                    title: Text("Near Market"),
+                    title: const Text("Near Market"),
                     value: isNearMarket,
                     onChanged: (bool? value) {
                       setState(() {
@@ -494,7 +494,7 @@ class _AddListingState extends State<AddListing> {
                 ),
                 Expanded(
                   child: CheckboxListTile(
-                    title: Text("Car Park"),
+                    title: const Text("Car Park"),
                     value: isCarPark,
                     onChanged: (bool? value) {
                       setState(() {
@@ -510,7 +510,7 @@ class _AddListingState extends State<AddListing> {
               children: [
                 Expanded(
                   child: CheckboxListTile(
-                    title: Text("Near MRT"),
+                    title: const Text("Near MRT"),
                     value: isNearMRT,
                     onChanged: (bool? value) {
                       setState(() {
@@ -522,7 +522,7 @@ class _AddListingState extends State<AddListing> {
                 ),
                 Expanded(
                   child: CheckboxListTile(
-                    title: Text("Near LRT"),
+                    title: const Text("Near LRT"),
                     value: isNearLRT,
                     onChanged: (bool? value) {
                       setState(() {
@@ -538,7 +538,7 @@ class _AddListingState extends State<AddListing> {
               children: [
                 Expanded(
                   child: CheckboxListTile(
-                    title: Text("Private Bathroom"),
+                    title: const Text("Private Bathroom"),
                     value: isPrivateBathroom,
                     onChanged: (bool? value) {
                       setState(() {
@@ -550,7 +550,7 @@ class _AddListingState extends State<AddListing> {
                 ),
                 Expanded(
                   child: CheckboxListTile(
-                    title: Text("Gymnasium"),
+                    title: const Text("Gymnasium"),
                     value: isGymnasium,
                     onChanged: (bool? value) {
                       setState(() {
@@ -566,7 +566,7 @@ class _AddListingState extends State<AddListing> {
               children: [
                 Expanded(
                   child: CheckboxListTile(
-                    title: Text("Cooking Allowed"),
+                    title: const Text("Cooking Allowed"),
                     value: isCookingAllowed,
                     onChanged: (bool? value) {
                       setState(() {
@@ -578,7 +578,7 @@ class _AddListingState extends State<AddListing> {
                 ),
                 Expanded(
                   child: CheckboxListTile(
-                    title: Text("Washing Machine"),
+                    title: const Text("Washing Machine"),
                     value: isWashingMachine,
                     onChanged: (bool? value) {
                       setState(() {
@@ -594,7 +594,7 @@ class _AddListingState extends State<AddListing> {
               children: [
                 Expanded(
                   child: CheckboxListTile(
-                    title: Text("Bus Stop"),
+                    title: const Text("Bus Stop"),
                     value: isNearBusStop,
                     onChanged: (bool? value) {
                       setState(() {
@@ -616,12 +616,12 @@ class _AddListingState extends State<AddListing> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Preferences",
+        const Text("Preferences",
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-        SizedBox(height: 16),
-        Text("Sex",
+        const SizedBox(height: 16),
+        const Text("Sex",
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
         Row(
           children: [
             Expanded(
@@ -637,7 +637,7 @@ class _AddListingState extends State<AddListing> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   labelText: "Gender",
-                  contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 10),
                 ),
                 items: const [
                   DropdownMenuItem(value: "male", child: Text("Male")),
@@ -657,7 +657,7 @@ class _AddListingState extends State<AddListing> {
                 },
               ),
             ),
-            SizedBox(
+            const SizedBox(
               width: 20,
             ),
             Expanded(
@@ -673,7 +673,7 @@ class _AddListingState extends State<AddListing> {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   labelText: "Nationality",
-                  contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 10),
                 ),
                 items: const [
                   DropdownMenuItem(
@@ -697,12 +697,12 @@ class _AddListingState extends State<AddListing> {
             ),
           ],
         ),
-        SizedBox(height: 16),
-        Text(
+        const SizedBox(height: 16),
+        const Text(
           "Description",
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
         TextFormField(
           controller: _descriptionController,
           maxLines: 4,
@@ -710,7 +710,7 @@ class _AddListingState extends State<AddListing> {
           inputFormatters: [
             LengthLimitingTextInputFormatter(200),
           ],
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             labelText: "Description",
             border: OutlineInputBorder(),
             hintText: "Enter Description",
@@ -722,10 +722,10 @@ class _AddListingState extends State<AddListing> {
             return null;
           },
         ),
-        SizedBox(height: 16),
-        Text("Price",
+        const SizedBox(height: 16),
+        const Text("Price",
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
         Row(
           children: [
             Expanded(
@@ -740,7 +740,7 @@ class _AddListingState extends State<AddListing> {
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 10),
                 ),
                 keyboardType: TextInputType.number,
                 validator: (value) {
@@ -751,7 +751,7 @@ class _AddListingState extends State<AddListing> {
                 },
               ),
             ),
-            SizedBox(
+            const SizedBox(
               width: 20,
             ),
             Expanded(
@@ -766,7 +766,7 @@ class _AddListingState extends State<AddListing> {
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 10),
                 ),
                 keyboardType: TextInputType.number,
                 validator: (value) {
@@ -790,16 +790,16 @@ class _AddListingState extends State<AddListing> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Pictures",
+        const Text("Pictures",
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
         allImages.isEmpty && allExistingImageUrls.isEmpty
-            ? Center(
+            ? const Center(
             child: Text('No images added. Add images using the "+" button.'))
             : GridView.builder(
           shrinkWrap: true,
           itemCount: allImages.length + allExistingImageUrls.length,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 3,
             crossAxisSpacing: 10,
             mainAxisSpacing: 10,
@@ -823,7 +823,7 @@ class _AddListingState extends State<AddListing> {
                   right: 0,
                   top: 0,
                   child: IconButton(
-                    icon: Icon(Icons.remove_circle, color: Colors.red),
+                    icon: const Icon(Icons.remove_circle, color: Colors.red),
                     onPressed: () => _removeImage(index, isExistingImage),
                   ),
                 ),
@@ -831,12 +831,12 @@ class _AddListingState extends State<AddListing> {
             );
           },
         ),
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
         Align(
           alignment: Alignment.bottomCenter,
           child: FloatingActionButton(
             onPressed: _addImage,
-            child: Icon(Icons.add),
+            child: const Icon(Icons.add),
           ),
         ),
       ],

@@ -74,6 +74,8 @@ class SearchBarLocationState extends State<SearchBarLocation> {
           searchResultController.updateLocationLat(lat!);
           searchResultController.updateLocationLong(long!);
 
+          searchResultController.updateUnfilteredSearchResult(searchResult);
+
           developer.log("search result length 2: ${searchResult.length}");
 
           List<PropertyListing> filteredResults = [];
@@ -151,9 +153,9 @@ class SearchBarLocationState extends State<SearchBarLocation> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.fromLTRB(30, 30, 30, 30),
+      margin: const EdgeInsets.fromLTRB(30, 30, 30, 30),
       alignment: Alignment.center,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         boxShadow: [
           BoxShadow(
             color: Color(0xff000000),
@@ -173,18 +175,18 @@ class SearchBarLocationState extends State<SearchBarLocation> {
               filled: true,
               fillColor: Colors.white,
               hintText: "Enter Location",
-              hintStyle: TextStyle(
+              hintStyle: const TextStyle(
                 color: Colors.grey,
               ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(3),
                 borderSide: BorderSide.none,
               ),
-              prefixIcon: Icon(Icons.search),
+              prefixIcon: const Icon(Icons.search),
               suffixIcon: Container(
                 width: 100,
                 child: Padding(
-                  padding: EdgeInsets.only(right: 7),
+                  padding: const EdgeInsets.only(right: 7),
                   child: IntrinsicHeight(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
@@ -214,7 +216,7 @@ class SearchBarLocationState extends State<SearchBarLocation> {
             ),
           ),
           // Display Autocomplete Suggestions
-          if (suggestions.isNotEmpty)
+          if (_searchBarController.text.isNotEmpty && suggestions.isNotEmpty)
             Container(
               color: Colors.white,
               child: ListView.builder(
@@ -233,6 +235,8 @@ class SearchBarLocationState extends State<SearchBarLocation> {
                       List<PropertyListing> searchResult = await PropertyListing.getSearchResult(lat!, long!);
                       searchResultController.updateLocationLat(lat!);
                       searchResultController.updateLocationLong(long!);
+
+                      searchResultController.updateUnfilteredSearchResult(searchResult);
 
                       developer.log("search result length: ${searchResult.length}");
                       List<PropertyListing> filteredResults = [];

@@ -22,7 +22,7 @@ import 'package:fyp_project/widgets/SearchBarLocation.dart';
 final GlobalKey<SearchBarLocationState> searchBarKey = GlobalKey<SearchBarLocationState>();
 
 class HomePage extends StatefulWidget {
-  HomePage({super.key});
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -74,6 +74,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  @override
   void initState() {
     super.initState();
     Get.put(Accesstokencontroller());
@@ -135,12 +136,13 @@ class _HomePageState extends State<HomePage> {
         }
 
         developer.log("current listing: ${currentListing!.listing_id}");
+        developer.log("current listing: ${currentListing!.property_id}");
 
         developer.log("top rated listing length in initalizer: ${topRatedPropertyListing.length}");
         developer.log("top rated listing: ${topRatedPropertyListing}");
 
       } catch (e) {
-        print('Error: $e');
+        developer.log('Error: $e');
       }
     }
   }
@@ -156,7 +158,7 @@ class _HomePageState extends State<HomePage> {
           quickAccess(),
           topRatedListView(),
           mostViewedListView(),
-          SizedBox(height: 40),
+          const SizedBox(height: 40),
         ],
       ),
     );
@@ -177,15 +179,15 @@ class _HomePageState extends State<HomePage> {
                     fontWeight: FontWeight.bold,
                   ),),
               ),
-              SizedBox(height: 12,),
+              const SizedBox(height: 12,),
               Container(
                 height: 200,
                 child: ListView.separated(
                   itemCount: mostViewedPropertyListing.length,
                   scrollDirection: Axis.horizontal,
-                  padding: EdgeInsets.only(left: 20, right: 20),
+                  padding: const EdgeInsets.only(left: 20, right: 20),
                   separatorBuilder: (context, index) {
-                    return SizedBox(width: 30);
+                    return const SizedBox(width: 30);
                   },
                   itemBuilder: (context, index) {
                     // https://stackoverflow.com/questions/62112115/how-to-hide-a-container-on-scroll-flutter
@@ -193,14 +195,14 @@ class _HomePageState extends State<HomePage> {
                       width: 156,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: Color(0xffE5E4E2),
+                        color: const Color(0xffE5E4E2),
                       ),
                       child: Column(
                         children: [
                           // take as much space as possible
                           Expanded(
                             child: ClipRRect(
-                              borderRadius: BorderRadius.only(
+                              borderRadius: const BorderRadius.only(
                                 topLeft: Radius.circular(10),
                                 topRight: Radius.circular(10),
                               ),
@@ -213,10 +215,10 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           Container(
-                            padding: EdgeInsets.all(8),
+                            padding: const EdgeInsets.all(8),
                             child: Text(
                               mostViewedPropertyListing[index].listing_title,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 12,
                               ),
                               textAlign: TextAlign.left,
@@ -252,15 +254,15 @@ class _HomePageState extends State<HomePage> {
                     fontWeight: FontWeight.bold,
                   ),),
               ),
-              SizedBox(height: 12,),
+              const SizedBox(height: 12,),
               Container(
                 height: 200,
                 child: ListView.separated(
                   itemCount: topRatedPropertyListing.length,
                   scrollDirection: Axis.horizontal,
-                  padding: EdgeInsets.only(left: 20, right: 20),
+                  padding: const EdgeInsets.only(left: 20, right: 20),
                   separatorBuilder: (context, index) {
-                    return SizedBox(width: 30);
+                    return const SizedBox(width: 30);
                   },
                   itemBuilder: (context, index) {
                     // https://stackoverflow.com/questions/62112115/how-to-hide-a-container-on-scroll-flutter
@@ -268,14 +270,14 @@ class _HomePageState extends State<HomePage> {
                       width: 156,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: Color(0xffE5E4E2),
+                        color: const Color(0xffE5E4E2),
                       ),
                       child: Column(
                         children: [
                           // take as much space as possible
                           Expanded(
                             child: ClipRRect(
-                              borderRadius: BorderRadius.only(
+                              borderRadius: const BorderRadius.only(
                                 topLeft: Radius.circular(10),
                                 topRight: Radius.circular(10),
                               ),
@@ -288,10 +290,10 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           Container(
-                            padding: EdgeInsets.all(8),
+                            padding: const EdgeInsets.all(8),
                             child: Text(
                               topRatedPropertyListing[index].listing_title,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 12,
                               ),
                               textAlign: TextAlign.left,
@@ -327,7 +329,7 @@ class _HomePageState extends State<HomePage> {
                 fontWeight: FontWeight.bold,
               ),),
             ),
-            SizedBox(height: 5,),
+            const SizedBox(height: 5,),
             Container(
               height: 120,
               child: ListView(
@@ -343,8 +345,8 @@ class _HomePageState extends State<HomePage> {
                         color: Colors.black,
                         borderRadius:BorderRadius.circular(10)
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                    child: const Padding(
+                      padding: EdgeInsets.all(8.0),
                       child: Text("Saved Searches",
                           textAlign: TextAlign.center,
                           style: TextStyle(
@@ -369,8 +371,8 @@ class _HomePageState extends State<HomePage> {
                           color: Colors.black,
                           borderRadius:BorderRadius.circular(10)
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
+                      child: const Padding(
+                        padding: EdgeInsets.all(8.0),
                         child: Text("Shortlist",
                             textAlign: TextAlign.center,
                             style: TextStyle(
@@ -396,8 +398,8 @@ class _HomePageState extends State<HomePage> {
                           color: Colors.black,
                           borderRadius:BorderRadius.circular(10)
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
+                      child: const Padding(
+                        padding: EdgeInsets.all(8.0),
                         child: Text("Chat",
                             textAlign: TextAlign.center,
                             style: TextStyle(
@@ -423,8 +425,8 @@ class _HomePageState extends State<HomePage> {
                           color: Colors.black,
                           borderRadius:BorderRadius.circular(10)
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
+                      child: const Padding(
+                        padding: EdgeInsets.all(8.0),
                         child: Text("My Room",
                             textAlign: TextAlign.center,
                             style: TextStyle(
@@ -472,7 +474,7 @@ class _HomePageState extends State<HomePage> {
         icon: const Icon(Icons.account_box),
         // same thing here
         onPressed: () => {
-          Get.to(() => AccountPage(userType: "renter",),
+          Get.to(() => const AccountPage(userType: "renter",),
           transition: Transition.circularReveal,
           duration: const Duration(seconds: 1))
         },

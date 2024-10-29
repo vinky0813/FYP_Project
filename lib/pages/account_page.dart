@@ -153,7 +153,7 @@ class _AccountPageState extends State<AccountPage> {
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
-      return Center(
+      return const Center(
         child: CircularProgressIndicator(),
       );
     }
@@ -175,15 +175,15 @@ class _AccountPageState extends State<AccountPage> {
                     bottom: 0,
                     child: IconButton(
                       onPressed: _pickProfilePicture,
-                      icon: Icon(Icons.edit),)
+                      icon: const Icon(Icons.edit),)
                   )
               ],
             ),
 
-            SizedBox(height: 20,),
+            const SizedBox(height: 20,),
             TextField(
               controller: usernameController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: "Username",
                 border: OutlineInputBorder(),
               ),
@@ -198,10 +198,10 @@ class _AccountPageState extends State<AccountPage> {
                 LengthLimitingTextInputFormatter(50),
               ],
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             TextField(
               controller: contactDetailsController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: "Contact Details",
                 border: OutlineInputBorder(),
               ),
@@ -216,30 +216,30 @@ class _AccountPageState extends State<AccountPage> {
                 LengthLimitingTextInputFormatter(15),
               ],
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             if (widget.userType == "renter")
               TextField(
                 controller: sexController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: "Sex",
                   border: OutlineInputBorder(),
                 ),
                 readOnly: true,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 18,
                   color: Colors.black,
                 ),
               ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             if (widget.userType == "renter")
               TextField(
                 controller: nationalityController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: "Nationality",
                   border: OutlineInputBorder(),
                 ),
                 readOnly: true,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 18,
                   color: Colors.black,
                 ),
@@ -252,7 +252,7 @@ class _AccountPageState extends State<AccountPage> {
   //https://stackoverflow.com/questions/73502152/trying-make-a-status-based-on-a-boolean-value-to-change-an-icon-to-tick-in-dart
   AppBar Appbar() {
     return AppBar(
-      title: Text("Account Information"),
+      title: const Text("Account Information"),
       automaticallyImplyLeading: !isEditing,
       actions: [
         IconButton(
@@ -268,23 +268,23 @@ class _AccountPageState extends State<AccountPage> {
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          title: Text("Confirm Update Profile"),
+                          title: const Text("Confirm Update Profile"),
                           content:
-                          Text("Are you sure you want to submit this form"),
+                          const Text("Are you sure you want to submit this form"),
                           actions: [
                             TextButton(
                                 onPressed: () =>
                                 {
                                   Navigator.of(context).pop(),
                                 },
-                                child: Text("Cancel")),
+                                child: const Text("Cancel")),
                             TextButton(
                                 onPressed: () async =>
                                 {
                                   Navigator.of(context).pop(),
                                   _saveProfileUpdates(),
                                 },
-                                child: Text("Confirm"))
+                                child: const Text("Confirm"))
                           ],
                         );
                       });

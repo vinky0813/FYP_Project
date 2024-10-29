@@ -32,6 +32,7 @@ class ListingdetailsState extends State<Listingdetails> {
   late List<BooleanVariable> trueAmenities;
   String? userId;
 
+  @override
   void initState() {
     super.initState();
     _initialize();
@@ -100,7 +101,7 @@ class ListingdetailsState extends State<Listingdetails> {
             child: FloatingActionButton(
               heroTag: null,
               onPressed: _showReportDialog,
-              child: Icon(
+              child: const Icon(
                 Icons.report,
                 color: Colors.white,
               ),
@@ -126,11 +127,11 @@ class ListingdetailsState extends State<Listingdetails> {
                     Get.to(() => ChatPage(groupId: newGroupId, chatName: property!.owner.username ));
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("Failed to create chat group")));
+                        const SnackBar(content: Text("Failed to create chat group")));
                   }
                 }
               },
-              child: Icon(
+              child: const Icon(
                 Icons.chat,
                 color: Colors.white,
               ),
@@ -145,7 +146,7 @@ class ListingdetailsState extends State<Listingdetails> {
   //https://youtu.be/VfUUOI6BUtE?si=yAhaupWJhH8CTQeU
   Widget _getBody() {
     if (isLoading) {
-      return Center(
+      return const Center(
         child: CircularProgressIndicator(),
       );
     }
@@ -153,91 +154,91 @@ class ListingdetailsState extends State<Listingdetails> {
     switch (_currentIndex) {
       case 0:
         return ListView(
-          padding: EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
           children: [
             ImageCarousel(),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Text(
               widget.propertyListing.listing_title,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Row(
               children: [
-                Icon(
+                const Icon(
                   Icons.star,
                   color: Colors.yellow,
                   size: 30,
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 8,
                 ),
                 Text(
                   "${widget.propertyListing.rating}/5",
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 16,
             ),
             Row(
               children: [
                 Text("Price: RM${widget.propertyListing.price}"),
-                SizedBox(
+                const SizedBox(
                   width: 16,
                 ),
                 Text("Deposit: RM${widget.propertyListing.deposit}"),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 16,
             ),
             Text(
               "Room Type: ${widget.propertyListing.room_type}",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
-            SizedBox(
+            const SizedBox(
               height: 16,
             ),
-            Text(
+            const Text(
               "Description",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
-            SizedBox(
+            const SizedBox(
               height: 8,
             ),
             Text(
                 '${widget.propertyListing.description}\n\n${property!.address}'),
-            SizedBox(height: 16),
-            Text(
+            const SizedBox(height: 16),
+            const Text(
               "Preference",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
-            SizedBox(
+            const SizedBox(
               height: 8,
             ),
             Row(
               children: [
                 Text("Sex: ${widget.propertyListing.sex_preference}"),
-                SizedBox(
+                const SizedBox(
                   width: 16,
                 ),
                 Text(
                     "Nationality: ${widget.propertyListing.nationality_preference}"),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 16,
             ),
-            Text(
+            const Text(
               "Ammenities",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
-            SizedBox(
+            const SizedBox(
               height: 8,
             ),
             Wrap(
@@ -249,7 +250,7 @@ class ListingdetailsState extends State<Listingdetails> {
                     backgroundColor: Colors.grey[200],
                   );
                 }).toList()),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Row(
               children: [
                 CircleAvatar(
@@ -257,27 +258,27 @@ class ListingdetailsState extends State<Listingdetails> {
                   backgroundImage: NetworkImage(
                       property!.owner.profile_pic), // Load the image
                 ),
-                SizedBox(width: 16),
+                const SizedBox(width: 16),
                 Expanded(
                     child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       "Owner Details",
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Text(
                       "Owner Name: ${property!.owner.username}",
-                      style: TextStyle(fontSize: 14),
+                      style: const TextStyle(fontSize: 14),
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Text(
                       "Contact Details: ${property!.owner.contact_no}",
-                      style: TextStyle(fontSize: 14),
+                      style: const TextStyle(fontSize: 14),
                     ),
                   ],
                 ))
@@ -287,9 +288,9 @@ class ListingdetailsState extends State<Listingdetails> {
         );
       case 1:
         if (widget.propertyListing.reviews.length == 0) {
-          return Center(
+          return const Center(
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: EdgeInsets.all(16.0),
               child: Text(
                 "No Reviews",
                 style: TextStyle(
@@ -304,8 +305,8 @@ class ListingdetailsState extends State<Listingdetails> {
           return Column(
             children: [
               Container(
-                padding: EdgeInsets.only(left: 20),
-                child: Align(
+                padding: const EdgeInsets.only(left: 20),
+                child: const Align(
                   child: Text("Review",
                       style: TextStyle(
                         fontSize: 20,
@@ -314,26 +315,26 @@ class ListingdetailsState extends State<Listingdetails> {
                   alignment: Alignment.centerLeft,
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Expanded(
                 child: ListView.separated(
                   itemCount: widget.propertyListing.reviews.length,
                   scrollDirection: Axis.vertical,
-                  padding: EdgeInsets.only(left: 20, right: 20),
+                  padding: const EdgeInsets.only(left: 20, right: 20),
                   separatorBuilder: (context, index) {
-                    return SizedBox(height: 30);
+                    return const SizedBox(height: 30);
                   },
                   itemBuilder: (context, index) {
                     return Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          color: Color(0xffE5E4E2),
+                          color: const Color(0xffE5E4E2),
                         ),
                         child: Column(
                           children: [
                             Row(
                               children: [
-                                Icon(
+                                const Icon(
                                   Icons.star,
                                   color: Colors.yellow,
                                 ),
@@ -342,10 +343,10 @@ class ListingdetailsState extends State<Listingdetails> {
                               ],
                             ),
                             Container(
-                              padding: EdgeInsets.all(8),
+                              padding: const EdgeInsets.all(8),
                               child: Text(
                                 "${widget.propertyListing.reviews[index].comment}/5",
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 12,
                                 ),
                                 textAlign: TextAlign.left,
@@ -363,8 +364,8 @@ class ListingdetailsState extends State<Listingdetails> {
         return Column(
           children: [
             Container(
-              padding: EdgeInsets.only(left: 20),
-              child: Row(
+              padding: const EdgeInsets.only(left: 20),
+              child: const Row(
                 children: [
                   Align(
                     child: Text("Map",
@@ -377,7 +378,7 @@ class ListingdetailsState extends State<Listingdetails> {
                 ],
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Expanded(
               child: FlutterMap(
                 options: MapOptions(
@@ -387,18 +388,16 @@ class ListingdetailsState extends State<Listingdetails> {
                   TileLayer(
                     urlTemplate:
                         "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                    subdomains: ['a', 'b', 'c'],
+                    subdomains: const ['a', 'b', 'c'],
                   ),
                   MarkerLayer(
                     markers: [
                       Marker(
                         point: LatLng(property!.lat, property!.long),
-                        child: Container(
-                          child: Icon(
-                            Icons.location_on,
-                            color: Colors.red,
-                            size: 30,
-                          ),
+                        child: const Icon(
+                          Icons.location_on,
+                          color: Colors.red,
+                          size: 30,
                         ),
                       ),
                     ],
@@ -410,7 +409,7 @@ class ListingdetailsState extends State<Listingdetails> {
         );
       default:
         return ListView(
-          children: [
+          children: const [
             Center(
               child: Icon(Icons.account_tree_outlined),
             ),
@@ -430,8 +429,8 @@ class ListingdetailsState extends State<Listingdetails> {
           builder: (BuildContext context) {
             return Container(
               width: MediaQuery.of(context).size.width,
-              margin: EdgeInsets.symmetric(horizontal: 5.0),
-              decoration: BoxDecoration(
+              margin: const EdgeInsets.symmetric(horizontal: 5.0),
+              decoration: const BoxDecoration(
                 color: Colors.white,
               ),
               child: Image.network(
@@ -448,7 +447,7 @@ class ListingdetailsState extends State<Listingdetails> {
   BottomNavigationBar bottomNavigationBar() {
     return BottomNavigationBar(
       currentIndex: _currentIndex,
-      items: [
+      items: const [
         BottomNavigationBarItem(
           icon: Icon(Icons.home),
           label: "Details",
@@ -496,10 +495,10 @@ class ListingdetailsState extends State<Listingdetails> {
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
-                  title: Text("Shortlist"),
+                  title: const Text("Shortlist"),
                   content: _isShortlisted
-                      ? Text("Remove Shortlist")
-                      : Text("Shortlist this listing"),
+                      ? const Text("Remove Shortlist")
+                      : const Text("Shortlist this listing"),
                   actions: [
                     TextButton(
                       onPressed: () => Navigator.of(context).pop(),
@@ -538,7 +537,7 @@ class ListingdetailsState extends State<Listingdetails> {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
-              title: Text("Report Listing"),
+              title: const Text("Report Listing"),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -548,7 +547,7 @@ class ListingdetailsState extends State<Listingdetails> {
                     inputFormatters: [
                       LengthLimitingTextInputFormatter(58),
                     ],
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: "Reason",
                       hintText: "Enter reason for reporting",
                     ),
@@ -559,14 +558,14 @@ class ListingdetailsState extends State<Listingdetails> {
                       });
                     },
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   TextField(
                     controller: detailsController,
                     maxLength: 200,
                     inputFormatters: [
                       LengthLimitingTextInputFormatter(200),
                     ],
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: "Details (Optional)",
                     ),
                     maxLines: 3,
@@ -578,7 +577,7 @@ class ListingdetailsState extends State<Listingdetails> {
                   onPressed: () {
                     Get.back();
                   },
-                  child: Text("Cancel"),
+                  child: const Text("Cancel"),
                 ),
                 ElevatedButton(
                   onPressed: () async {
@@ -593,7 +592,7 @@ class ListingdetailsState extends State<Listingdetails> {
                       Get.back();
                     }
                   },
-                  child: Text("Confirm"),
+                  child: const Text("Confirm"),
                 ),
               ],
             );
@@ -605,7 +604,7 @@ class ListingdetailsState extends State<Listingdetails> {
 
   Future<void> _submitReport(String reason, String details) async {
     final now = DateTime.now();
-    final oneHourAgo = now.subtract(Duration(hours: 1));
+    final oneHourAgo = now.subtract(const Duration(hours: 1));
 
     final reportRessponse = await Supabase.instance.client
         .from('Reports')
@@ -616,7 +615,7 @@ class ListingdetailsState extends State<Listingdetails> {
     if ((reportRessponse as List).length >= 3) {
       developer.log("LIMIT REACHED");
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("You can only submit 3 reports per hour")));
+          const SnackBar(content: Text("You can only submit 3 reports per hour")));
       return;
     }
 
@@ -635,10 +634,10 @@ class ListingdetailsState extends State<Listingdetails> {
       if (response.statusCode == 200) {
         developer.log("Success Report submitted successfully");
         ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Report submitted successfully")));
+            const SnackBar(content: Text("Report submitted successfully")));
       } else {
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Failed to submit report")));
+            .showSnackBar(const SnackBar(content: Text("Failed to submit report")));
       }
     } catch (error) {
       ScaffoldMessenger.of(context)

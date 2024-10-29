@@ -27,6 +27,7 @@ class _SearchResultState extends State<SearchResult> {
   TextEditingController titleController = TextEditingController();
   String? userId;
 
+  @override
   void initState() {
     super.initState();
     final user = Supabase.instance.client.auth.currentUser;
@@ -37,7 +38,8 @@ class _SearchResultState extends State<SearchResult> {
   }
 
   String? convertFilterDataToJson() {
-    final Map<String, dynamic>? filterDataValue = widget.searchResultController.filterData.value;
+    final Map<String, dynamic>? filterDataValue =
+        widget.searchResultController.filterData.value;
 
     if (filterDataValue == null) {
       return null;
@@ -73,7 +75,7 @@ class _SearchResultState extends State<SearchResult> {
           ),
           SliverToBoxAdapter(
               child: Row(children: [
-            SizedBox(
+            const SizedBox(
               width: 30,
             ),
             IconButton(
@@ -101,47 +103,64 @@ class _SearchResultState extends State<SearchResult> {
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        title: Text("Saved Search"),
-                        content:
-                          TextField(
-                            controller: titleController,
-                            decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
-                              labelText: "Title",
-                            ),
-                            maxLength: 50,
-                            inputFormatters: [
-                              LengthLimitingTextInputFormatter(50),
-                            ],
+                        title: const Text("Saved Search"),
+                        content: TextField(
+                          controller: titleController,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: "Title",
                           ),
+                          maxLength: 50,
+                          inputFormatters: [
+                            LengthLimitingTextInputFormatter(50),
+                          ],
+                        ),
                         actions: [
                           TextButton(
                               onPressed: () => {
                                     Navigator.of(context).pop(),
                                   },
-                              child: Text("Cancel")),
+                              child: const Text("Cancel")),
                           TextButton(
-                              onPressed: () async => {
-                                Navigator.of(context).pop(),
-                                await PropertyListing.addSavedSearch(
-                                  userId!, convertFilterDataToJson(),
-                                    titleController.text, widget.searchResultController.locationLat.value,
-                                    widget.searchResultController.locationLong.value),
-                                },
-                              child: Text("Confirm"))
+                              onPressed: () async {
+                                Navigator.of(context).pop();
+                                bool success =
+                                    await PropertyListing.addSavedSearch(
+                                        userId!,
+                                        convertFilterDataToJson(),
+                                        titleController.text,
+                                        widget.searchResultController
+                                            .locationLat.value,
+                                        widget.searchResultController
+                                            .locationLong.value);
+
+                                developer.log("success $success");
+                                if (success) {
+                                  Get.snackbar(
+                                    "Success",
+                                    "Saved search added successfully!",
+                                  );
+                                } else {
+                                  Get.snackbar(
+                                    "Error",
+                                    "Failed to add saved search. Please try again.",
+                                  );
+                                }
+                              },
+                              child: const Text("Confirm"))
                         ],
                       );
                     })
               },
             ),
           ])),
-          SliverToBoxAdapter(
+          const SliverToBoxAdapter(
             child: SizedBox(height: 10),
           ),
           Obx(() {
             // Check if search results are empty
             if (widget.searchResultController.searchResult.isEmpty) {
-              return SliverToBoxAdapter(
+              return const SliverToBoxAdapter(
                 child: Center(
                   child: Text(
                     "No results found.",
@@ -157,11 +176,11 @@ class _SearchResultState extends State<SearchResult> {
                     return GestureDetector(
                       child: Container(
                         height: 140,
-                        margin:
-                            EdgeInsets.only(left: 20, right: 20, bottom: 10),
+                        margin: const EdgeInsets.only(
+                            left: 20, right: 20, bottom: 10),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          color: Color(0xffE5E4E2),
+                          color: const Color(0xffE5E4E2),
                         ),
                         child: Row(
                           children: [
@@ -182,14 +201,14 @@ class _SearchResultState extends State<SearchResult> {
                                 ),
                               ),
                             ),
-                            SizedBox(width: 10),
+                            const SizedBox(width: 10),
                             Expanded(
                               child: Container(
-                                padding: EdgeInsets.all(8),
+                                padding: const EdgeInsets.all(8),
                                 child: Text(
                                   widget.searchResultController
                                       .searchResult[index].listing_title,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.bold,
                                   ),

@@ -41,7 +41,7 @@ class Ownerdrawer extends StatelessWidget {
               future: _fetchOwner(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return SizedBox(
+                  return const SizedBox(
                     height: 150,
                     child: DrawerHeader(
                       child: Row(
@@ -50,20 +50,20 @@ class Ownerdrawer extends StatelessWidget {
                           SizedBox(width: 20),
                           Text(
                             "Loading User Data",
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: Colors.black,
                               fontSize: 16,
                             ),
                           ),
                         ],
                       ),
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         color: Colors.grey,
                       ),
                     ),
                   );
                 } else if (snapshot.data==null) {
-                  return SizedBox(
+                  return const SizedBox(
                     height: 150,
                     child: DrawerHeader(
                       child: Row(
@@ -72,14 +72,14 @@ class Ownerdrawer extends StatelessWidget {
                           SizedBox(width: 20),
                           Text(
                             "Loading User Data",
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: Colors.black,
                               fontSize: 16,
                             ),
                           ),
                         ],
                       ),
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         color: Colors.grey,
                       ),
                     ),
@@ -95,7 +95,7 @@ class Ownerdrawer extends StatelessWidget {
                             radius: 25,
                             backgroundImage: NetworkImage(owner.profile_pic),
                           ),
-                          SizedBox(width: 20),
+                          const SizedBox(width: 20),
                           Text(
                             owner.username,
                             style: const TextStyle(
@@ -117,15 +117,15 @@ class Ownerdrawer extends StatelessWidget {
               padding: EdgeInsets.zero,
               children: [
                 ListTile(
-                  title: Text("Dashboard"),
+                  title: const Text("Dashboard"),
                   onTap: () {
-                    Get.to(() =>DashboardOwner(),
+                    Get.to(() =>const DashboardOwner(),
                         transition: Transition.circularReveal,
                         duration: const Duration(seconds: 1));
                   },
                 ),
                 ListTile(
-                  title: Text("Manage Property"),
+                  title: const Text("Manage Property"),
                   onTap: () {
                     Get.to(() =>ManageProperty(),
                         transition: Transition.circularReveal,
@@ -133,7 +133,7 @@ class Ownerdrawer extends StatelessWidget {
                   },
                 ),
                 ListTile(
-                  title: Text("Chat"),
+                  title: const Text("Chat"),
                   onTap: () {
                     Get.to(() => ChatListPage(),
                         transition: Transition.circularReveal,
@@ -146,10 +146,10 @@ class Ownerdrawer extends StatelessWidget {
           Align(
             alignment: Alignment.bottomCenter,
             child: ListTile(
-              title: Text("Logout",),
+              title: const Text("Logout",),
               onTap: () {
                 Supabase.instance.client.auth.signOut();
-                Get.offAll(() => Login());
+                Get.offAll(() => const Login());
               },
             ),
           ),

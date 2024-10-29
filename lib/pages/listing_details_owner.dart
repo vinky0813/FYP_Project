@@ -36,6 +36,7 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
   Owner? owner;
   TextEditingController _tenantIdController = TextEditingController();
 
+  @override
   void initState() {
     super.initState();
     _initialize();
@@ -61,7 +62,7 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
 
         developer.log(owner!.username);
       } catch (e) {
-        print('Error: $e');
+        developer.log('Error: $e');
       }
     }
     if (widget.propertyListing.tenant == null) {
@@ -130,25 +131,25 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
               context: context,
               builder: (BuildContext context) {
                 return AlertDialog(
-                  title: Text("Remove Listing"),
-                  content: Text("Are you sure you want to remove this listing?"),
+                  title: const Text("Remove Listing"),
+                  content: const Text("Are you sure you want to remove this listing?"),
                   actions: [
                     TextButton(
                         onPressed: () => {
                           Navigator.of(context).pop(),
                         },
-                        child: Text("Cancel")),
+                        child: const Text("Cancel")),
                     TextButton(
                         onPressed: () => {
                           Navigator.of(context).pop(),
                           _deleteListing(widget.propertyListing.listing_id),
                         },
-                        child: Text("Remove"))
+                        child: const Text("Remove"))
                   ],
                 );
               });
         },
-        child: Icon(Icons.delete, color: Colors.white,),
+        child: const Icon(Icons.delete, color: Colors.white,),
         backgroundColor: Colors.black,
       ),
     );
@@ -161,91 +162,91 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
     switch (_currentIndex) {
       case 0:
         return ListView(
-          padding: EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
           children: [
             ImageCarousel(),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Text(
               widget.propertyListing.listing_title,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Row(
               children: [
-                Icon(
+                const Icon(
                   Icons.star,
                   color: Colors.yellow,
                   size: 30,
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 8,
                 ),
                 Text(
                   "${widget.propertyListing.rating}/5",
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 16,
             ),
             Row(
               children: [
                 Text("Price: RM${widget.propertyListing.price}"),
-                SizedBox(
+                const SizedBox(
                   width: 16,
                 ),
                 Text("Deposit: RM${widget.propertyListing.deposit}"),
               ],
             ),
-            SizedBox(height: 16,),
+            const SizedBox(height: 16,),
             Text(
               "Room Type: ${widget.propertyListing.room_type}",
-              style: TextStyle(
+              style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 16),
             ),
-            SizedBox(
+            const SizedBox(
               height: 16,
             ),
-            Text(
+            const Text(
               "Description",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
-            SizedBox(
+            const SizedBox(
               height: 8,
             ),
             Text(
                 '${widget.propertyListing.description}\n\n${widget.property.address}'),
-            SizedBox(height: 16),
-            Text(
+            const SizedBox(height: 16),
+            const Text(
               "Preference",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
-            SizedBox(
+            const SizedBox(
               height: 8,
             ),
             Row(
               children: [
                 Text("Sex: ${widget.propertyListing.sex_preference}"),
-                SizedBox(
+                const SizedBox(
                   width: 16,
                 ),
                 Text(
                     "Nationality: ${widget.propertyListing.nationality_preference}"),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 16,
             ),
-            Text(
+            const Text(
               "Ammenities",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
-            SizedBox(
+            const SizedBox(
               height: 8,
             ),
             Wrap(
@@ -257,7 +258,7 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
                     backgroundColor: Colors.grey[200],
                   );
                 }).toList()),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Row(
               children: [
                 CircleAvatar(
@@ -265,27 +266,27 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
                   backgroundImage: NetworkImage(
                       widget.property.owner.profile_pic), // Load the image
                 ),
-                SizedBox(width: 16),
+                const SizedBox(width: 16),
                 Expanded(
                     child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       "Owner Details",
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Text(
                       "Owner Name: ${widget.property.owner.username}",
-                      style: TextStyle(fontSize: 14),
+                      style: const TextStyle(fontSize: 14),
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Text(
                       "Contact Details: ${widget.property.owner.contact_no}",
-                      style: TextStyle(fontSize: 14),
+                      style: const TextStyle(fontSize: 14),
                     ),
                   ],
                 ))
@@ -297,8 +298,8 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
         return Column(
           children: [
             Container(
-              padding: EdgeInsets.only(left: 20),
-              child: Row(
+              padding: const EdgeInsets.only(left: 20),
+              child: const Row(
                 children: [
                   Align(
                     child: Text("Review",
@@ -311,26 +312,26 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
                 ],
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Expanded(
               child: ListView.separated(
                 itemCount: widget.propertyListing.reviews.length,
                 scrollDirection: Axis.vertical,
-                padding: EdgeInsets.only(left: 20, right: 20),
+                padding: const EdgeInsets.only(left: 20, right: 20),
                 separatorBuilder: (context, index) {
-                  return SizedBox(height: 30);
+                  return const SizedBox(height: 30);
                 },
                 itemBuilder: (context, index) {
                   return Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: Color(0xffE5E4E2),
+                        color: const Color(0xffE5E4E2),
                       ),
                       child: Column(
                         children: [
                           Row(
                             children: [
-                              Icon(
+                              const Icon(
                                 Icons.star,
                                 color: Colors.yellow,
                               ),
@@ -339,10 +340,10 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
                             ],
                           ),
                           Container(
-                            padding: EdgeInsets.all(8),
+                            padding: const EdgeInsets.all(8),
                             child: Text(
                               "${widget.propertyListing.reviews[index].comment}/5",
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 12,
                               ),
                               textAlign: TextAlign.left,
@@ -359,8 +360,8 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
         return Column(
           children: [
             Container(
-              padding: EdgeInsets.only(left: 20),
-              child: Row(
+              padding: const EdgeInsets.only(left: 20),
+              child: const Row(
                 children: [
                   Align(
                     child: Text("Map",
@@ -373,7 +374,7 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
                 ],
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Expanded(
               child: FlutterMap(
                 options: MapOptions(
@@ -382,18 +383,16 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
                 children: [
                   TileLayer(
                     urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                    subdomains: ['a', 'b', 'c'],
+                    subdomains: const ['a', 'b', 'c'],
                   ),
                   MarkerLayer(
                     markers: [
                       Marker(
                         point: LatLng(widget.property.lat, widget.property.long),
-                        child: Container(
-                          child: Icon(
-                            Icons.location_on,
-                            color: Colors.red,
-                            size: 30,
-                          ),
+                        child: const Icon(
+                          Icons.location_on,
+                          color: Colors.red,
+                          size: 30,
                         ),
                       ),
                     ],
@@ -415,16 +414,16 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
                     radius: 40,
                     backgroundImage: NetworkImage(widget.propertyListing.tenant!.profilePic),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   // Username
                   Text(
                     widget.propertyListing.tenant!.username,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   // Contact Details
                   Text(
                     "Contact: ${widget.propertyListing.tenant!.contactDetails}",
@@ -433,7 +432,7 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
                       color: Colors.grey[700],
                     ),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   // Buttons Section
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -441,7 +440,7 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.black,
-                          padding: EdgeInsets.symmetric(
+                          padding: const EdgeInsets.symmetric(
                               horizontal: 16, vertical: 12),
                         ),
                         onPressed: () {
@@ -449,14 +448,14 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
                             context: context,
                             builder: (BuildContext context) {
                               return AlertDialog(
-                                title: Text("Remove Tenant"),
-                                content: Text("Remove Current tenant?"),
+                                title: const Text("Remove Tenant"),
+                                content: const Text("Remove Current tenant?"),
                                 actions: [
                                   TextButton(
                                     onPressed: () {
                                       Navigator.of(context).pop();
                                     },
-                                    child: Text("Cancel"),
+                                    child: const Text("Cancel"),
                                   ),
                                   TextButton(
                                     onPressed: () async {
@@ -469,23 +468,23 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
                                         widget.propertyListing.tenant = null;
                                       });
                                     },
-                                    child: Text("Confirm"),
+                                    child: const Text("Confirm"),
                                   ),
                                 ],
                               );
                             },
                           );
                         },
-                        child: Text(
+                        child: const Text(
                           "Remove Tenant",
                           style: TextStyle(color: Colors.white),
                         ),
                       ),
-                      SizedBox(width: 16,),
+                      const SizedBox(width: 16,),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.black,
-                          padding: EdgeInsets.symmetric(
+                          padding: const EdgeInsets.symmetric(
                               horizontal: 16, vertical: 12),
                         ),
                         onPressed: () async {
@@ -503,7 +502,7 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
                             }
                           }
                         },
-                        child: Text(
+                        child: const Text(
                           "Chat",
                           style: TextStyle(color: Colors.white),
                         ),
@@ -526,16 +525,16 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
                       radius: 40,
                       backgroundImage: NetworkImage(invitedTenant!.profilePic),
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     // Username
                     Text(
                       invitedTenant!.username,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     // Contact Details
                     Text(
                       "Contact: ${invitedTenant!.contactDetails}",
@@ -544,7 +543,7 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
                         color: Colors.grey[700],
                       ),
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     // Buttons Section
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -552,7 +551,7 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.black,
-                            padding: EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(
                                 horizontal: 16, vertical: 12),
                           ),
                           onPressed: () {
@@ -560,14 +559,14 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
                               context: context,
                               builder: (BuildContext context) {
                                 return AlertDialog(
-                                  title: Text("Remove Invitation"),
-                                  content: Text("Remove Pending Invitation?"),
+                                  title: const Text("Remove Invitation"),
+                                  content: const Text("Remove Pending Invitation?"),
                                   actions: [
                                     TextButton(
                                       onPressed: () {
                                         Navigator.of(context).pop();
                                       },
-                                      child: Text("Cancel"),
+                                      child: const Text("Cancel"),
                                     ),
                                     TextButton(
                                       onPressed: () {
@@ -579,23 +578,23 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
                                           invitedTenant = null;
                                         });
                                       },
-                                      child: Text("Delete Invitation"),
+                                      child: const Text("Delete Invitation"),
                                     ),
                                   ],
                                 );
                               },
                             );
                           },
-                          child: Text(
+                          child: const Text(
                             "Remove Invitation",
                             style: TextStyle(color: Colors.white),
                           ),
                         ),
-                        SizedBox(width: 16,),
+                        const SizedBox(width: 16,),
                         ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.black,
-                            padding: EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(
                                 horizontal: 16, vertical: 12),
                           ),
                           onPressed: () async {
@@ -613,7 +612,7 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
                                 }
                               }
                             },
-                          child: Text(
+                          child: const Text(
                             "Chat",
                             style: TextStyle(color: Colors.white),
                           ),
@@ -629,18 +628,18 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
-                  SizedBox(height: 50,),
-                  Center(
+                  const SizedBox(height: 50,),
+                  const Center(
                     child: Text("No Tenants", style: TextStyle(color: Colors.grey, fontSize: 24),),
                   ),
-                  SizedBox(height: 50,),
+                  const SizedBox(height: 50,),
                   TextButton(
                     onPressed: () {
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
                           return AlertDialog(
-                            title: Text("Add Tenant"),
+                            title: const Text("Add Tenant"),
                             content: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
@@ -648,11 +647,11 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
                                   controller: _tenantIdController,
                                   decoration: InputDecoration(
                                     labelText: "Enter Tenant's id",
-                                    border: OutlineInputBorder(),
+                                    border: const OutlineInputBorder(),
                                     suffixIcon: Container(
                                       width: 100,
                                       child: Padding(
-                                        padding: EdgeInsets.only(right: 7),
+                                        padding: const EdgeInsets.only(right: 7),
                                         child: IntrinsicHeight(
                                           child: Row(
                                             mainAxisAlignment: MainAxisAlignment.end,
@@ -681,7 +680,7 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
-                                child: Text("Cancel"),
+                                child: const Text("Cancel"),
                               ),
                               TextButton(
                                 onPressed: () async {
@@ -700,14 +699,14 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
                                     developer.log("cant send invitation");
                                   }
                                 },
-                                child: Text("Add Tenant"),
+                                child: const Text("Add Tenant"),
                               ),
                             ],
                           );
                         },
                       );
                     },
-                    child: Text("Add Tenant", style: TextStyle(color: Colors.white),),
+                    child: const Text("Add Tenant", style: TextStyle(color: Colors.white),),
                     style: TextButton.styleFrom(backgroundColor: Colors.black),)
                 ],
               ),
@@ -716,7 +715,7 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
         }
       default:
         return ListView(
-          children: [
+          children: const [
             Center(
               child: Icon(Icons.account_tree_outlined),
             ),
@@ -736,8 +735,8 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
           builder: (BuildContext context) {
             return Container(
               width: MediaQuery.of(context).size.width,
-              margin: EdgeInsets.symmetric(horizontal: 5.0),
-              decoration: BoxDecoration(
+              margin: const EdgeInsets.symmetric(horizontal: 5.0),
+              decoration: const BoxDecoration(
                 color: Colors.white,
               ),
               child: Image.network(
@@ -754,7 +753,7 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
   BottomNavigationBar bottomNavigationBar() {
     return BottomNavigationBar(
       currentIndex: _currentIndex,
-      items: [
+      items: const [
         BottomNavigationBarItem(
           icon: Icon(Icons.home),
           label: "Details",
@@ -797,7 +796,7 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
       elevation: 0,
       actions: [
         IconButton(
-          icon: Icon(Icons.edit, color: Colors.black),
+          icon: const Icon(Icons.edit, color: Colors.black),
           onPressed: () {
             Get.to(() => AddListing(property: widget.property, isEditing: true, propertyListing: widget.propertyListing, ),
               transition: Transition.circularReveal,

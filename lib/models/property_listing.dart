@@ -475,7 +475,6 @@ class PropertyListing {
       }
       return shortlist;
     } else {
-      print("Failed to fetch shortlist: ${response.body}");
       return [];
     }
   }
@@ -634,7 +633,7 @@ class PropertyListing {
         developer.log("Invitation accepted successfully!");
 
       } catch (e) {
-        print('Error accepting invitation: $e');
+        developer.log('Error accepting invitation: $e');
       }
   }
 
@@ -652,7 +651,7 @@ class PropertyListing {
       }
       developer.log("Success, rejecting invite");
     } catch (e) {
-      print('Error accepting invitation: $e');
+      developer.log('Error accepting invitation: $e');
     }
   }
 
@@ -695,11 +694,11 @@ class PropertyListing {
 
       developer.log("Success, removed tenant");
     } catch (e) {
-      print('Error accepting invitation: $e');
+      developer.log('Error accepting invitation: $e');
     }
   }
 
-  static Future<void> addSavedSearch(String user_id, String? search_criteria, String title, double? lat, double? long) async {
+  static Future<bool> addSavedSearch(String user_id, String? search_criteria, String title, double? lat, double? long) async {
     try {
       final response = await http.post(
         Uri.parse("https://fyp-project-liart.vercel.app/api/add-saved-search"),
@@ -712,12 +711,15 @@ class PropertyListing {
           "long": long,
         }),
       );
-      if (response.statusCode != 200) {
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        developer.log("Success, saved search added");
+        return true;
+      } else {
         throw Exception("Failed: ${jsonDecode(response.body)["message"]}");
       }
-      developer.log("Success, saved search added");
     } catch (e) {
-      print('Error adding saved search: $e');
+      developer.log('Error adding saved search: $e');
+      return false;
     }
   }
 

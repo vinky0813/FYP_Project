@@ -13,18 +13,18 @@ class Login extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          SizedBox(height: 100,),
+          const SizedBox(height: 100,),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(width: 10,),
+              const SizedBox(width: 10,),
               SizedBox(
                 height: 70,
                 width: 70,
                 child: Image.asset("images/magnifying-glass.png"),
               ),
-              SizedBox(width: 20,),
-              Expanded(
+              const SizedBox(width: 20,),
+              const Expanded(
                   child: Text("INTI Accommodation Finder",
                     style: TextStyle(
                       color: Colors.black,
@@ -36,16 +36,16 @@ class Login extends StatelessWidget {
           ),
           Container(
             alignment: Alignment.centerLeft,
-            padding: EdgeInsets.only(left: 20, top: 50),
+            padding: const EdgeInsets.only(left: 20, top: 50),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("Select Your Role:",
+                const Text("Select Your Role:",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 24,
                 ),),
-                SizedBox(height: 10,),
+                const SizedBox(height: 10,),
                 Row(
                   children: [
                     Padding(
@@ -64,8 +64,8 @@ class Login extends StatelessWidget {
                               color: Colors.black,
                               borderRadius:BorderRadius.circular(10)
                           ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
+                          child: const Padding(
+                            padding: EdgeInsets.all(8.0),
                             child: Text("Renter",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
@@ -92,8 +92,8 @@ class Login extends StatelessWidget {
                                 color: Colors.black,
                                 borderRadius:BorderRadius.circular(10)
                             ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
+                            child: const Padding(
+                              padding: EdgeInsets.all(8.0),
                               child: Text("Property Owner",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(

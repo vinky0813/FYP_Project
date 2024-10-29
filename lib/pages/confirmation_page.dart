@@ -352,7 +352,7 @@ class ConfirmationPageState extends State<ConfirmationPage> {
                 onPressed: () {
                   Get.back();
                 },
-                child: Text(
+                child: const Text(
                   "Back",
                   style: TextStyle(color: Colors.white),
                 ),
@@ -370,16 +370,16 @@ class ConfirmationPageState extends State<ConfirmationPage> {
                       builder: (BuildContext context) {
                         return AlertDialog(
                           title: widget.isEditing
-                              ? Text("Confirm Edit Listing")
-                              : Text("Confirm Add Listing"),
+                              ? const Text("Confirm Edit Listing")
+                              : const Text("Confirm Add Listing"),
                           content:
-                              Text("Are you sure you want to submit this form"),
+                              const Text("Are you sure you want to submit this form"),
                           actions: [
                             TextButton(
                                 onPressed: () => {
                                       Navigator.of(context).pop(),
                                     },
-                                child: Text("Cancel")),
+                                child: const Text("Cancel")),
                             TextButton(
                                 onPressed: () async => {
                                       Navigator.of(context).pop(),
@@ -394,12 +394,12 @@ class ConfirmationPageState extends State<ConfirmationPage> {
                                           await _addListing()
                                         }
                                     },
-                                child: Text("Confirm"))
+                                child: const Text("Confirm"))
                           ],
                         );
                       });
                 },
-                child: Text(
+                child: const Text(
                   "Confirm",
                   style: TextStyle(color: Colors.white),
                 ),
@@ -418,16 +418,16 @@ class ConfirmationPageState extends State<ConfirmationPage> {
       switch (_currentIndex) {
         case 0:
           return ListView(
-            padding: EdgeInsets.all(16),
+            padding: const EdgeInsets.all(16),
             children: [
               ImageCarousel(),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Text(
                 widget.listingTitle,
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 16),
-              Row(
+              const SizedBox(height: 16),
+              const Row(
                 children: [
                   Icon(
                     Icons.star,
@@ -446,61 +446,61 @@ class ConfirmationPageState extends State<ConfirmationPage> {
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 16,
               ),
               Row(
                 children: [
                   Text("Price: RM${widget.price}"),
-                  SizedBox(
+                  const SizedBox(
                     width: 16,
                   ),
                   Text("Deposit: RM${widget.deposit}"),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 16,
               ),
               Text(
                 "Room Type: ${widget.roomType}",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 16,
               ),
-              Text(
+              const Text(
                 "Description",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 8,
               ),
               Text('${widget.description}\n\n${widget.property.address}'),
-              SizedBox(height: 16),
-              Text(
+              const SizedBox(height: 16),
+              const Text(
                 "Preference",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 8,
               ),
               Row(
                 children: [
                   Text("Sex: ${widget.sex_preference}"),
-                  SizedBox(
+                  const SizedBox(
                     width: 16,
                   ),
                   Text("Nationality: ${widget.nationality_preference}"),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 16,
               ),
-              Text(
+              const Text(
                 "Ammenities",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 8,
               ),
               Wrap(
@@ -513,7 +513,7 @@ class ConfirmationPageState extends State<ConfirmationPage> {
                   );
                 }).toList(),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Row(
                 children: [
                   CircleAvatar(
@@ -521,27 +521,27 @@ class ConfirmationPageState extends State<ConfirmationPage> {
                     backgroundImage:
                         NetworkImage(widget.property.owner.profile_pic),
                   ),
-                  SizedBox(width: 16),
+                  const SizedBox(width: 16),
                   Expanded(
                       child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      const Text(
                         "Owner Details",
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 4),
+                      const SizedBox(height: 4),
                       Text(
                         "Owner Name: ${widget.property.owner.username}",
-                        style: TextStyle(fontSize: 14),
+                        style: const TextStyle(fontSize: 14),
                       ),
-                      SizedBox(height: 4),
+                      const SizedBox(height: 4),
                       Text(
                         "Contact Details: ${widget.property.owner.contact_no}",
-                        style: TextStyle(fontSize: 14),
+                        style: const TextStyle(fontSize: 14),
                       ),
                     ],
                   ))
@@ -553,8 +553,8 @@ class ConfirmationPageState extends State<ConfirmationPage> {
           return Column(
             children: [
               Container(
-                padding: EdgeInsets.only(left: 20),
-                child: Align(
+                padding: const EdgeInsets.only(left: 20),
+                child: const Align(
                   child: Text("Review",
                       style: TextStyle(
                         fontSize: 20,
@@ -563,24 +563,24 @@ class ConfirmationPageState extends State<ConfirmationPage> {
                   alignment: Alignment.centerLeft,
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Expanded(
                 child: ListView.separated(
                   itemCount: 0,
                   scrollDirection: Axis.vertical,
-                  padding: EdgeInsets.only(left: 20, right: 20),
+                  padding: const EdgeInsets.only(left: 20, right: 20),
                   separatorBuilder: (context, index) {
-                    return SizedBox(height: 30);
+                    return const SizedBox(height: 30);
                   },
                   itemBuilder: (context, index) {
                     return Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          color: Color(0xffE5E4E2),
+                          color: const Color(0xffE5E4E2),
                         ),
                         child: Column(
                           children: [
-                            Row(
+                            const Row(
                               children: [
                                 Icon(
                                   Icons.star,
@@ -590,8 +590,8 @@ class ConfirmationPageState extends State<ConfirmationPage> {
                               ],
                             ),
                             Container(
-                              padding: EdgeInsets.all(8),
-                              child: Text(
+                              padding: const EdgeInsets.all(8),
+                              child: const Text(
                                 "",
                                 style: TextStyle(
                                   fontSize: 12,
@@ -610,8 +610,8 @@ class ConfirmationPageState extends State<ConfirmationPage> {
           return Column(
             children: [
               Container(
-                padding: EdgeInsets.only(left: 20),
-                child: Row(
+                padding: const EdgeInsets.only(left: 20),
+                child: const Row(
                   children: [
                     Align(
                       child: Text("Map",
@@ -624,7 +624,7 @@ class ConfirmationPageState extends State<ConfirmationPage> {
                   ],
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Expanded(
                 child: FlutterMap(
                   options: MapOptions(
@@ -633,18 +633,16 @@ class ConfirmationPageState extends State<ConfirmationPage> {
                   children: [
                     TileLayer(
                       urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                      subdomains: ['a', 'b', 'c'],
+                      subdomains: const ['a', 'b', 'c'],
                     ),
                     MarkerLayer(
                       markers: [
                         Marker(
                           point: LatLng(widget.property.lat, widget.property.long),
-                          child: Container(
-                            child: Icon(
-                              Icons.location_on,
-                              color: Colors.red,
-                              size: 30,
-                            ),
+                          child: const Icon(
+                            Icons.location_on,
+                            color: Colors.red,
+                            size: 30,
                           ),
                         ),
                       ],
@@ -656,7 +654,7 @@ class ConfirmationPageState extends State<ConfirmationPage> {
           );
         default:
           return ListView(
-            children: [
+            children: const [
               Center(
                 child: Icon(Icons.account_tree_outlined),
               ),
@@ -677,8 +675,8 @@ class ConfirmationPageState extends State<ConfirmationPage> {
             builder: (BuildContext context) {
               return Container(
                 width: MediaQuery.of(context).size.width,
-                margin: EdgeInsets.symmetric(horizontal: 5.0),
-                decoration: BoxDecoration(
+                margin: const EdgeInsets.symmetric(horizontal: 5.0),
+                decoration: const BoxDecoration(
                   color: Colors.white,
                 ),
                 child: Image.network(
@@ -696,8 +694,8 @@ class ConfirmationPageState extends State<ConfirmationPage> {
           builder: (BuildContext context) {
             return Container(
               width: MediaQuery.of(context).size.width,
-              margin: EdgeInsets.symmetric(horizontal: 5.0),
-              decoration: BoxDecoration(
+              margin: const EdgeInsets.symmetric(horizontal: 5.0),
+              decoration: const BoxDecoration(
                 color: Colors.white,
               ),
               child: Image.file(
@@ -718,7 +716,7 @@ class ConfirmationPageState extends State<ConfirmationPage> {
     BottomNavigationBar bottomNavigationBar() {
       return BottomNavigationBar(
         currentIndex: _currentIndex,
-        items: [
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: "Details",

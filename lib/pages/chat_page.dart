@@ -57,7 +57,7 @@ class _ChatPageState extends State<ChatPage> {
 
     if (response["fcm_token"] != null) {
       myFcmToken = response["fcm_token"];
-      print("myfcmtoken: $myFcmToken");
+      developer.log("myfcmtoken: $myFcmToken");
     }
   }
 
@@ -189,7 +189,7 @@ class _ChatPageState extends State<ChatPage> {
     final textMessage = types.TextMessage(
       author: _user,
       createdAt: DateTime.now().millisecondsSinceEpoch,
-      id: Uuid().v4(),
+      id: const Uuid().v4(),
       text: message.text,
     );
     await _saveMessageToDatabase(textMessage);
@@ -293,12 +293,12 @@ class _ChatPageState extends State<ChatPage> {
     try {
       final response = await http.post(Uri.parse(url), headers: headers, body: body);
       if (response.statusCode == 200) {
-        print('Notification sent successfully!');
+        developer.log('Notification sent successfully!');
       } else {
-        print('Failed to send notification: ${response.body}');
+        developer.log('Failed to send notification: ${response.body}');
       }
     } catch (e) {
-      print('Error sending notification: $e');
+      developer.log('Error sending notification: $e');
     }
   }
 

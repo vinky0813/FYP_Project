@@ -63,6 +63,7 @@ class MyroomState extends State<MyRoomInvitationDetails> {
     }
   }
 
+  @override
   void initState() {
     super.initState();
     _initialize();
@@ -91,7 +92,7 @@ class MyroomState extends State<MyRoomInvitationDetails> {
       try {
         _getUser(userId!);
       } catch (e) {
-        print('Error: $e');
+        developer.log('Error: $e');
       }
     }
   }
@@ -114,27 +115,27 @@ class MyroomState extends State<MyRoomInvitationDetails> {
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          title: Text("Reject Invitation"),
-                          content: Text(
+                          title: const Text("Reject Invitation"),
+                          content: const Text(
                               "Are you sure you want to reject this invitation?"),
                           actions: [
                             TextButton(
                                 onPressed: () => {
                                       Navigator.of(context).pop(),
                                     },
-                                child: Text("Cancel")),
+                                child: const Text("Cancel")),
                             TextButton(
                                 onPressed: () => {
                                       Navigator.of(context).pop(),
                                       _rejectInvitation(),
                                       Get.back(result: false)
                                     },
-                                child: Text("Reject"))
+                                child: const Text("Reject"))
                           ],
                         );
                       });
                 },
-                child: Text(
+                child: const Text(
                   "Reject",
                   style: TextStyle(color: Colors.white),
                 ),
@@ -150,15 +151,15 @@ class MyroomState extends State<MyRoomInvitationDetails> {
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          title: Text("Accept Invitation"),
-                          content: Text(
+                          title: const Text("Accept Invitation"),
+                          content: const Text(
                               "Are you sure you want to acceot this invitation?"),
                           actions: [
                             TextButton(
                                 onPressed: () => {
                                       Navigator.of(context).pop(),
                                     },
-                                child: Text("Cancel")),
+                                child: const Text("Cancel")),
                             TextButton(
                                 onPressed: () => {
                                       Navigator.of(context).pop(),
@@ -173,12 +174,12 @@ class MyroomState extends State<MyRoomInvitationDetails> {
                                           transition: Transition.circularReveal,
                                           duration: const Duration(seconds: 1))
                                     },
-                                child: Text("Accept"))
+                                child: const Text("Accept"))
                           ],
                         );
                       });
                 },
-                child: Text(
+                child: const Text(
                   "Accept",
                   style: TextStyle(color: Colors.white),
                 ),
@@ -195,98 +196,98 @@ class MyroomState extends State<MyRoomInvitationDetails> {
         widget.propertyListing.amenities.where((b) => b.value).toList();
     trueAmenities.removeAt(0);
     if (_isLoading) {
-      return Center(
+      return const Center(
         child: CircularProgressIndicator(),
       );
     }
     switch (_currentIndex) {
       case 0:
         return ListView(
-          padding: EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
           children: [
             ImageCarousel(),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Text(
               widget.propertyListing.listing_title,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Row(
               children: [
-                Icon(
+                const Icon(
                   Icons.star,
                   color: Colors.yellow,
                   size: 30,
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 8,
                 ),
                 Text(
                   "${widget.propertyListing.rating}/5 (${widget.propertyListing.reviews.length})",
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 16,
             ),
             Row(
               children: [
                 Text("Price: RM${widget.propertyListing.price}"),
-                SizedBox(
+                const SizedBox(
                   width: 16,
                 ),
                 Text("Deposit: RM${widget.propertyListing.deposit}"),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 16,
             ),
             Text(
               "Room Type: ${widget.propertyListing.room_type}",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
-            SizedBox(
+            const SizedBox(
               height: 16,
             ),
-            Text(
+            const Text(
               "Description",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
-            SizedBox(
+            const SizedBox(
               height: 8,
             ),
             Text(
                 '${widget.propertyListing.description}\n\n${property!.address}'),
-            SizedBox(height: 16),
-            Text(
+            const SizedBox(height: 16),
+            const Text(
               "Preference",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
-            SizedBox(
+            const SizedBox(
               height: 8,
             ),
             Row(
               children: [
                 Text("Sex: ${widget.propertyListing.sex_preference}"),
-                SizedBox(
+                const SizedBox(
                   width: 16,
                 ),
                 Text(
                     "Nationality: ${widget.propertyListing.nationality_preference}"),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 16,
             ),
-            Text(
+            const Text(
               "Ammenities",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
-            SizedBox(
+            const SizedBox(
               height: 8,
             ),
             Wrap(
@@ -298,7 +299,7 @@ class MyroomState extends State<MyRoomInvitationDetails> {
                     backgroundColor: Colors.grey[200],
                   );
                 }).toList()),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Row(
               children: [
                 CircleAvatar(
@@ -306,27 +307,27 @@ class MyroomState extends State<MyRoomInvitationDetails> {
                   backgroundImage: NetworkImage(
                       property!.owner.profile_pic), // Load the image
                 ),
-                SizedBox(width: 16),
+                const SizedBox(width: 16),
                 Expanded(
                     child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    const Text(
                       "Owner Details",
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Text(
                       "Owner Name: ${property!.owner.username}",
-                      style: TextStyle(fontSize: 14),
+                      style: const TextStyle(fontSize: 14),
                     ),
-                    SizedBox(height: 4),
+                    const SizedBox(height: 4),
                     Text(
                       "Contact Details: ${property!.owner.contact_no}",
-                      style: TextStyle(fontSize: 14),
+                      style: const TextStyle(fontSize: 14),
                     ),
                   ],
                 ))
@@ -338,8 +339,8 @@ class MyroomState extends State<MyRoomInvitationDetails> {
         return Column(
           children: [
             Container(
-              padding: EdgeInsets.only(left: 20),
-              child: Row(
+              padding: const EdgeInsets.only(left: 20),
+              child: const Row(
                 children: [
                   Align(
                     child: Text("Review",
@@ -355,26 +356,26 @@ class MyroomState extends State<MyRoomInvitationDetails> {
                 ],
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Expanded(
               child: ListView.separated(
                 itemCount: widget.propertyListing.reviews.length,
                 scrollDirection: Axis.vertical,
-                padding: EdgeInsets.only(left: 20, right: 20),
+                padding: const EdgeInsets.only(left: 20, right: 20),
                 separatorBuilder: (context, index) {
-                  return SizedBox(height: 30);
+                  return const SizedBox(height: 30);
                 },
                 itemBuilder: (context, index) {
                   return Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: Color(0xffE5E4E2),
+                        color: const Color(0xffE5E4E2),
                       ),
                       child: Column(
                         children: [
                           Row(
                             children: [
-                              Icon(
+                              const Icon(
                                 Icons.star,
                                 color: Colors.yellow,
                               ),
@@ -383,10 +384,10 @@ class MyroomState extends State<MyRoomInvitationDetails> {
                             ],
                           ),
                           Container(
-                            padding: EdgeInsets.all(8),
+                            padding: const EdgeInsets.all(8),
                             child: Text(
                               "${widget.propertyListing.reviews[index].comment}/5",
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 12,
                               ),
                               textAlign: TextAlign.left,
@@ -403,8 +404,8 @@ class MyroomState extends State<MyRoomInvitationDetails> {
         return Column(
           children: [
             Container(
-              padding: EdgeInsets.only(left: 20),
-              child: Row(
+              padding: const EdgeInsets.only(left: 20),
+              child: const Row(
                 children: [
                   Align(
                     child: Text("Map",
@@ -417,7 +418,7 @@ class MyroomState extends State<MyRoomInvitationDetails> {
                 ],
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Expanded(
               child: FlutterMap(
                 options: MapOptions(
@@ -427,18 +428,16 @@ class MyroomState extends State<MyRoomInvitationDetails> {
                   TileLayer(
                     urlTemplate:
                         "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                    subdomains: ['a', 'b', 'c'],
+                    subdomains: const ['a', 'b', 'c'],
                   ),
                   MarkerLayer(
                     markers: [
                       Marker(
                         point: LatLng(property!.lat, property!.long),
-                        child: Container(
-                          child: Icon(
-                            Icons.location_on,
-                            color: Colors.red,
-                            size: 30,
-                          ),
+                        child: const Icon(
+                          Icons.location_on,
+                          color: Colors.red,
+                          size: 30,
                         ),
                       ),
                     ],
@@ -451,8 +450,8 @@ class MyroomState extends State<MyRoomInvitationDetails> {
       case 3:
         return CustomScrollView(
           slivers: [
-            SliverToBoxAdapter(
-              child: const Padding(
+            const SliverToBoxAdapter(
+              child: Padding(
                 padding: EdgeInsets.only(left: 20),
                 child: Text(
                   "Tenants",
@@ -465,15 +464,15 @@ class MyroomState extends State<MyRoomInvitationDetails> {
                 ),
               ),
             ),
-            SliverToBoxAdapter(
+            const SliverToBoxAdapter(
                 child: SizedBox(
               height: 16,
             )),
             tenantList.isEmpty
-                ? SliverToBoxAdapter(
+                ? const SliverToBoxAdapter(
               child: Center(
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: EdgeInsets.all(16.0),
                   child: Text(
                     "No Tenants",
                     style: TextStyle(
@@ -489,7 +488,7 @@ class MyroomState extends State<MyRoomInvitationDetails> {
               delegate: SliverChildBuilderDelegate(
                     (context, index) {
                   return Container(
-                    margin: EdgeInsets.only(left: 20, right: 20, bottom: 20),
+                    margin: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
                     child: Row(
                       children: [
                         CircleAvatar(
@@ -497,14 +496,14 @@ class MyroomState extends State<MyRoomInvitationDetails> {
                           backgroundImage: NetworkImage(
                               tenantList[index].profilePic),
                         ),
-                        SizedBox(width: 16),
+                        const SizedBox(width: 16),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "${tenantList[index].username}",
-                                style: TextStyle(
+                                tenantList[index].username,
+                                style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -523,7 +522,7 @@ class MyroomState extends State<MyRoomInvitationDetails> {
         );
       default:
         return ListView(
-          children: [
+          children: const [
             Center(
               child: Icon(Icons.account_tree_outlined),
             ),
@@ -543,8 +542,8 @@ class MyroomState extends State<MyRoomInvitationDetails> {
           builder: (BuildContext context) {
             return Container(
               width: MediaQuery.of(context).size.width,
-              margin: EdgeInsets.symmetric(horizontal: 5.0),
-              decoration: BoxDecoration(
+              margin: const EdgeInsets.symmetric(horizontal: 5.0),
+              decoration: const BoxDecoration(
                 color: Colors.white,
               ),
               child: Image.network(
@@ -561,7 +560,7 @@ class MyroomState extends State<MyRoomInvitationDetails> {
   BottomNavigationBar bottomNavigationBar() {
     return BottomNavigationBar(
       currentIndex: _currentIndex,
-      items: [
+      items: const [
         BottomNavigationBarItem(
           icon: Icon(Icons.home),
           label: "Details",

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:fyp_project/models/user.dart' as project_user;
-import 'package:fyp_project/pages/my_room.dart';
 import 'package:fyp_project/pages/my_room_invitation_details.dart';
 import 'package:fyp_project/widgets/AppDrawer.dart';
 import 'package:get/get.dart';
@@ -33,6 +32,7 @@ class _MyRoomInvitationState extends State<MyRoomInvitation> {
     }
   }
 
+  @override
   void initState() {
     super.initState();
     _initialize();
@@ -63,7 +63,7 @@ class _MyRoomInvitationState extends State<MyRoomInvitation> {
       try {
         _getUser(userId!);
       } catch (e) {
-        print('Error: $e');
+        developer.log('Error: $e');
       }
     }
   }
@@ -79,8 +79,8 @@ class _MyRoomInvitationState extends State<MyRoomInvitation> {
       drawer: AppDrawer(),
       body: CustomScrollView(
         slivers: [
-          SliverToBoxAdapter(
-            child: const Padding(
+          const SliverToBoxAdapter(
+            child: Padding(
               padding: EdgeInsets.only(left: 20),
               child: Text("My Room - Invitations",
                 textAlign: TextAlign.left,
@@ -91,17 +91,17 @@ class _MyRoomInvitationState extends State<MyRoomInvitation> {
                 ),),
             ),
           ),
-          SliverToBoxAdapter(
+          const SliverToBoxAdapter(
               child: SizedBox(height: 16,)
           ),
           SliverList(
             delegate: SliverChildBuilderDelegate((context, index) {
               return Container(
                 height: 140,
-                margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
+                margin: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: Color(0xffE5E4E2),
+                  color: const Color(0xffE5E4E2),
                 ),
                 child: GestureDetector(
                   onTap: () {
@@ -135,25 +135,25 @@ class _MyRoomInvitationState extends State<MyRoomInvitation> {
                           ),
                         ),
                       ),
-                      SizedBox(width: 10),
+                      const SizedBox(width: 10),
                       Expanded(
                         child: Container(
-                          padding: EdgeInsets.all(8),
+                          padding: const EdgeInsets.all(8),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 invitations[index].listing_title,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.bold,
                                 ),
                                 textAlign: TextAlign.left,
                               ),
-                              SizedBox(height: 10,),
+                              const SizedBox(height: 10,),
                               Text(
                                 "From: ${propertyList[index].owner.username}",
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 12,
                                 ),
                                 textAlign: TextAlign.left,

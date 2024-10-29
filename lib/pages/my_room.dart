@@ -43,6 +43,7 @@ class MyroomState extends State<MyRoom> {
     tenantList = await project_user.User.getTenants(property!.property_id);
   }
 
+  @override
   void initState() {
     super.initState();
     _initialize();
@@ -90,7 +91,7 @@ class MyroomState extends State<MyRoom> {
       try {
         _getUser(userId!);
       } catch (e) {
-        print('Error: $e');
+        developer.log('Error: $e');
       }
     }
   }
@@ -149,7 +150,7 @@ class MyroomState extends State<MyRoom> {
               transition: Transition.circularReveal,
               duration: const Duration(seconds: 1));
         },
-        child: Icon(Icons.chat,
+        child: const Icon(Icons.chat,
           color: Colors.white,),
         backgroundColor: Colors.black,
       ),
@@ -158,78 +159,78 @@ class MyroomState extends State<MyRoom> {
   //https://youtu.be/VfUUOI6BUtE?si=yAhaupWJhH8CTQeU
   Widget _getBody() {
     if (_isLoading) {
-      return Center(
+      return const Center(
         child: CircularProgressIndicator(),
       );
     }
     switch (_currentIndex) {
       case 0:
         return ListView(
-          padding: EdgeInsets.all(16),
+          padding: const EdgeInsets.all(16),
           children: [
             ImageCarousel(),
-            SizedBox(height:16),
+            const SizedBox(height:16),
             Text(widget.propertyListing!.listing_title,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-            SizedBox(height:16),
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+            const SizedBox(height:16),
             Row(
               children: [
-                Icon(
+                const Icon(
                   Icons.star,
                   color: Colors.yellow,
                   size: 30,
                 ),
-                SizedBox(width: 8,),
+                const SizedBox(width: 8,),
                 Text(
                   "${widget.propertyListing!.rating}/5",
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
                 ),
               ],
             ),
-            SizedBox(height: 16,),
+            const SizedBox(height: 16,),
             Row(
               children: [Text("Price: RM${widget.propertyListing!.price}"),
-                SizedBox(width: 16,),
+                const SizedBox(width: 16,),
                 Text("Deposit: RM${widget.propertyListing!.deposit}"),],
             ),
-            SizedBox(height: 16,),
+            const SizedBox(height: 16,),
             Text(
               "Room Type: ${widget.propertyListing!.room_type}",
-              style: TextStyle(
+              style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 16),
             ),
-            SizedBox(height: 16,),
-            Text(
+            const SizedBox(height: 16,),
+            const Text(
               "Description",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 16),
             ),
-            SizedBox(height: 8,),
+            const SizedBox(height: 8,),
             Text('${widget.propertyListing!.description}\n\n${property!.address}'),
-            SizedBox(height: 16),
-            Text(
+            const SizedBox(height: 16),
+            const Text(
               "Preference",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
-            SizedBox(height: 8,),
+            const SizedBox(height: 8,),
             Row(
               children: [
                 Text("Sex: ${widget.propertyListing!.sex_preference}"),
-                SizedBox(width: 16,),
+                const SizedBox(width: 16,),
                 Text("Nationality: ${widget.propertyListing!.nationality_preference}"),
               ],
             ),
-            SizedBox(height: 16,),
-            Text(
+            const SizedBox(height: 16,),
+            const Text(
               "Ammenities",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
-            SizedBox(height: 8,),
+            const SizedBox(height: 8,),
             Wrap(
                 spacing: 8.0,
                 runSpacing: 4.0,
@@ -239,34 +240,34 @@ class MyroomState extends State<MyRoom> {
                     backgroundColor: Colors.grey[200],
                   );
                 }).toList()),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Row(
               children: [
                 CircleAvatar(
                   radius: 40,
                   backgroundImage: NetworkImage(property!.owner.profile_pic), // Load the image
                 ),
-                SizedBox(width: 16),
+                const SizedBox(width: 16),
                 Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        const Text(
                           "Owner Details",
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        SizedBox(height: 4),
+                        const SizedBox(height: 4),
                         Text(
                           "Owner Name: ${property!.owner.username}",
-                          style: TextStyle(fontSize: 14),
+                          style: const TextStyle(fontSize: 14),
                         ),
-                        SizedBox(height: 4),
+                        const SizedBox(height: 4),
                         Text(
                           "Contact Details: ${property!.owner.contact_no}",
-                          style: TextStyle(fontSize: 14),
+                          style: const TextStyle(fontSize: 14),
                         ),
                       ],
                     ))
@@ -281,22 +282,22 @@ class MyroomState extends State<MyRoom> {
         return Column(
           children: [
             Container(
-              padding: EdgeInsets.only(left: 20),
+              padding: const EdgeInsets.only(left: 20),
               child: Row(
                 children: [
-                  Align(
+                  const Align(
                     child: Text("Review", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold,)),
                     alignment: Alignment.centerLeft,
                   ),
-                  Spacer(),
-                  isReviewed ? SizedBox(width: 0,):
+                  const Spacer(),
+                  isReviewed ? const SizedBox(width: 0,):
                   TextButton(
                     onPressed: () {
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
                           return AlertDialog(
-                            title: Text("Leave a Review"),
+                            title: const Text("Leave a Review"),
                             content: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
@@ -318,10 +319,10 @@ class MyroomState extends State<MyRoom> {
                                     });
                                   },
                                 ),
-                                SizedBox(height: 10),
+                                const SizedBox(height: 10),
                                 TextField(
                                   controller: _commentController,
-                                  decoration: InputDecoration(
+                                  decoration: const InputDecoration(
                                     hintText: "Write your review here",
                                     border: OutlineInputBorder(),
                                   ),
@@ -338,57 +339,57 @@ class MyroomState extends State<MyRoom> {
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
-                                child: Text("Cancel"),
+                                child: const Text("Cancel"),
                               ),
                               ElevatedButton(
                                 onPressed: () {
                                   _submitReview(rating, _commentController.text);
                                   Navigator.of(context).pop();
                                 },
-                                child: Text("Submit"),
+                                child: const Text("Submit"),
                               ),
                             ],
                           );
                         },
                       );
                     },
-                    child: Text("Leave a Review",
+                    child: const Text("Leave a Review",
                       style: TextStyle(color: Colors.white),),
                     style: TextButton.styleFrom(
                         backgroundColor: Colors.black
                     ),),
-                  SizedBox(width: 20,)
+                  const SizedBox(width: 20,)
                 ],
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Expanded(
               child: ListView.separated(
                 itemCount: widget.propertyListing!.reviews.length,
                 scrollDirection: Axis.vertical,
-                padding: EdgeInsets.only(left: 20, right: 20),
+                padding: const EdgeInsets.only(left: 20, right: 20),
                 separatorBuilder: (context, index) {
-                  return SizedBox(height: 30);
+                  return const SizedBox(height: 30);
                 },
                 itemBuilder: (context, index) {
                   return Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: Color(0xffE5E4E2),
+                        color: const Color(0xffE5E4E2),
                       ),
                       child: Column(
                         children: [
                           Row(
                             children: [
-                              Icon(Icons.star, color: Colors.yellow,),
+                              const Icon(Icons.star, color: Colors.yellow,),
                               Text("${widget.propertyListing!.reviews[index].rating}/5")
                             ],
                           ),
                           Container(
-                            padding: EdgeInsets.all(8),
+                            padding: const EdgeInsets.all(8),
                             child: Text(
-                              "${widget.propertyListing!.reviews[index].comment}",
-                              style: TextStyle(
+                              widget.propertyListing!.reviews[index].comment,
+                              style: const TextStyle(
                                 fontSize: 12,
                               ),
                               textAlign: TextAlign.left,
@@ -406,8 +407,8 @@ class MyroomState extends State<MyRoom> {
         return Column(
           children: [
             Container(
-              padding: EdgeInsets.only(left: 20),
-              child: Row(
+              padding: const EdgeInsets.only(left: 20),
+              child: const Row(
                 children: [
                   Align(
                     child: Text("Map",
@@ -420,7 +421,7 @@ class MyroomState extends State<MyRoom> {
                 ],
               ),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Expanded(
               child: FlutterMap(
                 options: MapOptions(
@@ -430,18 +431,16 @@ class MyroomState extends State<MyRoom> {
                   TileLayer(
                     urlTemplate:
                     "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                    subdomains: ['a', 'b', 'c'],
+                    subdomains: const ['a', 'b', 'c'],
                   ),
                   MarkerLayer(
                     markers: [
                       Marker(
                         point: LatLng(property!.lat, property!.long),
-                        child: Container(
-                          child: Icon(
-                            Icons.location_on,
-                            color: Colors.red,
-                            size: 30,
-                          ),
+                        child: const Icon(
+                          Icons.location_on,
+                          color: Colors.red,
+                          size: 30,
                         ),
                       ),
                     ],
@@ -454,8 +453,8 @@ class MyroomState extends State<MyRoom> {
       case 3:
         return CustomScrollView(
           slivers: [
-            SliverToBoxAdapter(
-              child: const Padding(
+            const SliverToBoxAdapter(
+              child: Padding(
                 padding: EdgeInsets.only(left: 20),
                 child: Text("Tenants",
                   textAlign: TextAlign.left,
@@ -466,14 +465,14 @@ class MyroomState extends State<MyRoom> {
                   ),),
               ),
             ),
-            SliverToBoxAdapter(
+            const SliverToBoxAdapter(
                 child: SizedBox(height: 16,)
             ),
             tenantList.isEmpty
-                ? SliverToBoxAdapter(
+                ? const SliverToBoxAdapter(
               child: Center(
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: EdgeInsets.all(16.0),
                   child: Text(
                     "No Tenants",
                     style: TextStyle(
@@ -487,7 +486,7 @@ class MyroomState extends State<MyRoom> {
             ) : SliverList(
               delegate: SliverChildBuilderDelegate((context, index) {
                 return Container(
-                  margin: EdgeInsets.only(left: 20, right: 20, bottom: 20),
+                  margin: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
                   child: Row(
                     children: [
                       GestureDetector(
@@ -501,14 +500,14 @@ class MyroomState extends State<MyRoom> {
                           duration: const Duration(seconds: 1));
                         },
                       ),
-                      SizedBox(width: 16),
+                      const SizedBox(width: 16),
                       Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "${tenantList[index].username}",
-                                style: TextStyle(
+                                tenantList[index].username,
+                                style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -531,7 +530,7 @@ class MyroomState extends State<MyRoom> {
                                       }
                                     },
                                     style: IconButton.styleFrom(backgroundColor: Colors.black),
-                                    icon: Icon(Icons.chat, color: Colors.white,))
+                                    icon: const Icon(Icons.chat, color: Colors.white,))
                               )
                             ],
                           ))
@@ -546,7 +545,7 @@ class MyroomState extends State<MyRoom> {
         );
       default:
         return ListView(
-          children: [
+          children: const [
             Center(
               child: Icon(Icons.account_tree_outlined),
             ),
@@ -566,8 +565,8 @@ class MyroomState extends State<MyRoom> {
           builder: (BuildContext context) {
             return Container(
               width: MediaQuery.of(context).size.width,
-              margin: EdgeInsets.symmetric(horizontal: 5.0),
-              decoration: BoxDecoration(
+              margin: const EdgeInsets.symmetric(horizontal: 5.0),
+              decoration: const BoxDecoration(
                 color: Colors.white,
               ),
               child: Image.network(
@@ -584,7 +583,7 @@ class MyroomState extends State<MyRoom> {
   BottomNavigationBar bottomNavigationBar() {
     return BottomNavigationBar(
       currentIndex: _currentIndex,
-      items: [
+      items: const [
         BottomNavigationBarItem(
           icon: Icon(Icons.home),
           label: "Details",

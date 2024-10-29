@@ -11,7 +11,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-  print('Handling a background message: ${message.messageId}');
 }
 
 void main() async {
@@ -25,7 +24,6 @@ void main() async {
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    print('Received a message in the foreground!');
     RemoteNotification? notification = message.notification;
     AndroidNotification? android = message.notification?.android;
 
@@ -34,7 +32,7 @@ void main() async {
         notification.hashCode,
         notification.title,
         notification.body,
-        NotificationDetails(
+        const NotificationDetails(
           android: AndroidNotificationDetails(
             'default_channel_id',
             'Default Channel',
@@ -55,7 +53,6 @@ void main() async {
 
 
   FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-    print('Notification caused app to open!');
   });
 
   await dotenv.load(fileName: ".env");
@@ -82,7 +79,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(fontFamily: "Roboto"),
-      home: SplashPage(),
+      home: const SplashPage(),
       getPages: [
         GetPage(name: '/manageProperty', page: () => ManageProperty()),
       ],

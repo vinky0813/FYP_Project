@@ -1149,6 +1149,7 @@ app.post("/api/add-saved-search", async (req, res) => {
     if (error) {
       throw error;
     }
+    res.status(200).json({ message: "Success, saved search added"});
 
   } catch (error) {
     console.error("Error adding saved search:", error);

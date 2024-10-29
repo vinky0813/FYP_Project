@@ -19,6 +19,7 @@ class _ShortlistState extends State<Shortlist> {
   List<PropertyListing> shortlist = [];
   String? userId;
 
+  @override
   void initState() {
     super.initState();
     _initialize();
@@ -41,7 +42,7 @@ class _ShortlistState extends State<Shortlist> {
 
         developer.log('shortlists: $shortlist');
       } catch (e) {
-        print('Error: $e');
+        developer.log('Error: $e');
       }
     }
   }
@@ -57,8 +58,8 @@ class _ShortlistState extends State<Shortlist> {
       drawer: AppDrawer(),
       body: CustomScrollView(
         slivers: [
-          SliverToBoxAdapter(
-            child: const Padding(
+          const SliverToBoxAdapter(
+            child: Padding(
               padding: EdgeInsets.only(left: 20),
               child: Text("Shortlist",
                 textAlign: TextAlign.left,
@@ -69,17 +70,17 @@ class _ShortlistState extends State<Shortlist> {
                 ),),
             ),
           ),
-          SliverToBoxAdapter(
+          const SliverToBoxAdapter(
             child: SizedBox(height: 16,)
           ),
           SliverList(
             delegate: SliverChildBuilderDelegate((context, index) {
               return GestureDetector(child: Container(
                 height: 140,
-                margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
+                margin: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: Color(0xffE5E4E2),
+                  color: const Color(0xffE5E4E2),
                 ),
                 child: Row(
                   children: [
@@ -96,22 +97,22 @@ class _ShortlistState extends State<Shortlist> {
                         ),
                       ),
                     ), borderRadius: BorderRadius.circular(10),),
-                    SizedBox(width: 10),
+                    const SizedBox(width: 10),
                     Expanded(
                       child: Container(
-                        padding: EdgeInsets.all(8),
+                        padding: const EdgeInsets.all(8),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               shortlist[index].listing_title,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,
                               ),
                               textAlign: TextAlign.left,
                             ),
-                            Spacer(),
+                            const Spacer(),
                             Align(
                               alignment: Alignment.bottomRight,
                               child: IconButton(
@@ -120,14 +121,14 @@ class _ShortlistState extends State<Shortlist> {
                                         context: context,
                                         builder: (BuildContext context) {
                                           return AlertDialog(
-                                            title: Text("Remove Item"),
-                                            content: Text("Are you sure you want to remove this shortlist?"),
+                                            title: const Text("Remove Item"),
+                                            content: const Text("Are you sure you want to remove this shortlist?"),
                                             actions: [
                                               TextButton(
                                                   onPressed: () => {
                                                     Navigator.of(context).pop(),
                                                   },
-                                                  child: Text("Cancel")),
+                                                  child: const Text("Cancel")),
                                               TextButton(
                                                   onPressed: () => {
                                                     Navigator.of(context).pop(),
@@ -136,12 +137,12 @@ class _ShortlistState extends State<Shortlist> {
                                                       shortlist.removeAt(index);
                                                     })
                                                   },
-                                                  child: Text("Remove"))
+                                                  child: const Text("Remove"))
                                             ],
                                           );
                                         });
                                   },
-                                  icon: Icon(Icons.remove_circle_outline)),
+                                  icon: const Icon(Icons.remove_circle_outline)),
                             )
                           ],
                         ),

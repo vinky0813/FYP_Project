@@ -91,7 +91,7 @@ class _ChatListPageState extends State<ChatListPage> {
       }
       setState(() {});
     } catch (error) {
-      print('Error fetching unread messages count: $error');
+      developer.log('Error fetching unread messages count: $error');
     }
   }
 
@@ -121,7 +121,7 @@ class _ChatListPageState extends State<ChatListPage> {
         }
       }
     } catch (error) {
-      print('Error fetching user IDs or avatar URLs: $error');
+      developer.log('Error fetching user IDs or avatar URLs: $error');
     }
   }
 
@@ -137,25 +137,25 @@ class _ChatListPageState extends State<ChatListPage> {
       });
 
     }catch (error) {
-      print('Error fetching group IDs: $error');
+      developer.log('Error fetching group IDs: $error');
     }
   }
 
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
-      return Center(
+      return const Center(
         child: CircularProgressIndicator(),
       );
     }
     return Scaffold(
       appBar: appBar(),
       body: _groupIds.isEmpty
-          ? Center(child: Text("No Chatrooms"))
+          ? const Center(child: Text("No Chatrooms"))
           : CustomScrollView(
               slivers: [
-                SliverToBoxAdapter(
-                  child: const Padding(
+                const SliverToBoxAdapter(
+                  child: Padding(
                     padding: EdgeInsets.only(left: 20),
                     child: Text(
                       "Chat",
@@ -168,7 +168,7 @@ class _ChatListPageState extends State<ChatListPage> {
                     ),
                   ),
                 ),
-                SliverToBoxAdapter(
+                const SliverToBoxAdapter(
                     child: SizedBox(
                   height: 16,
                 )),
@@ -188,11 +188,11 @@ class _ChatListPageState extends State<ChatListPage> {
                                 ? const Icon(Icons.person)
                                 : null,
                           ),
-                          title: Text("${chatNames[index]}"),
+                          title: Text(chatNames[index]),
                           subtitle: unreadMessagesCount[index] > 0
                               ? Text(
                             "${unreadMessagesCount[index]} unread message(s)",
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Colors.red,
                             ),
                           )

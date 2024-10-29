@@ -386,7 +386,7 @@ class _AddPropertyState extends State<AddProperty> {
                     right: 0,
                     bottom: 0,
                     child: Container(
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: Colors.black,
                         shape: BoxShape.circle,
                       ),
@@ -404,7 +404,7 @@ class _AddPropertyState extends State<AddProperty> {
                       top: 0,
                       right: 0,
                       child: Container(
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           color: Colors.black,
                           shape: BoxShape.circle,
                         ),
@@ -470,7 +470,7 @@ class _AddPropertyState extends State<AddProperty> {
                 initZoom: 11,
                 minZoomLevel: 5,
                 maxZoomLevel: 16,
-                initPosition: widget.isEditing? LatLong(lat, long) : LatLong(0, 0),
+                initPosition: widget.isEditing? LatLong(lat, long) : const LatLong(0, 0),
                 onPicked: (pickedData) {
                   _addressController.text = pickedData.address;
                   lat = pickedData.latLong.latitude;

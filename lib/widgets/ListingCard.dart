@@ -18,9 +18,9 @@ class ListingCard extends StatelessWidget {
           children: [
             Text(
               listing.listing_title,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 5),
+            const SizedBox(height: 5),
             Text("Views: ${listing.view_count}"),
           ],
         ),

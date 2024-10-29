@@ -24,6 +24,7 @@ class _ManagePropertyState extends State<ManageProperty> {
   String? userId;
   Owner? owner;
 
+  @override
   void initState() {
     super.initState();
     _initialize();
@@ -47,7 +48,7 @@ class _ManagePropertyState extends State<ManageProperty> {
 
         developer.log('Properties: $propertyList');
       } catch (e) {
-        print('Error: $e');
+        developer.log('Error: $e');
       }
     }
   }
@@ -73,7 +74,7 @@ class _ManagePropertyState extends State<ManageProperty> {
             });
           }
         },
-        child: Icon(
+        child: const Icon(
           Icons.add,
           color: Colors.white,
         ),
@@ -81,8 +82,8 @@ class _ManagePropertyState extends State<ManageProperty> {
       ),
       body: CustomScrollView(
         slivers: [
-          SliverToBoxAdapter(
-            child: const Padding(
+          const SliverToBoxAdapter(
+            child: Padding(
               padding: EdgeInsets.only(left: 20),
               child: Text(
                 "Manage Property",
@@ -95,7 +96,7 @@ class _ManagePropertyState extends State<ManageProperty> {
               ),
             ),
           ),
-          SliverToBoxAdapter(
+          const SliverToBoxAdapter(
               child: SizedBox(
             height: 16,
           )),
@@ -105,10 +106,10 @@ class _ManagePropertyState extends State<ManageProperty> {
                 return GestureDetector(
                   child: Container(
                     height: 140,
-                    margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
+                    margin: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      color: Color(0xffE5E4E2),
+                      color: const Color(0xffE5E4E2),
                     ),
                     child: Row(
                       children: [
@@ -128,22 +129,22 @@ class _ManagePropertyState extends State<ManageProperty> {
                           ),
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        SizedBox(width: 10),
+                        const SizedBox(width: 10),
                         Expanded(
                           child: Container(
-                            padding: EdgeInsets.all(8),
+                            padding: const EdgeInsets.all(8),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   propertyList[index].property_title,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.bold,
                                   ),
                                   textAlign: TextAlign.left,
                                 ),
-                                Spacer(),
+                                const Spacer(),
                                 Align(
                                   alignment: Alignment.bottomRight,
                                   child: IconButton(

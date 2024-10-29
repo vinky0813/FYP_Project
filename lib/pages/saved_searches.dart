@@ -31,6 +31,7 @@ class _SavedSearchesState extends State<SavedSearches> {
     savedSearches = await PropertyListing.getSavedSearches(userId!);
   }
 
+  @override
   void initState() {
     super.initState();
     _initialize();
@@ -137,10 +138,10 @@ class _SavedSearchesState extends State<SavedSearches> {
         final jsonResponse = json.decode(response.body);
         searchResultController.updateLocation(jsonResponse["display_name"]);
       } else {
-        print('Failed to get address: ${response.body}');
+        developer.log('Failed to get address: ${response.body}');
       }
     } catch (e) {
-      print('Error fetching address: $e');
+      developer.log('Error fetching address: $e');
     }
 
     List<PropertyListing> searchResult = await PropertyListing.getSearchResult(savedSearch.lat!, savedSearch.long!);
@@ -222,24 +223,24 @@ class _SavedSearchesState extends State<SavedSearches> {
       drawer: AppDrawer(),
       body: CustomScrollView(
         slivers: [
-          SliverToBoxAdapter(
+          const SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.only(left: 20),
+              padding: EdgeInsets.only(left: 20),
               child: Row(
                 children: [
-                  const Text("Saved Searches",
+                  Text("Saved Searches",
                     textAlign: TextAlign.left,
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),),
-                  const SizedBox(width: 50,),
+                  SizedBox(width: 50,),
                 ],
               ),
             ),
           ),
-          SliverToBoxAdapter(
+          const SliverToBoxAdapter(
               child: SizedBox(height: 16,)
           ),
           SliverList(
@@ -250,10 +251,10 @@ class _SavedSearchesState extends State<SavedSearches> {
                 },
                 child: Container(
                   height: 150,
-                  margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
+                  margin: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    color: Color(0xffE5E4E2),
+                    color: const Color(0xffE5E4E2),
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(10),
@@ -261,29 +262,29 @@ class _SavedSearchesState extends State<SavedSearches> {
                       children: [
                         Expanded(
                           child: Container(
-                            padding: EdgeInsets.all(8),
+                            padding: const EdgeInsets.all(8),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   savedSearches[index].title,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.bold,
                                   ),
                                   textAlign: TextAlign.left,
                                 ),
-                                SizedBox(height: 10,),
+                                const SizedBox(height: 10,),
                                 Text(
                                   "Room Type: ${filterDataList[index]["room_type"]}",
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 12,
                                   ),
                                   textAlign: TextAlign.left,
                                 ),
                                 Text(
                                   "Price Range: ${filterDataList[index]["min_price"]} - ${filterDataList[index]["max_price"]}",
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 12,
                                   ),
                                   textAlign: TextAlign.left,
@@ -295,12 +296,12 @@ class _SavedSearchesState extends State<SavedSearches> {
                                       .map((BooleanVariable amenity) => amenity.name)
                                       .join(', ')
                                       : 'None'}",
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 12,
                                   ),
                                   textAlign: TextAlign.left,
                                 ),
-                                Spacer(),
+                                const Spacer(),
                                 Align(
                                   alignment: Alignment.bottomRight,
                                   child: IconButton(
@@ -309,14 +310,14 @@ class _SavedSearchesState extends State<SavedSearches> {
                                             context: context,
                                             builder: (BuildContext context) {
                                               return AlertDialog(
-                                                title: Text("Remove Item"),
-                                                content: Text("Are you sure you want to remove this saved search?"),
+                                                title: const Text("Remove Item"),
+                                                content: const Text("Are you sure you want to remove this saved search?"),
                                                 actions: [
                                                   TextButton(
                                                       onPressed: () => {
                                                         Navigator.pop(context),
                                                       },
-                                                      child: Text("Cancel")),
+                                                      child: const Text("Cancel")),
                                                   TextButton(
                                                       onPressed: () => {
                                                         Navigator.pop(context),
@@ -326,12 +327,12 @@ class _SavedSearchesState extends State<SavedSearches> {
                                                           filterDataList.removeAt(index);
                                                         })
                                                       },
-                                                      child: Text("Remove"))
+                                                      child: const Text("Remove"))
                                                 ],
                                               );
                                             });
                                       },
-                                      icon: Icon(Icons.remove_circle_outline)),
+                                      icon: const Icon(Icons.remove_circle_outline)),
                                 )
                               ],
                             ),

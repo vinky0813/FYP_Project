@@ -23,35 +23,35 @@ class UserInfoPage extends StatelessWidget {
                 radius: 40,
                 backgroundImage: NetworkImage(user.profilePic),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               // Username
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
                     user.username,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(width: 8),
+                  const SizedBox(width: 8),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.black,
-                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     ),
                     onPressed: () {
                       _copyUserIdToClipboard(user.id);
                     },
-                    child: Text(
+                    child: const Text(
                       "Copy ID",
                       style: TextStyle(color: Colors.white, fontSize: 14),
                     ),
                   ),
                 ],
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               // Contact Details
               Text(
                 "Contact: ${user.contactDetails}",
@@ -60,16 +60,16 @@ class UserInfoPage extends StatelessWidget {
                   color: Colors.grey[700],
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               // Buttons Section
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.black,
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 ),
                 onPressed: () {
                 },
-                child: Text(
+                child: const Text(
                   "Chat",
                   style: TextStyle(color: Colors.white),
                 ),
@@ -83,7 +83,7 @@ class UserInfoPage extends StatelessWidget {
 
   AppBar Appbar() {
     return AppBar(
-      title: Text('User Information'),
+      title: const Text('User Information'),
       centerTitle: true,
     );
   }

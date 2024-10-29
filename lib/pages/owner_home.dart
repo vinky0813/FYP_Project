@@ -1,6 +1,5 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/rendering.dart';
 import 'package:fyp_project/models/property.dart';
 import 'package:fyp_project/pages/account_page.dart';
@@ -34,6 +33,7 @@ class _DashboardOwnerState extends State<DashboardOwner> {
   int number_of_verified_listing = 0;
   List<PropertyListing> all_listing = [];
 
+  @override
   void initState() {
     super.initState();
     _initialize();
@@ -91,7 +91,7 @@ class _DashboardOwnerState extends State<DashboardOwner> {
 
         developer.log(owner!.username);
       } catch (e) {
-        print('Error: $e');
+        developer.log('Error: $e');
       }
 
       try {
@@ -140,7 +140,7 @@ class _DashboardOwnerState extends State<DashboardOwner> {
         });
 
       } catch (e) {
-        print("Error: $e");
+        developer.log("Error: $e");
       }
     }
   }
@@ -149,14 +149,14 @@ class _DashboardOwnerState extends State<DashboardOwner> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("INTI Accommodation Finder"),
+        title: const Text("INTI Accommodation Finder"),
         centerTitle: true,
         actions: [IconButton(
           // placeholder icon fix later
           icon: const Icon(Icons.account_box),
           // same thing here
           onPressed: () => {
-            Get.to(() => AccountPage(userType: "owner",),
+            Get.to(() => const AccountPage(userType: "owner",),
             transition: Transition.circularReveal,
             duration: const Duration(seconds: 1))
           },
@@ -169,14 +169,14 @@ class _DashboardOwnerState extends State<DashboardOwner> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             InformationCard(),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Card(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Text(
+                    const Text(
                       "Most Viewed Listing",
                       style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
@@ -185,14 +185,14 @@ class _DashboardOwnerState extends State<DashboardOwner> {
                 ),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             // Bottom buttons
             Row(
               children: [
                 Expanded(
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(vertical: 16.0),
+                      padding: const EdgeInsets.symmetric(vertical: 16.0),
                       backgroundColor: Colors.black,
                     ),
                     onPressed: () {
@@ -200,14 +200,14 @@ class _DashboardOwnerState extends State<DashboardOwner> {
                           transition: Transition.circularReveal,
                           duration: const Duration(seconds: 1));
                     },
-                    child: Text("Manage Property", style: TextStyle(color: Colors.white)),
+                    child: const Text("Manage Property", style: TextStyle(color: Colors.white)),
                   ),
                 ),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 Expanded(
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(vertical: 16.0),
+                      padding: const EdgeInsets.symmetric(vertical: 16.0),
                       backgroundColor: Colors.black,
                     ),
                     onPressed: () {
@@ -215,7 +215,7 @@ class _DashboardOwnerState extends State<DashboardOwner> {
                           transition: Transition.circularReveal,
                           duration: const Duration(seconds: 1));
                     },
-                    child: Text("Chat", style: TextStyle(color: Colors.white)),
+                    child: const Text("Chat", style: TextStyle(color: Colors.white)),
                   ),
                 ),
               ],
@@ -239,21 +239,21 @@ class _DashboardOwnerState extends State<DashboardOwner> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        const Text(
                           "Number of Listings",
                           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         Text(
                           "$number_of_listing",
-                          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
                   ),
                                   ),
                 ),
-                SizedBox(width: 20,),
+                const SizedBox(width: 20,),
                 Container(
                   width: 200,
                   child: Card(child: Padding(
@@ -261,21 +261,21 @@ class _DashboardOwnerState extends State<DashboardOwner> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        const Text(
                           "Number of Published Listing",
                           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         Text(
                           "$number_of_published_listing",
-                          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
                   ),
                   ),
                 ),
-                SizedBox(width: 20,),
+                const SizedBox(width: 20,),
                 Container(
                   width: 200,
                   child: Card(child: Padding(
@@ -283,21 +283,21 @@ class _DashboardOwnerState extends State<DashboardOwner> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        const Text(
                           "Number of Tenants",
                           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         Text(
                           "$number_of_tenants",
-                          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
                   ),
                   ),
                 ),
-                SizedBox(width: 20,),
+                const SizedBox(width: 20,),
                 Container(
                   width: 200,
                   child: Card(child: Padding(
@@ -305,14 +305,14 @@ class _DashboardOwnerState extends State<DashboardOwner> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
+                        const Text(
                           "Number of Verified Listings",
                           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         Text(
                           "$number_of_verified_listing",
-                          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),

@@ -58,6 +58,7 @@ class _AppDrawerState extends State<AppDrawer> {
     return PropertyListing.getCurrentProperty(renter!.listing_id);
   }
 
+  @override
   void initState() {
     super.initState();
     _initialize();
@@ -75,7 +76,7 @@ class _AppDrawerState extends State<AppDrawer> {
         await _getUser(userId!);
         currentListing = await _getCurrentProperty();
       } catch (e) {
-        print('Error: $e');
+        developer.log('Error: $e');
       }
 
       setState(() {
@@ -95,7 +96,7 @@ class _AppDrawerState extends State<AppDrawer> {
               future: _fetchUser(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return SizedBox(
+                  return const SizedBox(
                     height: 150,
                     child: DrawerHeader(
                       child: Row(
@@ -104,20 +105,20 @@ class _AppDrawerState extends State<AppDrawer> {
                           SizedBox(width: 20),
                           Text(
                             "Loading User Data",
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: Colors.black,
                               fontSize: 16,
                             ),
                           ),
                         ],
                       ),
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         color: Colors.grey,
                       ),
                     ),
                   );
                 } else if (snapshot.data==null) {
-                  return SizedBox(
+                  return const SizedBox(
                     height: 150,
                     child: DrawerHeader(
                       child: Row(
@@ -126,14 +127,14 @@ class _AppDrawerState extends State<AppDrawer> {
                           SizedBox(width: 20),
                           Text(
                             "Loading User Data",
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: Colors.black,
                               fontSize: 16,
                             ),
                           ),
                         ],
                       ),
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         color: Colors.grey,
                       ),
                     ),
@@ -149,7 +150,7 @@ class _AppDrawerState extends State<AppDrawer> {
                             radius: 25,
                             backgroundImage: NetworkImage(renter.profilePic),
                           ),
-                          SizedBox(width: 20),
+                          const SizedBox(width: 20),
                           Text(
                             renter.username,
                             style: const TextStyle(
@@ -171,15 +172,15 @@ class _AppDrawerState extends State<AppDrawer> {
               padding: EdgeInsets.zero,
               children: [
                 ListTile(
-                  title: Text("Homepage"),
+                  title: const Text("Homepage"),
                   onTap: () {
-                    Get.to(() => HomePage(),
+                    Get.to(() => const HomePage(),
                         transition: Transition.circularReveal,
                         duration: const Duration(seconds: 1));
                   },
                 ),
                 ListTile(
-                  title: Text("Saved Searches"),
+                  title: const Text("Saved Searches"),
                   onTap: () {
                     Get.to(() => SavedSearches(),
                         transition: Transition.circularReveal,
@@ -187,7 +188,7 @@ class _AppDrawerState extends State<AppDrawer> {
                   },
                 ),
                 ListTile(
-                  title: Text("Shortlist"),
+                  title: const Text("Shortlist"),
                   onTap: () {
                     Get.to(() => Shortlist(),
                         transition: Transition.circularReveal,
@@ -195,7 +196,7 @@ class _AppDrawerState extends State<AppDrawer> {
                   },
                 ),
                 ListTile(
-                  title: Text("Chat"),
+                  title: const Text("Chat"),
                   onTap: () {
                     Get.to(() => ChatListPage(),
                         transition: Transition.circularReveal,
@@ -203,7 +204,7 @@ class _AppDrawerState extends State<AppDrawer> {
                   },
                 ),
                 ListTile(
-                  title: Text("My Room"),
+                  title: const Text("My Room"),
                   onTap: () {
                     if (renter!.isAccommodating) {
                       Get.to(() => MyRoom(
@@ -223,10 +224,10 @@ class _AppDrawerState extends State<AppDrawer> {
           Align(
             alignment: Alignment.bottomCenter,
             child: ListTile(
-              title: Text("Logout",),
+              title: const Text("Logout",),
               onTap: () {
                 Supabase.instance.client.auth.signOut();
-                Get.offAll(() => Login());
+                Get.offAll(() => const Login());
               },
             ),
           ),
