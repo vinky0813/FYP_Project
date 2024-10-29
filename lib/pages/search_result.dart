@@ -134,7 +134,6 @@ class _SearchResultState extends State<SearchResult> {
                                         widget.searchResultController
                                             .locationLong.value);
 
-                                developer.log("success $success");
                                 if (success) {
                                   Get.snackbar(
                                     "Success",

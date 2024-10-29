@@ -633,6 +633,7 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
                     child: Text("No Tenants", style: TextStyle(color: Colors.grey, fontSize: 24),),
                   ),
                   const SizedBox(height: 50,),
+                  if (widget.propertyListing.isVerified==true)
                   TextButton(
                     onPressed: () {
                       showDialog(

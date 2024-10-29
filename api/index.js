@@ -1207,12 +1207,26 @@ app.post("/api/report-listing", async (req, res) => {
   }
 });
 
-app.get("/api/get-all-unpublished-listings", async (req, res) => {
+app.get("/api/get-all-unverified-listings", async (req, res) => {
     try {
       const { data, error } = await supabase
         .from('Listing')
         .select('*')
-        .eq('isPublished', false);
+        .eq('isVerified', false);
+
+      if (error) return res.status(500).json({ error: error });
+
+      res.status(200).json(data);
+    } catch (err) {
+      res.status(500).json({ error: err });
+    }
+  });
+
+app.get("/api/get-all-listings", async (req, res) => {
+    try {
+      const { data, error } = await supabase
+        .from('Listing')
+        .select('*')
 
       if (error) return res.status(500).json({ error: error });
 

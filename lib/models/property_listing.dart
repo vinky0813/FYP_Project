@@ -450,7 +450,7 @@ class PropertyListing {
         final url = Uri.parse("https://fyp-project-liart.vercel.app/api/get-listing-with-id/$listingId");
 
         try {
-          final response = await http.get(url);
+          final response = await http.get(url, headers: {'Content-Type': 'application/json', "Authorization": "Bearer $accessToken"},);
           developer.log(response.statusCode.toString());
 
           developer.log("response body: ${response.body}");

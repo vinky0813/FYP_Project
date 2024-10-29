@@ -291,6 +291,7 @@ class _AddPropertyState extends State<AddProperty> {
     final response = await http.delete(url, headers: {"Authorization": "Bearer $accessToken"});
 
     if (response.statusCode == 200) {
+      Get.back(result: false);
       await Supabase.instance.client
           .from('Messages')
           .delete()
@@ -301,21 +302,13 @@ class _AddPropertyState extends State<AddProperty> {
           .delete()
           .eq('group_id', widget.property!.group_id);
 
-      if (deleteGroupMembersResponse.error != null) {
-        throw Exception("Failed to delete group members: ${deleteGroupMembersResponse.error!.message}");
-      }
-
       final deleteGroupResponse = await Supabase.instance.client
           .from('Groups')
           .delete()
           .eq('id', widget.property!.group_id);
 
-      if (deleteGroupResponse.error != null) {
-        throw Exception("Failed to delete group: ${deleteGroupResponse.error!.message}");
-      }
       developer.log("Success: Property Deleted");
-
-      Get.back(result: false);
+      Get.snackbar("Success", "Property deleted successfully");
     } else {
       developer.log("Failed: ${response.statusCode}");
       Get.snackbar("Failed", "Remove each listing in the property first");
