@@ -441,6 +441,7 @@ app.get("/api/get-renter-with-id/:user_id", async (req, res) => {
       sex: data.sex,
       nationality: data.nationality,
       isAccommodating: data.isAccommodating,
+      listing_id: data.listing_id,
     };
 
 
