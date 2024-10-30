@@ -104,17 +104,16 @@ class _MyRoomInvitationState extends State<MyRoomInvitation> {
                   color: const Color(0xffE5E4E2),
                 ),
                 child: GestureDetector(
-                  onTap: () {
-                    final result = Get.to(() => MyRoomInvitationDetails(propertyListing: invitations[index],),
+                  onTap: () async {
+                    final result = await Get.to(() => MyRoomInvitationDetails(propertyListing: invitations[index],),
                         transition: Transition.circularReveal,
                         duration: const Duration(seconds: 1));
 
-                    if (result != null) {
-                      if (result == false) {
-                        setState(() {
-                          invitations.removeAt(index);
-                        });
-                      }
+                    if (result == false) {
+                      setState(() {
+                        invitations.removeAt(index);
+                      });
+
                     }
                   },
                   child: Row(

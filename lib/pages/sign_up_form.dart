@@ -89,7 +89,6 @@ class _SignUpFormState extends State<SignUpForm> {
             .from('Renters')
             .insert({
           'user_id': user.id,
-          'name': fullName,
           'contact_no': contactNo,
           'sex': gender,
           'nationality': nationality,
@@ -101,7 +100,6 @@ class _SignUpFormState extends State<SignUpForm> {
             .from('Owners')
             .insert({
           'user_id': user.id,
-          'name': fullName,
           'contact_no': contactNo,
         });
         Get.offAll(const DashboardOwner());

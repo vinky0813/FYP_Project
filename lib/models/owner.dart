@@ -56,9 +56,7 @@ class Owner {
         headers: {'Content-Type': 'application/json',
                   "Authorization": "Bearer $accessToken"},
         body: jsonEncode({
-          "username": username,
           "contact_no": contactNo,
-          "profile_pic": profilePic,
         })
     );
 

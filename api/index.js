@@ -145,13 +145,27 @@ app.get("/api/get-owner-with-id/:user_id", async (req, res) => {
 
     const { data, error } = await supabase
       .from("Owners")
-      .select("*")
+      .select(`
+              user_id,
+              contact_no,
+              profiles (
+                username,
+                avatar_url
+              )
+            `)
       .eq("user_id", user_id)
       .single();
 
     if (error) return res.status(500).json({ error: error.message });
+
+    const ownerData = {
+          user_id: data.user_id,
+          contact_no: data.contact_no,
+          username: data.profiles.username || "no username",
+          profile_pic: data.profiles.avatar_url || "https://via.placeholder.com/150",
+        };
     
-    res.json(data);
+    res.json(ownerData);
 
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -399,7 +413,17 @@ app.get("/api/get-renter-with-id/:user_id", async (req, res) => {
   try {
     const { data, error } = await supabase
       .from("Renters")
-      .select("*")
+      .select(`
+      user_id,
+      contact_no,
+      sex,
+      nationality,
+      isAccommodating,
+      profiles (
+        username,
+        avatar_url
+      )
+    `)
       .eq("user_id", user_id)
       .single();
 
@@ -408,11 +432,22 @@ app.get("/api/get-renter-with-id/:user_id", async (req, res) => {
       return res.status(500).json({ error: error.message });
     }
 
+    const renterData = {
+      user_id: data.user_id,
+      contact_no: data.contact_no,
+      username: data.profiles.username || "no username",
+      profile_pic: data.profiles.avatar_url || "https://via.placeholder.com/150",
+      sex: data.sex,
+      nationality: data.nationality,
+      isAccommodating: data.isAccommodating,
+    };
+
+
     if (data.length === 0) {
       return res.status(404).json({ message: "No renter found" });
     }
 
-    res.status(200).json({ message: "renter information fetched successfully", data });
+    res.status(200).json({ message: "renter information fetched successfully", renterData });
   } catch (e) {
     console.error("Catch Error:", e.message);
     res.status(500).json({ message: e.message });
@@ -1064,9 +1099,7 @@ app.put("/api/update-renter-information/:user_id", async (req, res) => {
     .from("Renters")
     .upsert({
       user_id: user_id,
-      username: username,
       contact_no: contact_no,
-      profile_pic: profile_pic,
     });
 
     if (error) {
@@ -1083,15 +1116,13 @@ app.put("/api/update-renter-information/:user_id", async (req, res) => {
 app.put("/api/update-owner-information/:user_id", async (req, res) => {
 
   const { user_id } = req.params;
-  const { username, contact_no, profile_pic } = req.body;
+  const { contact_no } = req.body;
 
   try {
     const { data: ownerData, error: ownerError } = await supabase
       .from("Owners")
       .update({
-        username: username,
         contact_no: contact_no,
-        profile_pic: profile_pic,
       })
       .eq("user_id", user_id);
 
