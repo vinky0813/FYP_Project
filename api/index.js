@@ -419,6 +419,7 @@ app.get("/api/get-renter-with-id/:user_id", async (req, res) => {
       sex,
       nationality,
       isAccommodating,
+      listing_id,
       profiles (
         username,
         avatar_url
