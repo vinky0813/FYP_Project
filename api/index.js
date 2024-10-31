@@ -20,6 +20,8 @@ app.use(cors(corsOptions));
 
 app.use(express.json());
 
+const supabase = createClient(process.env.SUPABASE_URL, process.env.API_KEY);
+
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
@@ -42,16 +44,6 @@ async function authenticateToken(req, res, next) {
 
     const token = authHeader.split(' ')[1];
 
-    const supabase = createClient(process.env.SUPABASE_URL, process.env.API_KEY, {
-      auth: {
-        persistSession: false,
-        autoRefreshToken: false,
-        global: {
-          headers: { 'Authorization': `Bearer ${token}` },
-        },
-      },
-    });
-
     try {
     const { data: { user }, error } = await supabase.auth.getUser(token);
 
@@ -59,9 +51,8 @@ async function authenticateToken(req, res, next) {
       return res.status(403).json({ error: 'Invalid token' });
     }
     
+    supabase.auth.setAuth(token);
     req.user = user;
-    req.token = token;
-    req.supabase = supabase;
 
     next();
   } catch (err) {
@@ -79,7 +70,7 @@ app.post("/api/add-property", async (req, res) => {
   try {
     const location = `POINT(${long} ${lat})`;
 
-    const { data, error } = await req.supabase
+    const { data, error } = await supabase
       .from('Property') 
       .insert([{ property_title, address, owner_id, property_image, location, group_id }])
       .select("property_id") 
@@ -105,7 +96,7 @@ app.post("/api/upload-property-image", upload.single("image"), async (req, res) 
     return res.status(400).json({ error: "Unsupported file type" });
   }
 
-  const { data, error } = await req.supabase.storage
+  const { data, error } = await supabase.storage
     .from("property-images")
     .upload(`images/${Date.now()}_${originalname}`, buffer, {
       contentType: mimeType
@@ -135,7 +126,7 @@ app.get("/api/get-all-owner-properties", async (req, res) => {
 
     const { owner_id } = req.query;
 
-    const { data, error } = await req.supabase
+    const { data, error } = await supabase
       .from("Property")
       .select("*")
       .eq("owner_id", owner_id);
@@ -153,7 +144,7 @@ app.get("/api/get-owner-with-id/:user_id", async (req, res) => {
 
     const { user_id } = req.params;
 
-    const { data, error } = await req.supabase
+    const { data, error } = await supabase
       .from("Owners")
       .select(`
               user_id,
@@ -189,7 +180,7 @@ app.put("/api/update-property/:property_id", async (req, res) => {
 
     const location = `POINT(${long} ${lat})`;
 
-    const { data, error } = await req.supabase
+    const { data, error } = await supabase
       .from("Property")
       .update({
         property_title: property_title,
@@ -214,7 +205,7 @@ app.delete("/api/delete-property/:property_id", async (req, res) => {
   const { property_id } = req.params;
 
   try {
-    const { data, error } = await req.supabase
+    const { data, error } = await supabase
       .from("Property")
       .delete()
       .eq("property_id", property_id);
@@ -235,7 +226,7 @@ app.post("/api/add-listing-images", async (req, res) => {
   const { listing_id, image_url } = req.body;
 
   try {
-    const { data, error } = await req.supabase
+    const { data, error } = await supabase
       .from("Listing_images") 
       .insert([{ listing_id, image_url }])
       .select("id") 
@@ -256,7 +247,7 @@ app.delete("/api/delete-listing-image", async (req, res) => {
   const { listing_id, image_url } = req.body;
 
   try {
-    const { data, error } = await req.supabase
+    const { data, error } = await supabase
       .from("Listing_images") 
       .delete()
       .match({ listing_id, image_url }) 
@@ -279,7 +270,7 @@ app.post("/api/add-listing-ammenities", async (req, res) => {
    } = req.body;
 
   try {
-    const { data, error } = await req.supabase
+    const { data, error } = await supabase
       .from("Amenities") 
       .insert([{ listing_id, isMasterRoom, isSingleRoom, isSharedRoom, isSuite, isWifiAccess, isAirCon, isNearMarket,
         isCarPark, isNearMRT, isNearLRT, isPrivateBathroom, isGymnasium, isCookingAllowed, isWashingMachine, isNearBusStop }])
@@ -301,7 +292,7 @@ app.post("/api/add-listing", async (req, res) => {
   const { listing_title, tenant, price, deposit, property_id, description, isPublished, isVerified, rating, nationality_preference, sex_preference } = req.body;
 
   try {
-    const { data, error } = await req.supabase
+    const { data, error } = await supabase
       .from("Listing") 
       .insert([{ listing_title, tenant, price, deposit, property_id, rating, isPublished, isVerified, description, nationality_preference, sex_preference }])
       .select("listing_id") 
@@ -322,7 +313,7 @@ app.get("/api/get-listing-images/:listing_id", async (req, res) => {
   try {
     const { listing_id } = req.params;
 
-    const { data, error } = await req.supabase
+    const { data, error } = await supabase
       .from("Listing_images")
       .select("image_url")
       .eq("listing_id", listing_id);
@@ -346,7 +337,7 @@ app.get("/api/get-all-listing/:property_id", async (req, res) => {
   const { property_id } = req.params;
 
   try {
-    const { data, error } = await req.supabase
+    const { data, error } = await supabase
       .from("Listing")
       .select("*")
       .eq("property_id", property_id);
@@ -371,7 +362,7 @@ app.get("/api/get-all-reviews/:listing_id", async (req, res) => {
   const { listing_id } = req.params;
 
   try {
-    const { data, error } = await req.supabase
+    const { data, error } = await supabase
       .from("Reviews")
       .select("*")
       .eq("listing_id", listing_id);
@@ -396,7 +387,7 @@ app.get("/api/get-all-amenities/:listing_id", async (req, res) => {
   const { listing_id } = req.params;
 
   try {
-    const { data, error } = await req.supabase
+    const { data, error } = await supabase
       .from("Amenities")
       .select("*")
       .eq("listing_id", listing_id);
@@ -421,7 +412,7 @@ app.get("/api/get-renter-with-id/:user_id", async (req, res) => {
   const { user_id } = req.params;
 
   try {
-    const { data, error } = await req.supabase
+    const { data, error } = await supabase
       .from("Renters")
       .select(`
       user_id,
@@ -469,7 +460,7 @@ app.get("/api/get-renter-with-id/:user_id", async (req, res) => {
 app.delete("/api/delete-listing-images/:listing_id", async (req, res) => {
   const { listing_id } = req.params;
   try {
-    const { data, error } = await req.supabase
+    const { data, error } = await supabase
       .from("Listing_images")
       .delete()
       .eq("listing_id", listing_id)
@@ -494,7 +485,7 @@ app.delete("/api/delete-listing-amenities/:listing_id", async (req, res) => {
   const { listing_id } = req.params;
 
   try {
-    const { data, error } = await req.supabase
+    const { data, error } = await supabase
       .from("Amenities")
       .delete()
       .eq("listing_id", listing_id);
@@ -514,7 +505,7 @@ app.delete("/api/delete-listing-amenities/:listing_id", async (req, res) => {
 app.delete("/api/delete-listing/:listing_id", async (req, res) => {
   const { listing_id } = req.params;
   try {
-    const { data, error } = await req.supabase
+    const { data, error } = await supabase
       .from("Listing")
       .delete()
       .eq("listing_id", listing_id);
@@ -536,7 +527,7 @@ app.put("/api/update-listing/:listing_id", async (req, res) => {
     const { listing_id } = req.params;
     const { listing_title, price, deposit, rating, description, sex_preference, nationality_preference } = req.body;
 
-    const { data, error } = await req.supabase
+    const { data, error } = await supabase
       .from("Listing")
       .upsert({
         listing_id: listing_id,
@@ -563,7 +554,7 @@ app.delete("/api/delete-image", async (req, res) => {
   const { listing_id, image_url } = req.body;
 
   try {
-    const { data, error } = await req.supabase
+    const { data, error } = await supabase
       .from("Listing_images") 
       .delete()
       .eq("listing_id", listing_id)
@@ -587,7 +578,7 @@ app.put("/api/edit-listing-ammenities", async (req, res) => {
    } = req.body;
 
   try {
-    const { data, error } = await req.supabase
+    const { data, error } = await supabase
       .from("Amenities") 
       .upsert([{ listing_id, isMasterRoom, isSingleRoom, isSharedRoom, isSuite, isWifiAccess, isAirCon, isNearMarket,
         isCarPark, isNearMRT, isNearLRT, isPrivateBathroom, isGymnasium, isCookingAllowed, isWashingMachine, isNearBusStop }])
@@ -607,7 +598,7 @@ app.put("/api/edit-listing-ammenities", async (req, res) => {
 
 app.get("/api/get-most-viewed-listing", async (req, res) => {
   try {
-    const { data, error } = await req.supabase
+    const { data, error } = await supabase
       .from("Listing")
       .select("")
       .eq("isPublished", true)
@@ -629,7 +620,7 @@ app.get("/api/get-most-viewed-listing", async (req, res) => {
 
 app.get("/api/get-top-rated-listing", async (req, res) => {
   try {
-    const { data, error } = await req.supabase
+    const { data, error } = await supabase
       .from("Listing")
       .select("")
       .eq("isPublished", true)
@@ -653,7 +644,7 @@ app.get("/api/get-listing-with-id/:listing_id", async (req, res) => {
 
   const { listing_id } = req.params;
   try {
-    const { data, error } = await req.supabase
+    const { data, error } = await supabase
       .from("Listing")
       .select("*")
       .eq("listing_id", listing_id)
@@ -677,7 +668,7 @@ app.get("/api/search-properties-by-location", async (req, res) => {
 
   try {
 
-    const { data, error } = await req.supabase
+    const { data, error } = await supabase
       .rpc("get_properties_within_radius", {
         longitude: parseFloat(long),
         latitude: parseFloat(lat),
@@ -699,7 +690,7 @@ app.get("/api/get-property-with-id/:property_id", async (req, res) => {
   const { property_id } = req.params;
 
   try {
-    const { data, error } = await req.supabase
+    const { data, error } = await supabase
       .from("Property")
       .select("*")
       .eq("property_id", property_id)
@@ -725,7 +716,7 @@ app.put("/api/increment-view/:listing_id", async (req, res) => {
 
   try {
 
-    const { data: listing, error: fetchError } = await req.supabase
+    const { data: listing, error: fetchError } = await supabase
       .from("Listing")
       .select("view_count")
       .eq("listing_id", listing_id)
@@ -733,7 +724,7 @@ app.put("/api/increment-view/:listing_id", async (req, res) => {
     
     currentViews = listing.view_count;
       
-    const { data, error } = await req.supabase
+    const { data, error } = await supabase
       .from("Listing")
       .update({ view_count: currentViews + 1 })
       .eq("listing_id", listing_id);
@@ -754,7 +745,7 @@ app.post("/api/add-shortlist", async (req, res) => {
   }
 
   try {
-    const { data, error } = await req.supabase
+    const { data, error } = await supabase
       .from("Shortlists")
       .insert({
         "user_id": user_id,
@@ -776,7 +767,7 @@ app.delete("/api/remove-shortlist", async (req, res) => {
   }
 
   try {
-    const { data, error } = await req.supabase
+    const { data, error } = await supabase
       .from("Shortlists")
       .delete()
       .eq("user_id", user_id)
@@ -797,7 +788,7 @@ app.get("/api/get-shortlists-with-userid/:user_id", async (req, res) => {
   }
 
   try {
-    const { data, error } = await req.supabase
+    const { data, error } = await supabase
       .from("Shortlists")
       .select("*")
       .eq("user_id", user_id);
@@ -812,7 +803,7 @@ app.get("/api/get-shortlists-with-userid/:user_id", async (req, res) => {
 app.get("/api/check-renter/:renter_id", async (req, res) => {
   const { renter_id } = req.params;
 
-  const { data, error } = await req.supabase
+  const { data, error } = await supabase
         .from("Renters")
         .select("*")
         .eq("user_id", renter_id)
@@ -828,7 +819,7 @@ app.get("/api/check-renter/:renter_id", async (req, res) => {
 app.post("/api/add-invitation", async (req, res) => {
   const { listing_id, owner_id, renter_id } = req.body;
 
-  const { data, error } = await req.supabase
+  const { data, error } = await supabase
       .from("Invitations")
       .insert([
           { listing_id, owner_id, renter_id },
@@ -844,7 +835,7 @@ app.post("/api/add-invitation", async (req, res) => {
 app.get("/api/get-invitations-with-renter-id/:renter_id", async (req, res) => {
   const { renter_id } = req.params;
 
-  const { data, error } = await req.supabase
+  const { data, error } = await supabase
       .from("Invitations")
       .select("*")
       .eq("renter_id", renter_id);
@@ -860,7 +851,7 @@ app.delete("/api/delete-invitations/:listing_id", async (req, res) => {
   const { listing_id } = req.params;
   const { renter_id } = req.body;
 
-  const { data, error } = await req.supabase
+  const { data, error } = await supabase
       .from("Invitations")
       .delete()
       .eq("listing_id", listing_id)
@@ -876,7 +867,7 @@ app.delete("/api/delete-invitations/:listing_id", async (req, res) => {
 app.get("/api/get-invitation-with-listing_id/:listing_id", async (req, res) => {
   const { listing_id } = req.params;
 
-  const { data, error } = await req.supabase  
+  const { data, error } = await supabase  
       .from("Invitations")
       .select("*")
       .eq("listing_id", listing_id)
@@ -892,7 +883,7 @@ app.get("/api/get-invitation-with-listing_id/:listing_id", async (req, res) => {
 app.put("/api/accept-invitation-part-1", async (req, res) => {
   const { listing_id, renter_id } = req.body;
 
-  const { data, error } = await req.supabase
+  const { data, error } = await supabase
       .from("Listing")
       .upsert({
         listing_id: listing_id,
@@ -910,7 +901,7 @@ app.put("/api/accept-invitation-part-1", async (req, res) => {
 app.delete("/api/accept-invitation-part-2", async (req, res) => {
   const { renter_id } = req.body;
 
-  const { data, error } = await req.supabase
+  const { data, error } = await supabase
       .from("Invitations")
       .delete()
       .eq("renter_id", renter_id);
@@ -925,7 +916,7 @@ app.delete("/api/accept-invitation-part-2", async (req, res) => {
 app.put("/api/accept-invitation-part-3", async (req, res) => {
   const { renter_id , property_id } = req.body;
 
-  const { data, error } = await req.supabase
+  const { data, error } = await supabase
       .from("Property_Renter_JoinTable")
       .upsert({
         renter_id: renter_id, 
@@ -941,7 +932,7 @@ app.put("/api/accept-invitation-part-3", async (req, res) => {
 app.put("/api/accept-invitation-part-4", async (req, res) => {
   const { renter_id , listing_id } = req.body;
 
-  const { data, error } = await req.supabase
+  const { data, error } = await supabase
       .from("Renters")
       .upsert({
         user_id: renter_id,
@@ -958,7 +949,7 @@ app.put("/api/accept-invitation-part-4", async (req, res) => {
 app.get("/api/get-tenants/:property_id", async (req, res) => {
   const { property_id } = req.params;
 
-  const { data, error } = await req.supabase
+  const { data, error } = await supabase
       .from("Property_Renter_JoinTable")
       .select("renter_id")
       .eq("property_id", property_id);
@@ -973,7 +964,7 @@ app.put("/api/remove-tenant-part-1", async (req, res) => {
   const { listing_id } = req.body;
 
   try {
-    const { data, error } = await req.supabase
+    const { data, error } = await supabase
     .from("Listing")
     .update({
       isPublished: true,
@@ -992,7 +983,7 @@ app.put("/api/remove-tenant-part-2", async (req, res) => {
   const { renter_id } = req.body;
 
   try {
-    const { data, error } = await req.supabase
+    const { data, error } = await supabase
     .from("Renters")
     .update({
       isAccommodating: false,
@@ -1011,7 +1002,7 @@ app.delete("/api/remove-tenant-part-3", async (req, res) => {
   const { property_id, renter_id } = req.body;
 
   try {
-    const { data, error } = await req.supabase
+    const { data, error } = await supabase
     .from("Property_Renter_JoinTable")
     .delete()
     .eq("property_id", property_id)
@@ -1028,7 +1019,7 @@ app.post("/api/upload-review", async (req, res) => {
   const { rating, comment, listing_id, user_id } = req.body;
 
   try {
-    const { data, error } = await req.supabase
+    const { data, error } = await supabase
       .from("Reviews")
       .insert([
         {
@@ -1043,7 +1034,7 @@ app.post("/api/upload-review", async (req, res) => {
       throw error;
     }
 
-     const { data: reviewsData, error: reviewsError } = await req.supabase
+     const { data: reviewsData, error: reviewsError } = await supabase
           .from("Reviews")
           .select("rating")
           .eq("listing_id", listing_id);
@@ -1056,7 +1047,7 @@ app.post("/api/upload-review", async (req, res) => {
     const sumRatings = reviewsData.reduce((sum, review) => sum + review.rating, 0);
     const averageRating = sumRatings / totalRatings;
 
-    const { data: updateData, error: updateError } = await req.supabase
+    const { data: updateData, error: updateError } = await supabase
       .from("Listing")
       .upsert({
         listing_id: listing_id,
@@ -1078,7 +1069,7 @@ app.get("/api/check-user-review/:listing_id/:user_id", async (req, res) => {
   const { listing_id, user_id } = req.params;
 
   try {
-    const { data, error } = await req.supabase
+    const { data, error } = await supabase
       .from("Reviews")
       .select("*")
       .eq("listing_id", listing_id)
@@ -1107,7 +1098,7 @@ app.put("/api/update-renter-information/:user_id", async (req, res) => {
   console.log('Request Body:', req.body);
 
   try {
-    const { data, error } = await req.supabase
+    const { data, error } = await supabase
     .from("Renters")
     .upsert({
       user_id: user_id,
@@ -1131,7 +1122,7 @@ app.put("/api/update-owner-information/:user_id", async (req, res) => {
   const { contact_no } = req.body;
 
   try {
-    const { data: ownerData, error: ownerError } = await req.supabase
+    const { data: ownerData, error: ownerError } = await supabase
       .from("Owners")
       .update({
         contact_no: contact_no,
@@ -1154,7 +1145,7 @@ app.get("/api/get-saved-searches-with-userid/:user_id", async (req, res) => {
   const { user_id } = req.params;
 
   try {
-    const { data, error } = await req.supabase
+    const { data, error } = await supabase
       .from("Saved_Searches")
       .select("*")
       .eq("user_id", user_id)
@@ -1180,7 +1171,7 @@ app.post("/api/add-saved-search", async (req, res) => {
   const location = `POINT(${long} ${lat})`;
 
   try {
-    const { data, error } = await req.supabase
+    const { data, error } = await supabase
       .from("Saved_Searches")
       .insert([{ 
         search_criteria: search_criteria,
@@ -1204,7 +1195,7 @@ app.delete("/api/delete-saved-search", async (req, res) => {
   const { id } = req.body;
 
   try {
-    const { data, error } = await req.supabase
+    const { data, error } = await supabase
       .from("Saved_Searches")
       .delete()
       .eq("id", id);
@@ -1227,7 +1218,7 @@ app.post("/api/report-listing", async (req, res) => {
   const { reported_by, listing_id, reason, details } = req.body;
 
   try {
-    const { data, error } = await req.supabase
+    const { data, error } = await supabase
       .from("Reports")
       .insert([
         {
@@ -1252,7 +1243,7 @@ app.post("/api/report-listing", async (req, res) => {
 
 app.get("/api/get-all-unverified-listings", async (req, res) => {
     try {
-      const { data, error } = await req.supabase
+      const { data, error } = await supabase
         .from('Listing')
         .select('*')
         .eq('isVerified', false);
@@ -1267,7 +1258,7 @@ app.get("/api/get-all-unverified-listings", async (req, res) => {
 
 app.get("/api/get-all-listings", async (req, res) => {
     try {
-      const { data, error } = await req.supabase
+      const { data, error } = await supabase
         .from('Listing')
         .select('*')
 
