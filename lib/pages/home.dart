@@ -92,6 +92,8 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _initialize() async {
+    await Supabase.instance.client.auth.refreshSession();
+
     final user = Supabase.instance.client.auth.currentUser;
     userId = user!.id;
 

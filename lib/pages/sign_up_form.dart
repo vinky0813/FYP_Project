@@ -74,6 +74,11 @@ class _SignUpFormState extends State<SignUpForm> {
 
       await Supabase.instance.client.auth.refreshSession();
 
+      final session = Supabase.instance.client.auth.currentSession;
+      final token = session?.accessToken;
+
+      await Supabase.instance.client.auth.getUser(token);
+
       await Supabase.instance.client
           .from('profiles')
           .upsert({
@@ -94,6 +99,7 @@ class _SignUpFormState extends State<SignUpForm> {
           'nationality': nationality,
           'isAccommodating': false,
         });
+        await Future.delayed(Duration(seconds: 3));
         Get.offAll(const HomePage());
       } else if (userType == "owner") {
         await Supabase.instance.client
@@ -102,6 +108,7 @@ class _SignUpFormState extends State<SignUpForm> {
           'user_id': user.id,
           'contact_no': contactNo,
         });
+        await Future.delayed(Duration(seconds: 3));
         Get.offAll(const DashboardOwner());
       }
 

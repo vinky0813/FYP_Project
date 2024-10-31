@@ -150,7 +150,6 @@ class _AddPropertyState extends State<AddProperty> {
 
   Future<String?> _uploadImage(File image) async {
     final url = Uri.parse("https://fyp-project-liart.vercel.app/api/upload-property-image");
-
     var request = http.MultipartRequest("POST", url);
 
     if (accessToken != null && accessToken.isNotEmpty) {

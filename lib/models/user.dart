@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:supabase_flutter/supabase_flutter.dart' as supabase_client;
 import 'dart:developer' as developer;
+
 
 import '../AccessTokenController.dart';
 
@@ -43,6 +45,7 @@ class User {
   }
 
   static Future<User> getUserById(String user_id) async {
+    await supabase_client.Supabase.instance.client.auth.refreshSession();
 
     developer.log("im here");
     developer.log("Access Token: $accessToken");
@@ -67,8 +70,8 @@ class User {
 
       developer.log("jsonresponse: $jsonResponse");
 
-      if (jsonResponse["data"].isNotEmpty) {
-        return User.fromJson(jsonResponse["data"]);
+      if (jsonResponse["renterData"].isNotEmpty) {
+        return User.fromJson(jsonResponse["renterData"]);
       } else {
         throw Exception("No user found");
       }

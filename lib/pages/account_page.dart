@@ -3,8 +3,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../AccessTokenController.dart';
 import '../models/owner.dart';
 import '../models/user.dart' as project_user;
 import 'dart:developer' as developer;
@@ -63,10 +65,14 @@ class _AccountPageState extends State<AccountPage> {
   }
 
   Future<String?> _uploadImage(File image) async {
+    final accessTokenController = Get.find<Accesstokencontroller>();
+    final accessToken = accessTokenController.token;
+
     final url = Uri.parse("https://fyp-project-liart.vercel.app/api/upload-property-image");
 
     var request = http.MultipartRequest("POST", url);
     developer.log(image.path);
+    request.headers['Authorization'] = 'Bearer $accessToken';
     request.files.add(await http.MultipartFile.fromPath("image", image.path));
 
     var response = await request.send();
