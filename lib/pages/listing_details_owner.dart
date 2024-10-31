@@ -43,7 +43,6 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
   }
 
   Future<void> _initialize() async {
-
     final user = Supabase.instance.client.auth.currentUser;
     userId = user?.id;
 
@@ -52,35 +51,41 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
 
     if (userId != null) {
       try {
-        final fetchedOwner = await Owner.getOwnerWithId(userId!);
+        final results = await Future.wait([
+          Owner.getOwnerWithId(userId!),
+          widget.propertyListing.tenant == null
+              ? project_user.User.checkInvitation(widget.propertyListing.listing_id)
+              : Future.value(null),
+        ]);
 
-        developer.log("fetched owner ${fetchedOwner.toString()}");
+        final fetchedOwner = results[0] as Owner;
+        invitedTenant = results[1] as project_user.User;
+
+        developer.log("Fetched owner: ${fetchedOwner.toString()}");
 
         setState(() {
           owner = fetchedOwner;
+          _invitationSent = invitedTenant != null;
         });
 
         developer.log(owner!.username);
       } catch (e) {
         developer.log('Error: $e');
       }
-    }
-    if (widget.propertyListing.tenant == null) {
-      invitedTenant = await project_user.User.checkInvitation(widget.propertyListing.listing_id);
-      _invitationSent = true;
+    } else {
 
-      if (invitedTenant == null) {
-        _invitationSent = false;
-      }
+      invitedTenant = null;
+      _invitationSent = false;
+    }
+
+    if (widget.propertyListing.tenant == null) {
+      setState(() {
+        _invitationSent = invitedTenant != null;
+      });
     } else {
       _invitationSent = false;
       invitedTenant = null;
     }
-
-    setState(() {
-      invitedTenant;
-      _invitationSent;
-    });
   }
 
   Future<void> _removeTenant() async {

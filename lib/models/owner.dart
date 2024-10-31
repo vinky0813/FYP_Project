@@ -26,6 +26,15 @@ class Owner {
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      "user_id": id,
+      "username": username,
+      "contact_no": contact_no,
+      "profile_pic": profile_pic,
+    };
+  }
+
   static Future<Owner> getOwnerWithId(String ownerId) async {
     final accessTokenController = Get.find<Accesstokencontroller>();
     final accessToken = accessTokenController.token;

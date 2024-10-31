@@ -77,24 +77,28 @@ class MyroomState extends State<MyRoomInvitationDetails> {
     developer.log('User ID: $userId');
 
     developer.log("property id: ${widget.propertyListing.property_id}");
-    property =
-        await Property.getPropertyWithId(widget.propertyListing.property_id);
 
-    await _getTenants();
+    final fetchProperty = Property.getPropertyWithId(widget.propertyListing.property_id);
+    final fetchTenants = _getTenants();
+
+    Future<void>? fetchUser;
+    if (userId != null) {
+      _getUser(userId!);
+    }
+
+    final results = await Future.wait([
+      fetchProperty,
+      fetchTenants,
+      if (fetchUser != null) fetchUser,
+    ]);
+
+    property = results[0] as Property;
 
     setState(() {
       tenantList;
       property;
       _isLoading = false;
     });
-
-    if (userId != null) {
-      try {
-        _getUser(userId!);
-      } catch (e) {
-        developer.log('Error: $e');
-      }
-    }
   }
 
   @override

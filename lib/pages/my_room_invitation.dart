@@ -22,6 +22,7 @@ class _MyRoomInvitationState extends State<MyRoomInvitation> {
   String? userId;
   project_user.User? renter = null;
   List<Property> propertyList = [];
+  bool isLoading = true;
 
   Future<void> _getUser(String user_id) async {
     try {
@@ -54,9 +55,9 @@ class _MyRoomInvitationState extends State<MyRoomInvitation> {
       propertyList.add(property);
     }
 
-
     setState(() {
       invitations;
+      isLoading = false;
     });
 
     if (userId != null) {
@@ -77,7 +78,11 @@ class _MyRoomInvitationState extends State<MyRoomInvitation> {
     return Scaffold(
       appBar: appBar(),
       drawer: AppDrawer(),
-      body: CustomScrollView(
+      body: isLoading
+          ? Center(child: CircularProgressIndicator())
+          : invitations.isEmpty
+          ? Center(child: Text("No invitations found."))
+          :CustomScrollView(
         slivers: [
           const SliverToBoxAdapter(
             child: Padding(

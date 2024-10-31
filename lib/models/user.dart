@@ -43,6 +43,18 @@ class User {
       listing_id: json["listing_id"],
     );
   }
+  Map<String, dynamic> toJson() {
+    return {
+      "user_id": id,
+      "username": username,
+      "profile_pic": profilePic,
+      "contact_no": contactDetails,
+      "sex": sex,
+      "nationality": nationality,
+      "isAccommodating": isAccommodating,
+      "listing_id": listing_id,
+    };
+  }
 
   static Future<User> getUserById(String user_id) async {
     await supabase_client.Supabase.instance.client.auth.refreshSession();

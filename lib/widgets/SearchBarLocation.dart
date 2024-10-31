@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -24,6 +26,15 @@ class SearchBarLocationState extends State<SearchBarLocation> {
   double? long = 0;
   final SearchResultController searchResultController = Get.find<SearchResultController>();
   Map<String, dynamic>? filterData;
+  bool _isLoading = false;
+  Timer? _debounce;
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    _searchBarController.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -41,23 +52,26 @@ class SearchBarLocationState extends State<SearchBarLocation> {
   }
 
   void _onSearchChanged(String value) async {
-    if (value.isNotEmpty) {
-      final response = await http.get(Uri.parse(
-          "https://nominatim.openstreetmap.org/search?q=$value&format=json&addressdetails=1"));
-      if (response.statusCode == 200) {
-        setState(() {
-          suggestions = json.decode(response.body);
-        });
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 300), () async {
+      if (value.isNotEmpty) {
+        final response = await http.get(Uri.parse(
+            "https://nominatim.openstreetmap.org/search?q=$value&format=json&addressdetails=1"));
+        if (response.statusCode == 200) {
+          setState(() {
+            suggestions = json.decode(response.body);
+          });
+        } else {
+          setState(() {
+            suggestions = [];
+          });
+        }
       } else {
         setState(() {
           suggestions = [];
         });
       }
-    } else {
-      setState(() {
-        suggestions = [];
-      });
-    }
+    });
   }
 
   void _onSearchSubmitted() async {
@@ -68,6 +82,9 @@ class SearchBarLocationState extends State<SearchBarLocation> {
       if (response.statusCode == 200) {
         var results = json.decode(response.body);
         if (results.isNotEmpty) {
+          setState(() {
+            _isLoading = true;
+          });
           lat = double.tryParse(results[0]["lat"]);
           long = double.tryParse(results[0]["lon"]);
           List<PropertyListing> searchResult = await PropertyListing.getSearchResult(lat!, long!);
@@ -147,6 +164,9 @@ class SearchBarLocationState extends State<SearchBarLocation> {
               duration: const Duration(seconds: 1));
         }
       }
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -215,8 +235,13 @@ class SearchBarLocationState extends State<SearchBarLocation> {
               ),
             ),
           ),
+          if (_isLoading)
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 20),
+              child: CircularProgressIndicator(),
+            ),
           // Display Autocomplete Suggestions
-          if (_searchBarController.text.isNotEmpty && suggestions.isNotEmpty)
+          if (!_isLoading && _searchBarController.text.isNotEmpty && suggestions.isNotEmpty)
             Container(
               color: Colors.white,
               child: ListView.builder(
@@ -226,6 +251,9 @@ class SearchBarLocationState extends State<SearchBarLocation> {
                   return ListTile(
                     title: Text(suggestions[index]["display_name"]),
                     onTap: () async {
+                      setState(() {
+                        _isLoading = true;
+                      });
                       _searchBarController.text = suggestions[index]["display_name"];
                       lat = double.tryParse(suggestions[index]["lat"]);
                       long = double.tryParse(suggestions[index]["lon"]);
@@ -302,10 +330,15 @@ class SearchBarLocationState extends State<SearchBarLocation> {
                       searchResultController.updateSearchResult(filteredResults);
                       searchResultController.updateLocation(_searchBarController.text);
 
+                      setState(() {
+                        _isLoading = false;
+                      });
+
                       Get.to(() => SearchResult(),
                       transition: Transition.circularReveal,
                       duration: const Duration(seconds: 1));
                     },
+
                   );
                 },
               ),

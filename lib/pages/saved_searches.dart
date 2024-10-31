@@ -26,6 +26,7 @@ class _SavedSearchesState extends State<SavedSearches> {
   String? userId;
   List<Map<String, dynamic>> filterDataList = [];
   final SearchResultController searchResultController = Get.find<SearchResultController>();
+  bool isLoading = true;
 
   Future<void> _getSavedSearches() async {
     savedSearches = await PropertyListing.getSavedSearches(userId!);
@@ -122,6 +123,7 @@ class _SavedSearchesState extends State<SavedSearches> {
         setState(() {
           savedSearches;
           filterDataList;
+          isLoading = false;
         });
 
     }
@@ -221,7 +223,11 @@ class _SavedSearchesState extends State<SavedSearches> {
     return Scaffold(
       appBar: appBar(),
       drawer: AppDrawer(),
-      body: CustomScrollView(
+      body: isLoading
+          ? Center(child: CircularProgressIndicator())
+          : savedSearches.isEmpty
+          ? Center(child: Text("No saved searches found."))
+          : CustomScrollView(
         slivers: [
           const SliverToBoxAdapter(
             child: Padding(

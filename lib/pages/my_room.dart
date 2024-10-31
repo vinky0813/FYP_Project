@@ -58,26 +58,32 @@ class MyroomState extends State<MyRoom> {
     developer.log('User ID: $userId');
 
     developer.log("property id: ${widget.propertyListing!.property_id}");
-    property = await Property.getPropertyWithId(widget.propertyListing!.property_id);
+    List<Future> futures = [];
 
-    trueAmenities = widget.propertyListing!.amenities.where((b) => b.value).toList();
-    trueAmenities.removeAt(0);
+    futures.add(Property.getPropertyWithId(widget.propertyListing!.property_id).then((fetchedProperty) {
+      property = fetchedProperty;
+    }));
 
-    isReviewed = await Review.checkUserReview(widget.propertyListing!.listing_id, userId!);
+    futures.add(Future(() {
+      trueAmenities = widget.propertyListing!.amenities.where((b) => b.value).toList();
+      trueAmenities.removeAt(0);
+    }));
 
-    await _getTenants();
-
-    List<project_user.User> tenantsToRemove = [];
-
-    for (project_user.User t in tenantList) {
-      if (t.id == userId) {
-        tenantsToRemove.add(t);
-      }
+    if (userId != null) {
+      futures.add(Review.checkUserReview(widget.propertyListing!.listing_id, userId!).then((reviewed) {
+        isReviewed = reviewed;
+      }));
     }
 
-    for (var t in tenantsToRemove) {
-      tenantList.remove(t);
+    futures.add(_getTenants());
+
+    if (userId != null) {
+      futures.add(_getUser(userId!));
     }
+
+    await Future.wait(futures);
+
+    tenantList.removeWhere((t) => t.id == userId);
 
     setState(() {
       tenantList;
@@ -86,14 +92,6 @@ class MyroomState extends State<MyRoom> {
       _isLoading = false;
       isReviewed;
     });
-
-    if (userId != null) {
-      try {
-        _getUser(userId!);
-      } catch (e) {
-        developer.log('Error: $e');
-      }
-    }
   }
 
   Future<void> _getUser(String user_id) async {

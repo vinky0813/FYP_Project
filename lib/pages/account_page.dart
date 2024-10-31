@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../AccessTokenController.dart';
 import '../models/owner.dart';
@@ -130,6 +131,9 @@ class _AccountPageState extends State<AccountPage> {
       "avatar_url": imageUrl,
       "username": usernameController.text,
       "user_id": userId});
+
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('user_data');
   }
   bool isEditing = false;
 

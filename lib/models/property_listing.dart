@@ -93,11 +93,17 @@ class PropertyListing {
   static Future<PropertyListing> _processListing(dynamic listingJson, String property_id) async {
     String listing_Id = listingJson["listing_id"];
 
-    List<String> images = await _getListingImages(listing_Id);
+    final imagesFuture = _getListingImages(listing_Id);
+    final amenitiesFuture = _getAmenities(listing_Id);
+    final reviewsFuture = _getReviews(listing_Id);
+
+    final results = await Future.wait([imagesFuture, amenitiesFuture, reviewsFuture]);
+
+    List<String> images = results[0] as List<String>;
+    List<BooleanVariable> amenities = results[1] as List<BooleanVariable>;
+    List<Review> reviews = results[2] as List<Review>;
 
     developer.log(images.toString());
-
-    List<BooleanVariable> amenities = await _getAmenities(listing_Id);
 
     developer.log("amenities: ${amenities.toString()}");
     developer.log("amenities: ${amenities.length}");
@@ -105,8 +111,6 @@ class PropertyListing {
     String room_type = _determineRoomType(amenities);
 
     developer.log("room type: $room_type");
-
-    List<Review> reviews = await _getReviews(listing_Id);
 
     developer.log("reviews: ${reviews.toString()}");
 
@@ -733,11 +737,15 @@ class PropertyListing {
     if (response.statusCode == 200) {
       final jsonResponse = jsonDecode(response.body)["data"];
 
-      return (jsonResponse as List<dynamic>)
-          .map((item) => SavedSearch.fromJson(item))
-          .toList();
+      if (jsonResponse['data'] != null) {
+        return (jsonResponse as List<dynamic>)
+            .map((item) => SavedSearch.fromJson(item))
+            .toList();
+      }else {
+        return [];
+      }
     } else {
-      throw Exception('Failed to load saved searches: ${response.body}');
+      return [];
     }
   }
 

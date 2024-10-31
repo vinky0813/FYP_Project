@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:fyp_project/pages/chat_list.dart';
 import 'package:fyp_project/pages/home.dart';
@@ -8,6 +10,7 @@ import 'package:fyp_project/pages/saved_searches.dart';
 import 'package:fyp_project/pages/shortlist.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/property_listing.dart';
 import '../models/user.dart' as project_user;
@@ -27,31 +30,26 @@ class _AppDrawerState extends State<AppDrawer> {
   PropertyListing? currentListing = null;
   String? userId;
 
-  Future<void> _getUser(String user_id) async {
-    try {
-      renter = await project_user.User.getUserById(user_id);
-    } catch (e) {
-      developer.log("Error fetching user: $e");
-      renter = null;
-    }
-  }
-
   Future<project_user.User?> _fetchUser() async {
-    final user = Supabase.instance.client.auth.currentUser;
-    final userId = user?.id;
+    final prefs = await SharedPreferences.getInstance();
+    String? userData = prefs.getString('user_data');
 
-    developer.log('User: $user');
-    developer.log('User ID: $userId');
+    developer.log("userdata: $userData");
 
-    if (userId != null) {
-      try {
-        return await project_user.User.getUserById(userId);
-      } catch (e) {
-        developer.log('Error fetching owner: $e');
-        return null;
+    if (userData != null) {
+      renter = project_user.User.fromJson(json.decode(userData));
+    } else {
+      final user = Supabase.instance.client.auth.currentUser;
+      final userId = user?.id;
+
+      developer.log('User: $user');
+      developer.log('User ID: $userId');
+
+      if (userId != null) {
+        renter = await project_user.User.getUserById(userId);
+        await prefs.setString('user_data', json.encode(renter!.toJson()));
       }
     }
-    return null;
   }
 
   Future<PropertyListing?> _getCurrentProperty() {
@@ -73,8 +71,11 @@ class _AppDrawerState extends State<AppDrawer> {
 
     if (userId != null) {
       try {
-        await _getUser(userId!);
-        currentListing = await _getCurrentProperty();
+        await _fetchUser();
+        if (renter!.isAccommodating) {
+          currentListing = await _getCurrentProperty();
+          developer.log("currentlisting: ${currentListing!.listing_id}");
+        }
       } catch (e) {
         developer.log('Error: $e');
       }
@@ -82,8 +83,6 @@ class _AppDrawerState extends State<AppDrawer> {
       setState(() {
         currentListing;
       });
-
-      developer.log("currentlisting: ${currentListing!.listing_id}");
     }
   }
 
@@ -92,81 +91,44 @@ class _AppDrawerState extends State<AppDrawer> {
     return Drawer(
       child: Column(
         children: [
-          FutureBuilder<project_user.User?>(
-              future: _fetchUser(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const SizedBox(
-                    height: 150,
-                    child: DrawerHeader(
-                      child: Row(
-                        children: [
-                          Center(child: CircularProgressIndicator()),
-                          SizedBox(width: 20),
-                          Text(
-                            "Loading User Data",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ],
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.grey,
-                      ),
+          SizedBox(
+            height: 150,
+            child: DrawerHeader(
+              child: renter == null
+                  ? Row(
+                children: const [
+                  Center(child: CircularProgressIndicator()),
+                  SizedBox(width: 20),
+                  Text(
+                    "Loading User Data",
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
                     ),
-                  );
-                } else if (snapshot.data==null) {
-                  return const SizedBox(
-                    height: 150,
-                    child: DrawerHeader(
-                      child: Row(
-                        children: [
-                          Center(child: CircularProgressIndicator()),
-                          SizedBox(width: 20),
-                          Text(
-                            "Loading User Data",
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ],
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.grey,
-                      ),
+                  ),
+                ],
+              )
+                  : Row(
+                children: [
+                  CircleAvatar(
+                    radius: 25,
+                    backgroundImage: NetworkImage(renter!.profilePic),
+                  ),
+                  const SizedBox(width: 20),
+                  Text(
+                    renter!.username,
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
                     ),
-                  );
-                } else {
-                  final renter = snapshot.data!;
-                  return SizedBox(
-                    height: 150,
-                    child: DrawerHeader(
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            radius: 25,
-                            backgroundImage: NetworkImage(renter.profilePic),
-                          ),
-                          const SizedBox(width: 20),
-                          Text(
-                            renter.username,
-                            style: const TextStyle(
-                              color: Colors.black,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ],
-                      ),
-                      decoration: const BoxDecoration(
-                        color: Colors.grey,
-                      ),
-                    ),
-                  );
-                }
-              }),
+                  ),
+                ],
+              ),
+              decoration: const BoxDecoration(
+                color: Colors.grey,
+              ),
+            ),
+          ),
           Expanded(
             child: ListView(
               padding: EdgeInsets.zero,
@@ -225,7 +187,9 @@ class _AppDrawerState extends State<AppDrawer> {
             alignment: Alignment.bottomCenter,
             child: ListTile(
               title: const Text("Logout",),
-              onTap: () {
+              onTap: () async {
+                final prefs = await SharedPreferences.getInstance();
+                await prefs.remove('user_data');
                 Supabase.instance.client.auth.signOut();
                 Get.offAll(() => const Login());
               },

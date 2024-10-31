@@ -18,6 +18,7 @@ class Shortlist extends StatefulWidget {
 class _ShortlistState extends State<Shortlist> {
   List<PropertyListing> shortlist = [];
   String? userId;
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -45,6 +46,9 @@ class _ShortlistState extends State<Shortlist> {
         developer.log('Error: $e');
       }
     }
+    setState(() {
+      isLoading = false;
+    });
   }
 
   void _deleteShortlist(String user_id, String listing_id) {
@@ -56,7 +60,11 @@ class _ShortlistState extends State<Shortlist> {
     return Scaffold(
       appBar: appBar(),
       drawer: AppDrawer(),
-      body: CustomScrollView(
+      body: isLoading
+          ? Center(child: CircularProgressIndicator())
+          : shortlist.isEmpty
+          ? Center(child: Text("There are no shortlists."))
+          :CustomScrollView(
         slivers: [
           const SliverToBoxAdapter(
             child: Padding(

@@ -127,9 +127,11 @@ class _HomePageState extends State<HomePage> {
     if (userId != null) {
       try {
         developer.log("IF SOMETHING GOES WRONG HERE. THAT MEANS START YOUR NODE SERVER");
-        await _getUser(userId!);
-        await _getTopRatedListing();
-        await _getMostViewedPropertyListing();
+        await Future.wait([
+          _getUser(userId!),
+          _getTopRatedListing(),
+          _getMostViewedPropertyListing(),
+        ]);
 
         developer.log("is renter accommodating: ${renter!.isAccommodating}");
 

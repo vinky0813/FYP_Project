@@ -41,21 +41,25 @@ class ListingdetailsState extends State<Listingdetails> {
   Future<void> _initialize() async {
     final user = Supabase.instance.client.auth.currentUser;
     userId = user?.id;
-    PropertyListing.incrementView(widget.propertyListing.listing_id);
-    developer.log("property id: ${widget.propertyListing.property_id}");
-    property =
-        await Property.getPropertyWithId(widget.propertyListing.property_id);
 
-    developer.log("property: ${property.toString()}");
+    developer.log("property id: ${widget.propertyListing.property_id}");
+
+    final futures = [
+      PropertyListing.incrementView(widget.propertyListing.listing_id),
+      Property.getPropertyWithId(widget.propertyListing.property_id),
+      PropertyListing.getShortlist(userId!),
+    ];
+
+    final results = await Future.wait(futures);
+
+    property = results[1] as Property;
+    List<PropertyListing> shortlists = results[2] as List<PropertyListing>;
 
     trueAmenities =
         widget.propertyListing.amenities.where((b) => b.value).toList();
     trueAmenities.removeAt(0);
 
     developer.log("userid: $userId");
-
-    List<PropertyListing> shortlists =
-        await PropertyListing.getShortlist(userId!);
 
     for (PropertyListing shortlist in shortlists) {
       if (shortlist.listing_id == widget.propertyListing.listing_id) {
