@@ -53,7 +53,7 @@ async function authenticateToken(req, res, next) {
     });
 
     try {
-    const { data: { user }, error } = await req.supabase.auth.getUser(token);
+    const { data: { user }, error } = await supabase.auth.getUser(token);
 
     if (error || !user) {
       return res.status(403).json({ error: 'Invalid token' });
