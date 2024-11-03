@@ -67,6 +67,24 @@ class ConfirmationPageState extends State<ConfirmationPage> {
   final accesstokencontroller = Get.find<Accesstokencontroller>();
   String accessToken = accessTokenController.token!;
 
+  Future<List<String>?> _uploadImages(List<File> images) async {
+    try {
+      List<String?> results = await Future.wait(images.map((image) => _uploadImage(image)));
+
+      List<String> imageUrls = results.whereType<String>().toList();
+
+      if (imageUrls.length != images.length) {
+        developer.log("Some images failed to upload");
+      }
+
+      return imageUrls.isNotEmpty ? imageUrls : null;
+    } catch (e) {
+      developer.log("Image upload failed: $e");
+      return null;
+    }
+  }
+
+
   Future<String?> _uploadImage(File image) async {
     final url = Uri.parse("https://fyp-project-liart.vercel.app/api/upload-property-image");
 
@@ -119,53 +137,48 @@ class ConfirmationPageState extends State<ConfirmationPage> {
         return;
       }
 
-      for (var image_url in widget.removedExistingImages) {
-        final url_delete_image = Uri.parse("https://fyp-project-liart.vercel.app/api/delete-listing-image");
-        final response_delete_image = await http.delete(
-          url_delete_image,
-          headers: {"Content-Type": "application/json", 'Authorization': 'Bearer $accessToken',},
+      final urlDeleteImage = Uri.parse("https://fyp-project-liart.vercel.app/api/delete-listing-image");
+      final deleteImageRequests = widget.removedExistingImages.map((imageUrl) {
+        return http.delete(
+          urlDeleteImage,
+          headers: {"Content-Type": "application/json", 'Authorization': 'Bearer $accessToken'},
           body: jsonEncode({
             "listing_id": widget.listing_id,
-            "image_url": image_url,
+            "image_url": imageUrl,
           }),
         );
+      }).toList();
 
-        if (response_delete_image.statusCode == 200) {
-          developer.log("Deleted image: $image_url");
-        } else {
-          developer.log("Failed to delete image: $image_url");
-        }
-      }
+      final deleteResponses = await Future.wait(deleteImageRequests);
 
       final List<String> urls_to_be_uploaded = [];
 
-      for (var image in widget.imageFiles) {
-        final url = await _uploadImage(image);
-        if (url!.isNotEmpty) {
+      final List<String> urlsToBeUploaded = [];
+      final uploadImageFutures = widget.imageFiles.map((imageFile) async {
+        final url = await _uploadImage(imageFile);
+        if (url != null && url.isNotEmpty) {
+          urlsToBeUploaded.add(url);
           developer.log("Image uploaded: $url");
-          urls_to_be_uploaded.add(url);
         } else {
-          Get.snackbar("Error", "Image upload failed for $image");
-          return;
+          Get.snackbar("Error", "Image upload failed for $imageFile");
         }
-      }
-      final url_listing_images = Uri.parse("https://fyp-project-liart.vercel.app/api/add-listing-images");
+      }).toList();
 
-      for (var image_url in urls_to_be_uploaded) {
-        final responseListingImage = await http.post(
-          url_listing_images,
-          headers: {"Content-Type": "application/json", 'Authorization': 'Bearer $accessToken',},
+      await Future.wait(uploadImageFutures);
+
+      final urlAddListingImages = Uri.parse("https://fyp-project-liart.vercel.app/api/add-listing-images");
+      final addImageRequests = urlsToBeUploaded.map((imageUrl) {
+        return http.post(
+          urlAddListingImages,
+          headers: {"Content-Type": "application/json", 'Authorization': 'Bearer $accessToken'},
           body: jsonEncode({
             "listing_id": widget.listing_id,
-            "image_url": image_url,
+            "image_url": imageUrl,
           }),
         );
-        if (responseListingImage.statusCode == 200) {
-          developer.log("${responseListingImage.statusCode}: Success, Image Added");
-        } else {
-          developer.log("${responseListingImage.statusCode}: Failed to add image");
-        }
-      }
+      }).toList();
+
+      final addImageResponses = await Future.wait(addImageRequests);
 
       final urlUpdateAmenities = Uri.parse("https://fyp-project-liart.vercel.app/api/edit-listing-ammenities");
       final responseUpdateAmenities = await http.put(
@@ -207,20 +220,14 @@ class ConfirmationPageState extends State<ConfirmationPage> {
 
 
   Future<void> _addListing() async {
-    List<String> imageUrls = [];
 
     developer
         .log("length of ammenities: ${widget.ammenities.length.toString()}");
 
-    for (var image in widget.imageFiles) {
-      final url = await _uploadImage(image);
-      if (url != null) {
-        imageUrls.add(url);
-        developer.log(url);
-      } else {
-        Get.snackbar("Error", "Image upload failed for $image");
-        return;
-      }
+    final imageUrls = await _uploadImages(widget.imageFiles);
+    if (imageUrls == null || imageUrls.isEmpty) {
+      Get.snackbar("Error", "Image upload failed");
+      return;
     }
 
     if (imageUrls.isEmpty) {
@@ -262,24 +269,20 @@ class ConfirmationPageState extends State<ConfirmationPage> {
       final url_listing_images =
           Uri.parse("https://fyp-project-liart.vercel.app/api/add-listing-images");
 
-      for (var image_url in imageUrls) {
-        developer.log(image_url);
-        final responseListingImage = await http.post(
-          url_listing_images,
-          headers: {"Content-Type": "application/json", 'Authorization': 'Bearer $accessToken',},
+      final urlListingImages = Uri.parse("https://fyp-project-liart.vercel.app/api/add-listing-images");
+      final imageRequests = imageUrls.map((imageUrl) {
+        return http.post(
+          urlListingImages,
+          headers: {
+            "Content-Type": "application/json",
+            'Authorization': 'Bearer $accessToken',
+          },
           body: jsonEncode({
             "listing_id": listingId,
-            "image_url": image_url,
+            "image_url": imageUrl,
           }),
         );
-        if (responseListingImage.statusCode == 200) {
-          developer
-              .log("${responseListingImage.statusCode}: Success, Image Added");
-        } else {
-          developer
-              .log("${responseListingImage.statusCode}: Failed to add image");
-        }
-      }
+      }).toList();
 
       switch (widget.roomType) {
         case "master":

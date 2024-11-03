@@ -174,6 +174,56 @@ class _AddPropertyState extends State<AddProperty> {
     }
   }
 
+  Map<String, dynamic> _buildPropertyData(String imageUrl, String groupId) {
+    return {
+      "property_title": _propertyTitleController.text,
+      "owner_id": userId,
+      "property_image": imageUrl,
+      "address": _addressController.text,
+      "lat": lat,
+      "long": long,
+      "group_id": groupId,
+    };
+  }
+
+  Future<Map<String, dynamic>?> _sendPropertyRequest(Map<String, dynamic> propertyData) async {
+    final url = Uri.parse("https://fyp-project-liart.vercel.app/api/add-property");
+    final response = await http.post(
+      url,
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $accessToken",
+      },
+      body: jsonEncode(propertyData),
+    );
+
+    if (response.statusCode == 200) {
+      developer.log("${response.statusCode}: Success, Property Added");
+      return jsonDecode(response.body);
+    } else {
+      developer.log("${response.statusCode}: Failed, Please Try Again");
+      return null;
+    }
+  }
+
+  Future<Property> _constructNewProperty(
+      String propertyId,
+      String imageUrl,
+      String groupId
+      ) async {
+    final owner = await Owner.getOwnerWithId(userId!);
+    return Property(
+      property_id: propertyId,
+      property_title: _propertyTitleController.text,
+      address: _addressController.text,
+      imageUrl: imageUrl,
+      owner: owner,
+      lat: lat,
+      long: long,
+      group_id: groupId,
+    );
+  }
+
   Future<void> _addProperty() async {
     if (_formKey.currentState?.validate() ?? false) {
       if (_propertyImage == null) {
@@ -182,59 +232,33 @@ class _AddPropertyState extends State<AddProperty> {
       }
 
       final imageUrl = await _uploadImage(_propertyImage!);
-      developer.log(imageUrl!);
       if (imageUrl == null) {
         Get.snackbar("Error", "Image upload failed");
         return;
       }
 
-      final group_id = await Chatservice.createGroup([userId!]);
-
-      final url = Uri.parse("https://fyp-project-liart.vercel.app/api/add-property");
-      final response = await http.post(
-        url,
-        headers: {"Content-Type": "application/json",
-                  "Authorization": "Bearer $accessToken",},
-        body: jsonEncode({
-          "property_title": _propertyTitleController.text,
-          "owner_id": userId,
-          "property_image": imageUrl,
-          "address": _addressController.text,
-          "lat": lat,
-          "long": long,
-          "group_id": group_id,
-        }),
-      );
-
-      if (response.statusCode == 200) {
-        developer.log("${response.statusCode}: Success, Property Added");
-
-        final responseData = jsonDecode(response.body);
-        final propertyId = responseData["data"]["property_id"];
-
-        developer.log("response data: ${responseData}");
-
-        if (propertyId == null) {
-          Get.snackbar("Error", "Failed to retrieve property ID from response");
-          return;
-        }
-        Owner owner = await Owner.getOwnerWithId(userId!);
-
-        Property newProperty = Property(
-          property_id: propertyId,
-          property_title: _propertyTitleController.text,
-          address: _addressController.text,
-          imageUrl: imageUrl,
-          owner: owner,
-          lat: lat,
-          long: long,
-          group_id: group_id!,
-        );
-        Get.back(result: newProperty);
-      } else {
-        developer.log("${response.statusCode}: Failed, Please Try Again");
-        Get.snackbar("Failed", "Please Try Again");
+      final groupId = await Chatservice.createGroup([userId!]);
+      if (groupId == null) {
+        Get.snackbar("Error", "Group creation failed");
+        return;
       }
+
+      final propertyData = _buildPropertyData(imageUrl, groupId);
+
+      final response = await _sendPropertyRequest(propertyData);
+      if (response == null) {
+        Get.snackbar("Failed", "Please try again");
+        return;
+      }
+
+      final propertyId = response["data"]["property_id"];
+      if (propertyId == null) {
+        Get.snackbar("Error", "Failed to retrieve property ID from response");
+        return;
+      }
+
+      final newProperty = await _constructNewProperty(propertyId, imageUrl, groupId);
+      Get.back(result: newProperty);
     }
   }
 
@@ -285,32 +309,66 @@ class _AddPropertyState extends State<AddProperty> {
   }
 
   Future<void> _deleteProperty() async {
-    final url = Uri.parse(
-        "https://fyp-project-liart.vercel.app/api/delete-property/${widget.property?.property_id}");
-    final response = await http.delete(url, headers: {"Authorization": "Bearer $accessToken"});
+    final response = await _sendDeleteRequest();
 
     if (response.statusCode == 200) {
+      await _deleteRelatedEntities();
       Get.back(result: false);
-      await Supabase.instance.client
-          .from('Messages')
-          .delete()
-          .eq('group_id',  widget.property!.group_id);
-
-      final deleteGroupMembersResponse = await Supabase.instance.client
-          .from('Group_Members')
-          .delete()
-          .eq('group_id', widget.property!.group_id);
-
-      final deleteGroupResponse = await Supabase.instance.client
-          .from('Groups')
-          .delete()
-          .eq('id', widget.property!.group_id);
-
-      developer.log("Success: Property Deleted");
       Get.snackbar("Success", "Property deleted successfully");
     } else {
-      developer.log("Failed: ${response.statusCode}");
+      developer.log("Failed to delete property: ${response.statusCode}");
       Get.snackbar("Failed", "Remove each listing in the property first");
+    }
+  }
+
+  Future<http.Response> _sendDeleteRequest() {
+    final url = Uri.parse(
+        "https://fyp-project-liart.vercel.app/api/delete-property/${widget.property?.property_id}");
+    return http.delete(url, headers: {"Authorization": "Bearer $accessToken"});
+  }
+
+  Future<void> _deleteRelatedEntities() async {
+    await _deleteMessages();
+    await _deleteGroupMembers();
+    await _deleteGroup();
+  }
+
+  Future<void> _deleteMessages() async {
+    final response = await Supabase.instance.client
+        .from('Messages')
+        .delete()
+        .eq('group_id', widget.property!.group_id);
+
+    if (response.error != null) {
+      developer.log("Failed to delete messages: ${response.error!.message}");
+    } else {
+      developer.log("Messages deleted successfully");
+    }
+  }
+
+  Future<void> _deleteGroupMembers() async {
+    final response = await Supabase.instance.client
+        .from('Group_Members')
+        .delete()
+        .eq('group_id', widget.property!.group_id);
+
+    if (response.error != null) {
+      developer.log("Failed to delete group members: ${response.error!.message}");
+    } else {
+      developer.log("Group members deleted successfully");
+    }
+  }
+
+  Future<void> _deleteGroup() async {
+    final response = await Supabase.instance.client
+        .from('Groups')
+        .delete()
+        .eq('id', widget.property!.group_id);
+
+    if (response.error != null) {
+      developer.log("Failed to delete group: ${response.error!.message}");
+    } else {
+      developer.log("Group deleted successfully");
     }
   }
 

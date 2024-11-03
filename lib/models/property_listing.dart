@@ -245,44 +245,37 @@ class PropertyListing {
 
   static Future<void> deleteListing(String listing_id) async {
 
-    final image_delete_url = Uri.parse("https://fyp-project-liart.vercel.app/api/delete-listing-images/$listing_id");
+    final imageDeleteUrl = Uri.parse("https://fyp-project-liart.vercel.app/api/delete-listing-images/$listing_id");
 
-    try {
-      final response = await http.delete(image_delete_url, headers: {"Authorization": "Bearer $accessToken"});
+    final amenitiesUrl = Uri.parse("https://fyp-project-liart.vercel.app/api/delete-listing-amenities/$listing_id");
 
+    final deleteImagesFuture = http.delete(imageDeleteUrl, headers: {"Authorization": "Bearer $accessToken"}).then((response) async {
       developer.log(response.body);
       if (response.statusCode == 200) {
-
         final responseBody = jsonDecode(response.body);
         final imagesData = responseBody["data"] as List<dynamic>;
         final imagesToDeleteFromStorage = imagesData.map<String>((item) => item["image_url"] as String).toList();
 
         developer.log("Images to delete: ${imagesToDeleteFromStorage.toString()}");
-
         await deleteImages(imagesToDeleteFromStorage);
-
       } else {
         final responseBody = jsonDecode(response.body);
         developer.log("Error deleting images: ${responseBody}");
+        throw Exception("Failed to delete images");
       }
-    } catch (e) {
-      developer.log('Unexpected error: $e');
-    }
+    });
 
-    final amenities_url = Uri.parse("https://fyp-project-liart.vercel.app/api/delete-listing-amenities/$listing_id");
-
-    try {
-      final response = await http.delete(amenities_url, headers: {"Authorization": "Bearer $accessToken"});
-
+    final deleteAmenitiesFuture = http.delete(amenitiesUrl, headers: {"Authorization": "Bearer $accessToken"}).then((response) {
       if (response.statusCode == 200) {
-        developer.log("amenities deleted successfully");
+        developer.log("Amenities deleted successfully");
       } else {
         final responseBody = jsonDecode(response.body);
-        developer.log('Error deleting listing: ${responseBody['message']}');
+        developer.log('Error deleting listing amenities: ${responseBody['message']}');
+        throw Exception("Failed to delete amenities");
       }
-    } catch (e) {
-      developer.log('Unexpected error: $e');
-    }
+    });
+
+    await Future.wait([deleteImagesFuture, deleteAmenitiesFuture]);
 
     final listing_url = Uri.parse("https://fyp-project-liart.vercel.app/api/delete-listing/$listing_id");
 
@@ -661,46 +654,53 @@ class PropertyListing {
 
   static Future<void> removeTenant(String listing_id, String renter_id, String property_id) async {
     try {
-      final response1 = await http.put(
-        Uri.parse("https://fyp-project-liart.vercel.app/api/remove-tenant-part-1"),
-        headers: {'Content-Type': 'application/json',"Authorization": "Bearer $accessToken"},
-        body: jsonEncode({
-          "listing_id": listing_id,
-          "renter_id": renter_id,
+      final futures = [
+        http.put(
+          Uri.parse("https://fyp-project-liart.vercel.app/api/remove-tenant-part-1"),
+          headers: {
+            'Content-Type': 'application/json',
+            "Authorization": "Bearer $accessToken"
+          },
+          body: jsonEncode({"listing_id": listing_id, "renter_id": renter_id}),
+        ).then((response) {
+          if (response.statusCode != 200) {
+            throw Exception("Failed: ${jsonDecode(response.body)["message"]}");
+          }
         }),
-      );
-      if (response1.statusCode != 200) {
-        throw Exception("Failed: ${jsonDecode(response1.body)["message"]}");
-      }
 
-      final response2 = await http.put(
-        Uri.parse("https://fyp-project-liart.vercel.app/api/remove-tenant-part-2"),
-        headers: {'Content-Type': 'application/json',"Authorization": "Bearer $accessToken"},
-        body: jsonEncode({
-          "renter_id": renter_id
+        http.put(
+          Uri.parse("https://fyp-project-liart.vercel.app/api/remove-tenant-part-2"),
+          headers: {
+            'Content-Type': 'application/json',
+            "Authorization": "Bearer $accessToken"
+          },
+          body: jsonEncode({"renter_id": renter_id}),
+        ).then((response) {
+          if (response.statusCode != 200) {
+            throw Exception("Failed: ${jsonDecode(response.body)["message"]}");
+          }
         }),
-      );
-      if (response1.statusCode != 200) {
-        throw Exception("Failed: ${jsonDecode(response2.body)["message"]}");
-      }
 
-      final response3 = await http.delete(
-        Uri.parse("https://fyp-project-liart.vercel.app/api/remove-tenant-part-3"),
-        headers: {'Content-Type': 'application/json',"Authorization": "Bearer $accessToken"},
-        body: jsonEncode({
-          "property_id": property_id,
-          "renter_id": renter_id,
+        http.delete(
+          Uri.parse("https://fyp-project-liart.vercel.app/api/remove-tenant-part-3"),
+          headers: {
+            'Content-Type': 'application/json',
+            "Authorization": "Bearer $accessToken"
+          },
+          body: jsonEncode({"property_id": property_id, "renter_id": renter_id}),
+        ).then((response) {
+          if (response.statusCode != 200) {
+            throw Exception("Failed: ${jsonDecode(response.body)["message"]}");
+          }
         }),
-      );
-      if (response1.statusCode != 200) {
-        throw Exception("Failed: ${jsonDecode(response3.body)["message"]}");
-      }
+      ];
 
-      developer.log("Success, removed tenant");
+      await Future.wait(futures);
     } catch (e) {
       developer.log('Error accepting invitation: $e');
     }
   }
+
 
   static Future<bool> addSavedSearch(String user_id, String? search_criteria, String title, double? lat, double? long) async {
     try {
