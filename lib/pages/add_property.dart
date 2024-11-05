@@ -338,12 +338,6 @@ class _AddPropertyState extends State<AddProperty> {
         .from('Messages')
         .delete()
         .eq('group_id', widget.property!.group_id);
-
-    if (response.error != null) {
-      developer.log("Failed to delete messages: ${response.error!.message}");
-    } else {
-      developer.log("Messages deleted successfully");
-    }
   }
 
   Future<void> _deleteGroupMembers() async {
@@ -351,12 +345,6 @@ class _AddPropertyState extends State<AddProperty> {
         .from('Group_Members')
         .delete()
         .eq('group_id', widget.property!.group_id);
-
-    if (response.error != null) {
-      developer.log("Failed to delete group members: ${response.error!.message}");
-    } else {
-      developer.log("Group members deleted successfully");
-    }
   }
 
   Future<void> _deleteGroup() async {
@@ -364,12 +352,6 @@ class _AddPropertyState extends State<AddProperty> {
         .from('Groups')
         .delete()
         .eq('id', widget.property!.group_id);
-
-    if (response.error != null) {
-      developer.log("Failed to delete group: ${response.error!.message}");
-    } else {
-      developer.log("Group deleted successfully");
-    }
   }
 
   Widget _buildStep1() {
