@@ -12,9 +12,6 @@ import 'boolean_variable.dart';
 import 'dart:developer' as developer;
 import 'package:http/http.dart' as http;
 
-final accessTokenController = Get.find<Accesstokencontroller>();
-final accessToken = accessTokenController.token;
-
 class PropertyListing {
   String listing_id;
   String listing_title;
@@ -55,6 +52,8 @@ class PropertyListing {
   });
 
   static Future<List<PropertyListing>> getPropertyListing(String property_id) async {
+    final accessTokenController = Get.find<Accesstokencontroller>();
+    final accessToken = accessTokenController.token;
 
     List<PropertyListing> propertyListings = [];
 
@@ -91,6 +90,8 @@ class PropertyListing {
   }
 
   static Future<PropertyListing> _processListing(dynamic listingJson, String property_id) async {
+    final accessTokenController = Get.find<Accesstokencontroller>();
+    final accessToken = accessTokenController.token;
     String listing_Id = listingJson["listing_id"];
 
     final imagesFuture = _getListingImages(listing_Id);
@@ -150,6 +151,8 @@ class PropertyListing {
   }
 
   static Future<List<Review>> _getReviews(String listing_Id) async {
+    final accessTokenController = Get.find<Accesstokencontroller>();
+    final accessToken = accessTokenController.token;
     final reviewsResponse = await http
         .get(Uri.parse("https://fyp-project-liart.vercel.app/api/get-all-reviews/$listing_Id"), headers: {"Authorization": "Bearer $accessToken"});
 
@@ -167,6 +170,8 @@ class PropertyListing {
   }
 
   static Future<List<String>> _getListingImages(String listing_Id) async {
+    final accessTokenController = Get.find<Accesstokencontroller>();
+    final accessToken = accessTokenController.token;
     final imagesResponse = await http.get(
         Uri.parse("https://fyp-project-liart.vercel.app/api/get-listing-images/$listing_Id"), headers: {"Authorization": "Bearer $accessToken"});
 
@@ -182,6 +187,8 @@ class PropertyListing {
   }
 
   static Future<List<BooleanVariable>> _getAmenities(String listing_Id) async {
+    final accessTokenController = Get.find<Accesstokencontroller>();
+    final accessToken = accessTokenController.token;
     final url =
         Uri.parse("https://fyp-project-liart.vercel.app/api/get-all-amenities/$listing_Id");
     final response = await http.get(url, headers: {"Authorization": "Bearer $accessToken"});
@@ -232,6 +239,7 @@ class PropertyListing {
 
   static Future<void> deleteImages(List<String> imageUrls) async {
 
+
     for (String imageUrl in imageUrls) {
       final response = await supabase_project.Supabase.instance.client.storage.from("property-images").remove([imageUrl]);
 
@@ -244,6 +252,8 @@ class PropertyListing {
   }
 
   static Future<void> deleteListing(String listing_id) async {
+    final accessTokenController = Get.find<Accesstokencontroller>();
+    final accessToken = accessTokenController.token;
 
     final imageDeleteUrl = Uri.parse("https://fyp-project-liart.vercel.app/api/delete-listing-images/$listing_id");
 
@@ -295,6 +305,9 @@ class PropertyListing {
 
   static Future<PropertyListing?> getCurrentProperty(String? listing_id) async {
 
+    final accessTokenController = Get.find<Accesstokencontroller>();
+    final accessToken = accessTokenController.token;
+
     final url = Uri.parse("https://fyp-project-liart.vercel.app/api/get-listing-with-id/$listing_id");
     try {
       final response = await http.get(url, headers: {"Authorization": "Bearer $accessToken"});
@@ -320,6 +333,9 @@ class PropertyListing {
   }
 
   static Future<List<PropertyListing>> getTopRatedListing() async {
+    final accessTokenController = Get.find<Accesstokencontroller>();
+    final accessToken = accessTokenController.token;
+
     List<PropertyListing> topRatedList = [];
 
     final url = Uri.parse("https://fyp-project-liart.vercel.app/api/get-top-rated-listing");
@@ -356,6 +372,10 @@ class PropertyListing {
   }
 
   static Future<List<PropertyListing>> getMostViewedListing() async {
+
+    final accessTokenController = Get.find<Accesstokencontroller>();
+    final accessToken = accessTokenController.token;
+
     List<PropertyListing> mostViewedListing = [];
 
     final url = Uri.parse("https://fyp-project-liart.vercel.app/api/get-most-viewed-listing");
@@ -408,6 +428,9 @@ class PropertyListing {
   }
 
   static Future<bool> incrementView(String listing_id) async {
+
+    final accessTokenController = Get.find<Accesstokencontroller>();
+    final accessToken = accessTokenController.token;
     final url = Uri.parse("https://fyp-project-liart.vercel.app/api/increment-view/$listing_id");
     try {
       final response = await http.put(url, headers: {"Authorization": "Bearer $accessToken"});
@@ -426,6 +449,9 @@ class PropertyListing {
   }
 
   static Future<List<PropertyListing>> getShortlist(String user_id) async {
+
+    final accessTokenController = Get.find<Accesstokencontroller>();
+    final accessToken = accessTokenController.token;
     List<PropertyListing> shortlist = [];
 
     final url = Uri.parse("https://fyp-project-liart.vercel.app/api/get-shortlists-with-userid/$user_id");
@@ -477,6 +503,8 @@ class PropertyListing {
   }
 
   static Future<bool> deleteShortlist(String user_id, String listing_id) async {
+    final accessTokenController = Get.find<Accesstokencontroller>();
+    final accessToken = accessTokenController.token;
     final url = Uri.parse("https://fyp-project-liart.vercel.app/api/remove-shortlist");
 
     try {
@@ -503,6 +531,9 @@ class PropertyListing {
   }
 
   static Future<bool> addShortlist(String user_id, String listing_id) async {
+
+    final accessTokenController = Get.find<Accesstokencontroller>();
+    final accessToken = accessTokenController.token;
     final url = Uri.parse("https://fyp-project-liart.vercel.app/api/add-shortlist");
 
     try {
@@ -529,6 +560,8 @@ class PropertyListing {
   }
 
   static Future<List<PropertyListing>> getInvitations(String renter_id) async {
+    final accessTokenController = Get.find<Accesstokencontroller>();
+    final accessToken = accessTokenController.token;
 
     List<PropertyListing> propertyListings = [];
 
@@ -579,6 +612,9 @@ class PropertyListing {
   }
 
   static Future<void> acceptInvitation(String renter_id, String listing_id, String property_id) async {
+
+    final accessTokenController = Get.find<Accesstokencontroller>();
+    final accessToken = accessTokenController.token;
     developer.log("renter id: $renter_id");
     developer.log("listing id: $listing_id");
     developer.log("property id: $property_id");
@@ -635,6 +671,9 @@ class PropertyListing {
   }
 
   static Future<void> rejectInvitation(String listing_id, String renter_id) async {
+
+    final accessTokenController = Get.find<Accesstokencontroller>();
+    final accessToken = accessTokenController.token;
     try {
       final response = await http.delete(
         Uri.parse("https://fyp-project-liart.vercel.app/api/delete-invitations/$listing_id"),
@@ -653,6 +692,9 @@ class PropertyListing {
   }
 
   static Future<void> removeTenant(String listing_id, String renter_id, String property_id) async {
+
+    final accessTokenController = Get.find<Accesstokencontroller>();
+    final accessToken = accessTokenController.token;
     try {
       final futures = [
         http.put(
@@ -703,6 +745,9 @@ class PropertyListing {
 
 
   static Future<bool> addSavedSearch(String user_id, String? search_criteria, String title, double? lat, double? long) async {
+
+    final accessTokenController = Get.find<Accesstokencontroller>();
+    final accessToken = accessTokenController.token;
     try {
       final response = await http.post(
         Uri.parse("https://fyp-project-liart.vercel.app/api/add-saved-search"),
@@ -728,6 +773,9 @@ class PropertyListing {
   }
 
   static Future<List<SavedSearch>> getSavedSearches(String userId) async {
+
+    final accessTokenController = Get.find<Accesstokencontroller>();
+    final accessToken = accessTokenController.token;
     final response = await http.get(
         Uri.parse("https://fyp-project-liart.vercel.app/api/get-saved-searches-with-userid/$userId"), headers: {"Authorization": "Bearer $accessToken"},
     );
@@ -737,7 +785,7 @@ class PropertyListing {
     if (response.statusCode == 200) {
       final jsonResponse = jsonDecode(response.body)["data"];
 
-      if (jsonResponse['data'] != null) {
+      if (jsonResponse != null) {
         return (jsonResponse as List<dynamic>)
             .map((item) => SavedSearch.fromJson(item))
             .toList();
@@ -750,6 +798,9 @@ class PropertyListing {
   }
 
   static Future<bool> deleteSavedSearch(String id) async {
+
+    final accessTokenController = Get.find<Accesstokencontroller>();
+    final accessToken = accessTokenController.token;
     final url = Uri.parse("https://fyp-project-liart.vercel.app/api/delete-saved-search");
 
     try {

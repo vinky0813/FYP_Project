@@ -76,8 +76,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    super.initState();
+
     Get.put(Accesstokencontroller());
+    super.initState();
 
     _initialize();
   }
@@ -95,6 +96,9 @@ class _HomePageState extends State<HomePage> {
     await Supabase.instance.client.auth.refreshSession();
 
     final user = Supabase.instance.client.auth.currentUser;
+    if (user == null) {
+      throw Exception('User is not authenticated');
+    }
     userId = user!.id;
 
     Supabase.instance.client.auth.onAuthStateChange.listen((event) async {

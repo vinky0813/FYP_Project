@@ -576,7 +576,7 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
                                     TextButton(
                                       onPressed: () {
                                         Navigator.of(context).pop();
-                                        project_user.User.removeInvitation(widget.propertyListing.listing_id);
+                                        project_user.User.removeInvitation(widget.propertyListing.listing_id, invitedTenant!.id);
 
                                         setState(() {
                                           _invitationSent = false;
@@ -693,8 +693,9 @@ class ListingDetailsOwnerState extends State<ListingDetailsOwner> {
                                   bool proceed = false;
                                   proceed = await project_user.User.checkRenterId(_tenantIdController.text);
                                   developer.log("proceed: $proceed");
-                                  if (proceed) {
-                                    _sendInvitation(widget.propertyListing.listing_id, owner!.id, _tenantIdController.text);
+                                  if (proceed == true) {
+                                    developer.log("owner id:  ${widget.property.owner.id}");
+                                    _sendInvitation(widget.propertyListing.listing_id, widget.property.owner.id, _tenantIdController.text);
                                     project_user.User newInvitedTenant = await project_user.User.getUserById(_tenantIdController.text);
                                     setState(() {
                                       _invitationSent = true;

@@ -14,6 +14,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:developer' as developer;
 import 'package:http/http.dart' as http;
 
+import '../AccessTokenController.dart';
 import '../ChatService.dart';
 import '../models/property_listing.dart';
 
@@ -607,6 +608,10 @@ class ListingdetailsState extends State<Listingdetails> {
   }
 
   Future<void> _submitReport(String reason, String details) async {
+
+    final accessTokenController = Get.find<Accesstokencontroller>();
+    final accessToken = accessTokenController.token;
+
     final now = DateTime.now();
     final oneHourAgo = now.subtract(const Duration(hours: 1));
 

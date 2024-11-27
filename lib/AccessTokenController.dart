@@ -14,16 +14,18 @@ class Accesstokencontroller extends GetxController {
 
   Future<void> _initializeToken() async {
     final session = Supabase.instance.client.auth.currentSession;
-    if (session != null) {
-      _token.value = session.accessToken ?? '';
-    }
+    _updateToken(session);
 
     Supabase.instance.client.auth.onAuthStateChange.listen((event) {
-      if (event.session != null) {
-        _token.value = event.session!.accessToken ?? '';
-      } else {
-        _token.value = '';
-      }
+      _updateToken(event.session);
     });
+  }
+
+  void _updateToken(Session? session) {
+    if (session != null) {
+      _token.value = session.accessToken ?? '';
+    } else {
+      _token.value = '';
+    }
   }
 }

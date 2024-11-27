@@ -7,9 +7,6 @@ import 'dart:developer' as developer;
 
 import '../AccessTokenController.dart';
 
-final accessTokenController = Get.find<Accesstokencontroller>();
-final accessToken = accessTokenController.token;
-
 class User {
   String id;
   String username;
@@ -57,7 +54,9 @@ class User {
   }
 
   static Future<User> getUserById(String user_id) async {
-    await supabase_client.Supabase.instance.client.auth.refreshSession();
+
+    final accessTokenController = Get.find<Accesstokencontroller>();
+    final accessToken = accessTokenController.token;
 
     developer.log("im here");
     developer.log("Access Token: $accessToken");
@@ -93,6 +92,10 @@ class User {
   }
 
   static Future<User?> checkInvitation(String listing_id) async {
+
+    final accessTokenController = Get.find<Accesstokencontroller>();
+    final accessToken = accessTokenController.token;
+
     final url = Uri.parse("https://fyp-project-liart.vercel.app/api/get-invitation-with-listing_id/$listing_id");
 
     try {
@@ -126,13 +129,19 @@ class User {
     }
   }
 
-  static Future<bool> removeInvitation(String listing_id) async {
+  static Future<bool> removeInvitation(String listing_id, String invited_tenant_id) async {
+    final accessTokenController = Get.find<Accesstokencontroller>();
+    final accessToken = accessTokenController.token;
+
     final url = Uri.parse("https://fyp-project-liart.vercel.app/api/delete-invitations/$listing_id");
 
     try {
       final response = await http.delete(
         url,
         headers: {'Content-Type': 'application/json',"Authorization": "Bearer $accessToken"},
+        body: jsonEncode({
+          "renter_id": invited_tenant_id,
+        }),
       );
 
       if (response.statusCode == 200) {
@@ -149,6 +158,9 @@ class User {
   }
 
   static Future<bool> sendInvitation(String listing_id, String owner_id, String renter_id) async {
+    final accessTokenController = Get.find<Accesstokencontroller>();
+    final accessToken = accessTokenController.token;
+
     final url = Uri.parse("https://fyp-project-liart.vercel.app/api/add-invitation");
 
     try {
@@ -176,6 +188,9 @@ class User {
   }
 
   static Future<bool> checkRenterId(String renter_id) async {
+    final accessTokenController = Get.find<Accesstokencontroller>();
+    final accessToken = accessTokenController.token;
+
     final url = Uri.parse("https://fyp-project-liart.vercel.app/api/check-renter/$renter_id");
 
     try {
@@ -197,6 +212,8 @@ class User {
     }
   }
   static Future<List<User>> getTenants(String property_id) async {
+    final accessTokenController = Get.find<Accesstokencontroller>();
+    final accessToken = accessTokenController.token;
 
     developer.log("start of getTenant");
     final url = Uri.parse("https://fyp-project-liart.vercel.app/api/get-tenants/$property_id");
@@ -242,6 +259,9 @@ class User {
   }
 
   static Future<void> updateUser(String user_id, String username, String contactNo, String profilePic) async {
+    final accessTokenController = Get.find<Accesstokencontroller>();
+    final accessToken = accessTokenController.token;
+
     final url = Uri.parse("https://fyp-project-liart.vercel.app/api/update-renter-information/$user_id");
 
     developer.log("${user_id}, ${username}, ${contactNo}, ${profilePic}");

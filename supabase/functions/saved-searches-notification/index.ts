@@ -278,7 +278,7 @@ async function isWithinDistance(listingLocation: { type: string; coordinates: nu
         console.error("Error checking location distance:", error);
         return false;
     }
-    return data; // Assuming this returns true/false based on the distance check
+    return data;
 }
 
 

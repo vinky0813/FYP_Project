@@ -78,7 +78,9 @@ class MyroomState extends State<MyRoomInvitationDetails> {
 
     developer.log("property id: ${widget.propertyListing.property_id}");
 
-    final fetchProperty = Property.getPropertyWithId(widget.propertyListing.property_id);
+    final fetchProperty = await Property.getPropertyWithId(widget.propertyListing.property_id);
+
+    property = fetchProperty;
     final fetchTenants = _getTenants();
 
     Future<void>? fetchUser;
@@ -87,12 +89,9 @@ class MyroomState extends State<MyRoomInvitationDetails> {
     }
 
     final results = await Future.wait([
-      fetchProperty,
       fetchTenants,
       if (fetchUser != null) fetchUser,
     ]);
-
-    property = results[0] as Property;
 
     setState(() {
       tenantList;

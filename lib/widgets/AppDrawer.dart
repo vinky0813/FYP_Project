@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:fyp_project/AccessTokenController.dart';
 import 'package:fyp_project/pages/chat_list.dart';
 import 'package:fyp_project/pages/home.dart';
 import 'package:fyp_project/pages/login.dart';
@@ -31,25 +32,14 @@ class _AppDrawerState extends State<AppDrawer> {
   String? userId;
 
   Future<project_user.User?> _fetchUser() async {
-    final prefs = await SharedPreferences.getInstance();
-    String? userData = prefs.getString('user_data');
 
-    developer.log("userdata: $userData");
+    final user = Supabase.instance.client.auth.currentUser;
+    final userId = user?.id;
 
-    if (userData != null) {
-      renter = project_user.User.fromJson(json.decode(userData));
-    } else {
-      final user = Supabase.instance.client.auth.currentUser;
-      final userId = user?.id;
+    developer.log('User: $user');
+    developer.log('User ID: $userId');
 
-      developer.log('User: $user');
-      developer.log('User ID: $userId');
-
-      if (userId != null) {
-        renter = await project_user.User.getUserById(userId);
-        await prefs.setString('user_data', json.encode(renter!.toJson()));
-      }
-    }
+    renter = await project_user.User.getUserById(userId!);
   }
 
   Future<PropertyListing?> _getCurrentProperty() {
@@ -190,7 +180,12 @@ class _AppDrawerState extends State<AppDrawer> {
               onTap: () async {
                 final prefs = await SharedPreferences.getInstance();
                 await prefs.remove('user_data');
-                Supabase.instance.client.auth.signOut();
+                if (Get.isRegistered<Accesstokencontroller>()) {
+                  Get.delete<Accesstokencontroller>(force: true);
+                }
+                await Supabase.instance.client.auth.signOut();
+
+                developer.log('User logged out successfully');
                 Get.offAll(() => const Login());
               },
             ),

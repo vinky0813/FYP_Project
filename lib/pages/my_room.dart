@@ -60,9 +60,7 @@ class MyroomState extends State<MyRoom> {
     developer.log("property id: ${widget.propertyListing!.property_id}");
     List<Future> futures = [];
 
-    futures.add(Property.getPropertyWithId(widget.propertyListing!.property_id).then((fetchedProperty) {
-      property = fetchedProperty;
-    }));
+    property = await Property.getPropertyWithId(widget.propertyListing!.property_id);
 
     futures.add(Future(() {
       trueAmenities = widget.propertyListing!.amenities.where((b) => b.value).toList();

@@ -132,8 +132,6 @@ class _AccountPageState extends State<AccountPage> {
       "username": usernameController.text,
       "user_id": userId});
 
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('user_data');
   }
   bool isEditing = false;
 

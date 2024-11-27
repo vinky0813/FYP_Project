@@ -2,12 +2,16 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:fyp_project/pages/home.dart';
 import 'package:fyp_project/pages/owner_home.dart';
 import 'package:fyp_project/pages/sign_up_form.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:developer' as developer;
+import 'package:fyp_project/models/user.dart' as project_user;
+
+import '../AccessTokenController.dart';
 
 class LoginForm extends StatefulWidget {
 
@@ -25,6 +29,8 @@ class _LoginFormState extends State<LoginForm> {
   final TextEditingController passwordController = TextEditingController();
 
   Future<void> _login(userType) async {
+
+    developer.log("row level security problem here?");
     final email = emailController.text;
     final password = passwordController.text;
 
@@ -34,10 +40,25 @@ class _LoginFormState extends State<LoginForm> {
     }
 
     try {
+
       final response = await Supabase.instance.client.auth.signInWithPassword(
         email: email,
         password: password,
       );
+
+      final supabase = Supabase.instance.client;
+
+    final session = response.session;
+
+    developer.log("session email: ${session!.user.email}");
+
+    if (session == null) {
+      Get.snackbar("Login Error", "Failed to authenticate.");
+      return;
+    }
+      Get.put(Accesstokencontroller());
+
+      developer.log("row level security problem before here?");
 
       final userId = response.user!.id;
 
@@ -50,8 +71,8 @@ class _LoginFormState extends State<LoginForm> {
       final user_type = profileResponse["user_type"];
 
       if (user_type!= userType) {
+        await Supabase.instance.client.auth.signOut();
         _showErrorDialog(context, "wrong user type");
-        Supabase.instance.client.auth.signOut();
       } else if (user_type == "renter") {
         Get.off(() => const HomePage(), transition: Transition.circularReveal, duration: const Duration(seconds: 1));
       } else if (user_type == "owner") {
@@ -61,6 +82,7 @@ class _LoginFormState extends State<LoginForm> {
       }
 
     } catch (error) {
+      developer.log(error.toString());
       Get.snackbar("Login Error", "Invalid email or password. Please try again.");
     }
     }

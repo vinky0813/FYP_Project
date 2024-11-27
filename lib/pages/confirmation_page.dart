@@ -65,7 +65,18 @@ class ConfirmationPageState extends State<ConfirmationPage> {
   bool isSharedRoom = false;
   bool isSuite = false;
   final accesstokencontroller = Get.find<Accesstokencontroller>();
-  String accessToken = accessTokenController.token!;
+  String? accessToken;
+
+  @override
+  void initState() {
+    super.initState();
+
+    accessToken = accesstokencontroller.token;
+
+    if (accessToken == null) {
+      print("Token is null");
+    }
+  }
 
   Future<List<String>?> _uploadImages(List<File> images) async {
     try {
@@ -90,7 +101,7 @@ class ConfirmationPageState extends State<ConfirmationPage> {
 
     var request = http.MultipartRequest("POST", url);
 
-    if (accessToken != null && accessToken.isNotEmpty) {
+    if (accessToken != null && accessToken!.isNotEmpty) {
       request.headers['Authorization'] = 'Bearer $accessToken';
     } else {
       developer.log("Access token is missing");
